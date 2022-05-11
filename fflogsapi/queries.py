@@ -5,52 +5,45 @@ Pre-baked GraphQL queries for the FFLogs API
 '''
 
 # Top level query for retrieving paginated reports
-Q_PAGINATED_REPORTS = """
+Q_REPORTPAGINATION = """
 query {{
 	reportData {{
-		reports(guildID: {guildID}, page: {page}) {{
-			has_more_pages
+		reports({filters}) {{
 			{innerQuery}
 		}}
 	}}
 }}
 """
 
-# One full page of report metadata
-# Args: guildID, page
-Q_INNER_REPORTS = """
-data {
-    owner { id, name }
-    code
-	title
-    startTime
-    endTime
-}
+Q_REPORTDATA = """
+query {{
+	reportData {{
+		report(code: "{reportCode}") {{
+			{innerQuery}
+		}}
+	}}
+}}
 """
 
-# Fight metadata in a single page of reports
-Q_INNER_FIGHTS_META = """
-data {
-	code
-	fights {
-		id
-		difficulty
-		startTime
-		endTime
-	}
-}
+Q_FIGHTDATA = """
+query {{
+	reportData {{
+		report(code: "{reportCode}") {{
+			fights(fightIDs: {fightID}) {{
+				{innerQuery}
+			}}
+		}}
+	}}
+}}
 """
 
-# Roughly generic fight info for every report in a page
-# Args: guildID, page
-Q_INNER_FIGHTS_DETAIL = """
+# Retrieves only metadata from pages
+Q_REPORT_PAGE_META = """
+current_page
+has_more_pages
+from
+to
 data {
 	code
-	fights {
-		id
-		name
-		kill
-		fightPercentage
-	}
 }
 """

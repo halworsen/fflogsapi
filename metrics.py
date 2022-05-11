@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from fflogsapi.fflogsapi import FFLogsClient
+from fflogsapi.client import FFLogsClient
 from fflogsapi.data import Report, Fight
 from fflogsapi.queries import *
 from datetime import datetime
@@ -20,7 +20,7 @@ def main():
         reports = fapi.get_all_reports(GUILD_ID)
         with open('data.pkl', 'wb+') as f:
             pickle.dump(reports, f)
-    
+
     reports = sorted(reports, key=lambda r: r.start)
 
     time_spent_raiding = []
@@ -88,62 +88,77 @@ def main():
     for boss in to_remove:
         wipes_before_clear.pop(boss)
 
-    # plt.title('Hours spent raiding')
-    # plt.plot(raid_days, time_spent_raiding)
-    # for boss, clear_date in clears.items():
-    #     plt.axvline(clear_date, ymin=0, ymax=cum_hours, color=BOSS_COLORS[boss])
-    # plt.xticks(rotation=45)
-    # plt.tight_layout()
-    # plt.show()
+    if not os.path.exists('./figures'):
+        os.makedirs('./figures')
 
-    # plt.title('Hours spent in fight per boss')
-    # for boss, times in time_per_boss.items():
-    #     plt.plot(raid_days, times, color=BOSS_COLORS[boss])
-    # plt.legend(time_per_boss.keys())
-    # for boss, clear_date in clears.items():
-    #     plt.axvline(clear_date, ymin=0, ymax=cum_hours, color=BOSS_COLORS[boss])
-    # plt.xticks(rotation=45)
-    # plt.tight_layout()
-    # plt.show()
+    plt.figure()
+    plt.title('Hours spent raiding')
+    plt.plot(raid_days, time_spent_raiding)
+    for boss, clear_date in clears.items():
+        plt.axvline(clear_date, ymin=0, ymax=cum_hours, color=BOSS_COLORS[boss])
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.savefig('./figures/hours_spent.png')
 
-    # plt.title('Minimum percentage reached per boss')
-    # for boss, percentages in min_percentages.items():
-    #     plt.plot(raid_days, percentages, color=BOSS_COLORS[boss])
-    # plt.legend(min_percentages.keys())
-    # for boss, clear_date in clears.items():
-    #     plt.axvline(clear_date, ymin=0, ymax=cum_hours, color=BOSS_COLORS[boss])
-    # plt.xticks(rotation=45)
-    # plt.tight_layout()
-    # plt.show()
+    plt.figure()
+    plt.title('Hours spent in fight per boss')
+    for boss, times in time_per_boss.items():
+        plt.plot(raid_days, times, color=BOSS_COLORS[boss])
+    plt.legend(time_per_boss.keys())
+    for boss, clear_date in clears.items():
+        plt.axvline(clear_date, ymin=0, ymax=cum_hours, color=BOSS_COLORS[boss])
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.savefig('./figures/hours_per_boss.png')
 
-    # plt.title('Wipes per boss')
-    # for boss, wipes in wipes_per_boss.items():
-    #     plt.plot(raid_days, wipes, color=BOSS_COLORS[boss])
-    # for boss, clear_date in clears.items():
-    #     plt.axvline(clear_date, ymin=0, ymax=cum_hours, color=BOSS_COLORS[boss])
-    # plt.legend(wipes_per_boss.keys())
-    # plt.xticks(rotation=45)
-    # plt.tight_layout()
-    # plt.show()
+    plt.figure()
+    plt.title('Minimum percentage reached per boss')
+    for boss, percentages in min_percentages.items():
+        plt.plot(raid_days, percentages, color=BOSS_COLORS[boss])
+    plt.legend(min_percentages.keys())
+    for boss, clear_date in clears.items():
+        plt.axvline(clear_date, ymin=0, ymax=cum_hours, color=BOSS_COLORS[boss])
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.savefig('./figures/min_percent.png')
 
-    # plt.title('Total wipes per boss')
-    # wipes_total = [wipes[-1] for wipes in wipes_per_boss.values()]
-    # plt.bar(wipes_per_boss.keys(), wipes_total, color=BOSS_COLORS.values())
-    # plt.tight_layout()
-    # plt.show()
+    plt.figure()
+    plt.title('Wipes per boss')
+    for boss, wipes in wipes_per_boss.items():
+        plt.plot(raid_days, wipes, color=BOSS_COLORS[boss])
+    for boss, clear_date in clears.items():
+        plt.axvline(clear_date, ymin=0, ymax=cum_hours, color=BOSS_COLORS[boss])
+    plt.legend(wipes_per_boss.keys())
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.savefig('./figures/wipes_per_boss.png')
 
-    # plt.title('Total wipes before clear')
-    # wipes_total = [wipes[-1] for wipes in wipes_before_clear.values()]
-    # plt.bar(wipes_before_clear.keys(), wipes_total, color=BOSS_COLORS.values())
-    # plt.tight_layout()
-    # plt.show()
+    plt.figure()
+    plt.title('Total wipes per boss')
+    wipes_total = [wipes[-1] for wipes in wipes_per_boss.values()]
+    plt.bar(wipes_per_boss.keys(), wipes_total, color=BOSS_COLORS.values())
+    plt.tight_layout()
+    plt.savefig('./figures/bar_wipes_per_boss.png')
+
+    plt.figure()
+    plt.title('Total wipes before clear')
+    wipes_total = [wipes[-1] for wipes in wipes_before_clear.values()]
+    plt.bar(wipes_before_clear.keys(), wipes_total, color=BOSS_COLORS.values())
+    plt.tight_layout()
+    plt.savefig('./figures/wipes_before_clear.png')
 
     # Needs to use wipes_before_clears as keys. It doesn't make sense to compute reclear wipes on bosses that aren't cleared yet
-    # plt.title('Total wipes during reclears')
-    # reclear_wipes = [wipes_per_boss[boss][-1] - wipes_before_clear[boss][-1] for boss in wipes_before_clear.keys()]
-    # plt.bar(wipes_before_clear.keys(), reclear_wipes, color=BOSS_COLORS.values())
-    # plt.tight_layout()
-    # plt.show()
+    plt.figure()
+    plt.title('Total wipes during reclears')
+    reclear_wipes = [wipes_per_boss[boss][-1] - wipes_before_clear[boss][-1] for boss in wipes_before_clear.keys()]
+    plt.bar(wipes_before_clear.keys(), reclear_wipes, color=BOSS_COLORS.values())
+    plt.tight_layout()
+    plt.savefig('./figures/reclear_wipes.png')
+
+    print('THE NUMBERS (what do they mean)\n================================')
+    print(f'Hours until clear:')
+    for boss, clear_date in clears.items():
+
 
 if __name__ == '__main__':
     main()

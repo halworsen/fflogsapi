@@ -1,0 +1,5 @@
+matplotlib
+gql
+oauthlib
+requests_oauthlib
+requests_toolbelt

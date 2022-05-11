@@ -4,7 +4,7 @@ CLIENT_ID = ''
 CLIENT_SECRET = ''
 
 TIMESTAMP_PRECISION = 1e-3
-GUILD_ID = 100658
+GUILD_ID = -1
 START_DATE = datetime(year=2022, month=1, day=3)
 
 LOAD_SAVED_DATA = True

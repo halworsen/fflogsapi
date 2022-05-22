@@ -1,6 +1,0 @@
- * who used the most potions
- * bahamut damage (pet damage)
- * average uptime for everyone
- * amount of celestial revolutions
- * total divinations
- * lowest HP a non-tank had

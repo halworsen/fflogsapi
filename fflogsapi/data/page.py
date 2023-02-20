@@ -12,8 +12,6 @@ class FFLogsPage:
 
     # Base query from which to find pages
     PAGINATION_QUERY: str = ''
-    # Inner query to retrieve page metadata from
-    PAGE_META_QUERY: str = ''
     # What kind of object the page contains
     PAGE_TYPE: str = ''
     # Field name of the ID/code of the object being paginated
@@ -49,7 +47,7 @@ class FFLogsPage:
         filters = ', '.join(self._custom_filters + [f'page: {self.page_num}'])
         page_data = self._client.q(self.PAGINATION_QUERY.format(
             filters=filters,
-            innerQuery=self.PAGE_META_QUERY,
+            innerQuery=qs.Q_PAGE_META.format(idField=self.OBJECT_ID_FIELD),
         ))
 
         self.n_from = page_data[f'{self.PAGE_TYPE}Data']['data']['from']

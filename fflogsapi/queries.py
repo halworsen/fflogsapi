@@ -4,6 +4,17 @@ queries.py
 Pre-baked GraphQL queries for the FFLogs API
 '''
 
+# Retrieves only metadata from pages
+Q_PAGE_META = """
+current_page
+has_more_pages
+from
+to
+data {
+	{idField}
+}
+"""
+
 # Top level query for retrieving paginated reports
 Q_REPORT_PAGINATION = """
 query {{
@@ -37,15 +48,4 @@ query {{
 		}}
 	}}
 }}
-"""
-
-# Retrieves only metadata from pages
-Q_REPORT_PAGE_META = """
-current_page
-has_more_pages
-from
-to
-data {
-	code
-}
 """

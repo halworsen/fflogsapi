@@ -10,9 +10,9 @@ current_page
 has_more_pages
 from
 to
-data {
+data {{
 	{idField}
-}
+}}
 """
 
 # Top level query for retrieving paginated reports

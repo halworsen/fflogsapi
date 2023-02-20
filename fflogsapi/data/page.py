@@ -50,11 +50,11 @@ class FFLogsPage:
             innerQuery=qs.Q_PAGE_META.format(idField=self.OBJECT_ID_FIELD),
         ))
 
-        self.n_from = page_data[f'{self.PAGE_TYPE}Data']['data']['from']
-        self.n_to = page_data[f'{self.PAGE_TYPE}Data']['data']['to']
+        self.n_from = page_data[f'{self.PAGE_TYPE}Data'][f'{self.PAGE_TYPE}s']['from']
+        self.n_to = page_data[f'{self.PAGE_TYPE}Data'][f'{self.PAGE_TYPE}s']['to']
 
         self._ids = []
-        for object in page_data[f'{self.PAGE_TYPE}Data']['data']['data']:
+        for object in page_data[f'{self.PAGE_TYPE}Data'][f'{self.PAGE_TYPE}s']['data']:
             self._ids.append(object[self.OBJECT_ID_FIELD])
         
         self._initialized = True
@@ -62,7 +62,7 @@ class FFLogsPage:
     def count(self) -> int:
         '''
         Returns:
-            The amount of objects in this page
+            The amount of objects in this page.
         '''
         if not self._initialized:
             self._query_page()
@@ -121,10 +121,8 @@ class FFLogsPaginationIterator:
     Iterates over multiple pages (a pagination), returning pages
     '''
 
-    # Base query from which to find pages
-    PAGINATION_QUERY = ''
-    # What kind of object the pages contain
-    PAGE_TYPE: str = ''
+    # The page class of the pages in the pagination
+    PAGE_CLASS = None
 
     def __init__(self, client: 'FFLogsClient', filters: Dict[str, str] = {}) -> None:
         self._client = client
@@ -132,11 +130,13 @@ class FFLogsPaginationIterator:
         self._filters = filters
 
         filters = ', '.join([f'{key}: {f}' for key, f in filters.items()])
-        result = self._client.q(self.PAGINATION_QUERY.format(
+        result = self._client.q(self.PAGE_CLASS.PAGINATION_QUERY.format(
             filters=filters,
             innerQuery='last_page',
         ))
-        self._last_page = result[f'{self.PAGE_TYPE}Data'][f'{self.PAGE_TYPE}s']['last_page']
+
+        page_type = self.PAGE_CLASS.PAGE_TYPE
+        self._last_page = result[f'{page_type}Data'][f'{page_type}s']['last_page']
     
     def __iter__(self) -> 'FFLogsPaginationIterator':
         return self
@@ -144,7 +144,7 @@ class FFLogsPaginationIterator:
     def __next__(self) -> FFLogsPage:
         self._cur_page += 1
         if self._cur_page <= self._last_page:
-            return FFLogsPage(
+            return self.PAGE_CLASS(
                 page_num=self._cur_page,
                 filters=self._filters,
                 client=self._client,

@@ -7,12 +7,9 @@ class FFLogsReportPage(FFLogsPage):
     Representation of a page of reports on FFLogs.
     '''
 
-    # Base query from which to find pages
-    PAGINATION_QUERY: str = qs.Q_REPORT_PAGINATION
-    # What kind of object the page contains
-    PAGE_TYPE: str = 'report'
-    # Field name of the ID/code of the object being paginated
-    OBJECT_ID_FIELD: str = 'code'
+    PAGINATION_QUERY = qs.Q_REPORT_PAGINATION
+    PAGE_TYPE = 'report'
+    OBJECT_ID_FIELD = 'code'
 
     def init_object(self, code: str) -> FFLogsReport:
         '''
@@ -22,10 +19,7 @@ class FFLogsReportPage(FFLogsPage):
 
 class FFLogsReportPaginationIterator(FFLogsPaginationIterator):
     '''
-    Iterates over multiple pages (a pagination), returning pages
+    Iterates over multiple report pages
     '''
 
-    # Base query from which to find pages
-    PAGINATION_QUERY = qs.Q_REPORT_PAGINATION
-    # What kind of object the pages contain
-    PAGE_TYPE: str = 'report'
+    PAGE_CLASS = FFLogsReportPage

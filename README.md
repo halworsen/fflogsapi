@@ -14,13 +14,13 @@ report = client.get_report('rGARYmQwTKbahXz9')
 
 for fight in report:
     print(f'Fight #{fight.fight_id}:', fight.name(), f'- Kill: {fight.is_kill()}')
-    pot_table = fight.get_fight_table(filters={'sourceAurasPresent': 'Medicated'})
+    pot_table = fight.fight_table(filters={'sourceAurasPresent': 'Medicated'})
     potted_damage = 0
     for damage in pot_table['damageDone']:
         potted_damage += damage['total']
     print(f'Damage done under pots: {potted_damage}')
     if not fight.is_kill():
-        print(f'Percentage reached: {fight.get_percentage()}')
+        print(f'Percentage reached: {fight.percentage()}')
 
 client.save_cache()
 ```
@@ -31,8 +31,8 @@ from config import CLIENT_ID, CLIENT_SECRET
 from fflogsapi.client import FFLogsClient
 
 client = FFLogsClient(CLIENT_ID, CLIENT_SECRET)
-for page in client.pages(filters={ 'guildID': 80551 }):
-    print(f'Reports in page: {page.report_count()}')
+for page in client.report_pages(filters={ 'guildID': 80551 }):
+    print(f'Reports in page: {page.count()}')
     for report in page:
         print(report.title(), f'Duration: {report.duration()}')
 

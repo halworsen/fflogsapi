@@ -1,10 +1,10 @@
 from typing import TYPE_CHECKING
 
-from fflogsapi.data.fight import FFLogsFight
+from fflogsapi.reports.fight import FFLogsFight
 
 if TYPE_CHECKING:
     from fflogsapi.client import FFLogsClient
-    from fflogsapi.data.report import FFLogsReport
+    from fflogsapi.reports.report import FFLogsReport
 
 class FFLogsReportIterator:
     def __init__(self, report: 'FFLogsReport', client: 'FFLogsClient') -> None:
@@ -19,7 +19,7 @@ class FFLogsReportIterator:
     def __next__(self) -> 'FFLogsFight':
         self._cur_encounter += 1
         if self._cur_encounter <= self._max_encounter:
-            return self._report.get_fight_by_id(self._cur_encounter)
+            return self._report.fight_by_id(self._cur_encounter)
         else:
             self._cur_encounter = 0
             raise StopIteration

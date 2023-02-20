@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Dict, Optional
 
 from fflogsapi.iterators.pageiterator import FFLogsPageIterator
-from fflogsapi.data.report import FFLogsReport
+from fflogsapi.reports.report import FFLogsReport
 import fflogsapi.queries as qs
 
 if TYPE_CHECKING:
@@ -64,7 +64,7 @@ class FFLogsPage:
 
         return (self.n_to - self.n_from) + 1
 
-    def get_report(self, code) -> Optional[FFLogsReport]:
+    def report(self, code) -> Optional[FFLogsReport]:
         '''
         Get a specific report from this page.
 

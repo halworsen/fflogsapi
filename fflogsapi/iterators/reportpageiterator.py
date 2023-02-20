@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Dict
 
-from fflogsapi.data.page import FFLogsPage
+from fflogsapi.reports.report_page import FFLogsPage
 import fflogsapi.queries as qs
 
 if TYPE_CHECKING:

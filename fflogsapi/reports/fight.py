@@ -1,9 +1,10 @@
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple
 import fflogsapi.queries as qs
+from fflogsapi.util.filters import construct_filter_string
 
 if TYPE_CHECKING:
     from fflogsapi.client import FFLogsClient
-    from fflogsapi.data.report import FFLogsReport
+    from fflogsapi.reports.report import FFLogsReport
 
 
 def fetch_data(key):
@@ -101,7 +102,7 @@ class FFLogsFight:
         return self._data['standardComposition']
 
     @fetch_data('bossPercentage')
-    def get_percentage(self) -> float:
+    def percentage(self) -> float:
         '''
         Returns:
             The minimum percentage of HP that was reached for the last boss in the fight
@@ -109,7 +110,7 @@ class FFLogsFight:
         return self._data['bossPercentage']
 
     @fetch_data('fightPercentage')
-    def get_fight_percentage(self) -> float:
+    def fight_percentage(self) -> float:
         '''
         Returns:
             The minimum percentage of the entire fight that was reached
@@ -117,7 +118,7 @@ class FFLogsFight:
         return self._data['fightPercentage']
 
     @fetch_data('difficulty')
-    def get_difficulty(self) -> Optional[int]:
+    def difficulty(self) -> Optional[int]:
         '''
         Returns:
             The difficulty of the fight. Usually not very descriptive,
@@ -126,15 +127,23 @@ class FFLogsFight:
         return self._data['difficulty']
 
     @fetch_data('encounterID')
-    def get_encounter_id(self) -> int:
+    def encounter_id(self) -> int:
         '''
         Returns:
             The encounter ID of the fight
         '''
         return self._data['encounter_id']
 
+    @fetch_data('friendlyPlayers')
+    def friendly_players(self) -> List[int]:
+        '''
+        Returns:
+            The friendly players in the fight
+        '''
+        return self._data['friendlyPlayers']
+
     @fetch_data('startTime')
-    def get_start_time(self) -> float:
+    def start_time(self) -> float:
         '''
         Returns:
             Start time of the fight relative to the start time of the report
@@ -142,7 +151,7 @@ class FFLogsFight:
         return self._data['startTime']
 
     @fetch_data('endTime')
-    def get_end_time(self) -> float:
+    def end_time(self) -> float:
         '''
         Returns:
             End time of the fight relative to the start time of the report
@@ -154,39 +163,25 @@ class FFLogsFight:
         Returns:
             The total duration of the right
         '''
-        return self.get_end_time() - self.get_start_time()
-    
-    def _construct_filter_string(self, filters: Dict[str, Any]) -> str:
-        prepped_filters = []
-        for key, f in filters.items():
-            filter = ''
-            if type(f) is str:
-                filter = f'{key}: "{f}"'
-            else:
-                filter = f'{key}: {f}'
-            prepped_filters.append(filter)
-
-        return ', '.join(prepped_filters)
+        return self.end_time() - self.start_time()
     
     def _prepare_data_filters(self, filters: Dict[str, Any]) -> Tuple[str, Dict[str, Any]]:
-        fight_start, fight_end = self.get_start_time(), self.get_end_time()
+        fight_start, fight_end = self.start_time(), self.end_time()
 
         # defaulting for start/end times.
         # also check that if custom start/end times were supplied, they are within the fight
         if 'startTime' not in filters:
             filters['startTime'] = fight_start
-        else:
-            if filters['startTime'] < fight_start:
+        elif filters['startTime'] < fight_start:
                 raise ValueError('Cannot retrieve fight events before the fight has started!')
         if 'endTime' not in filters:
             filters['endTime'] = fight_end
-        else:
-            if filters['endTime'] > fight_end:
+        elif filters['endTime'] > fight_end:
                 raise ValueError('Cannot retrieve fight events after the fight has ended!')
 
-        return self._construct_filter_string(filters), filters
+        return construct_filter_string(filters), filters
     
-    def get_fight_events(self, filters: Dict[str, Any] = {}) -> Dict[Any, Any]:
+    def fight_events(self, filters: Dict[str, Any] = {}) -> Dict[Any, Any]:
         '''
         Retrieves the events of the fight.
 
@@ -223,7 +218,7 @@ class FFLogsFight:
 
         return fight_events
 
-    def get_fight_graph(self, filters: Dict[str, Any] = {}) -> Dict[Any, Any]:
+    def fight_graph(self, filters: Dict[str, Any] = {}) -> Dict[Any, Any]:
         '''
         Retrieves the graph information for the fight,
         i.e. damage done, healing done, etc. for various points in the fight.
@@ -244,7 +239,7 @@ class FFLogsFight:
         result = self.report._query_data(f'graph({graph_filters})')
         return result['reportData']['report']['graph']
 
-    def get_fight_table(self, filters: Dict[str, str] = {}) -> Dict[Any, Any]:
+    def fight_table(self, filters: Dict[str, str] = {}) -> Dict[Any, Any]:
         '''
         Retrieves the table information for the fight.
 
@@ -263,7 +258,7 @@ class FFLogsFight:
         result = self.report._query_data(f'table({table_filters})')
         return result['reportData']['report']['table']['data']
     
-    def get_rankings(self) -> Dict[Any, Any]:
+    def rankings(self) -> Dict[Any, Any]:
         '''
         Retrieves ranking data for the fight.
 

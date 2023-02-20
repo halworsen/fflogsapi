@@ -1,9 +1,9 @@
 from typing import TYPE_CHECKING
-from fflogsapi.data.report import FFLogsReport
+from fflogsapi.reports.report import FFLogsReport
 
 if TYPE_CHECKING:
     from fflogsapi.client import FFLogsClient
-    from fflogsapi.data.page import FFLogsPage
+    from fflogsapi.reports.report_page import FFLogsPage
 
 class FFLogsPageIterator:
     def __init__(self, page: 'FFLogsPage', client: 'FFLogsClient') -> None:

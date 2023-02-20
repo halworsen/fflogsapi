@@ -22,5 +22,5 @@ class FFLogsActor:
     game_id: int
     pet_owner: int = None
 
-    def get_job(self):
+    def job(self):
         return self.sub_type

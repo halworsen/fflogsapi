@@ -1,10 +1,8 @@
-
-from pty import master_open
-from typing import TYPE_CHECKING, Dict, List, Optional
-from fflogsapi.data.fight import FFLogsFight
+from typing import TYPE_CHECKING, List, Optional
+from fflogsapi.reports.fight import FFLogsFight
 
 from fflogsapi.iterators.reportiterator import FFLogsReportIterator
-from fflogsapi.data.misc import FFLogsAbility, FFLogsActor
+from fflogsapi.data.dataclasses import FFLogsAbility, FFLogsActor
 import fflogsapi.queries as qs
 
 if TYPE_CHECKING:
@@ -137,7 +135,7 @@ class FFLogsReport:
             self._fights[fight_data['id']] = fight
 
     @fetch_master_data
-    def get_actors(self) -> List[FFLogsActor]:
+    def actors(self) -> List[FFLogsActor]:
         '''
         Returns:
             A list of all actors in the report
@@ -145,7 +143,7 @@ class FFLogsReport:
         return self._data['masterData']['actors']
     
     @fetch_master_data
-    def get_abilities(self) -> List[FFLogsAbility]:
+    def abilities(self) -> List[FFLogsAbility]:
         '''
         Returns:
             A list of all abilities in the report
@@ -153,7 +151,7 @@ class FFLogsReport:
         return self._data['masterData']['abilities']
 
     @fetch_master_data
-    def get_log_version(self) -> int:
+    def log_version(self) -> int:
         '''
         Returns:
             The version of the client parser used to parse and upload the log file
@@ -165,31 +163,31 @@ class FFLogsReport:
         return self._data['title']
 
     @fetch_data('owner')
-    def get_owner(self) -> str:
+    def owner(self) -> str:
         return self._data['owner']
 
     @fetch_data('guild')
-    def get_end_time(self) -> float:
+    def end_time(self) -> float:
         return self._data['guild']
 
     @fetch_data('guildTag')
-    def get_guild_tag(self) -> float:
+    def guild_tag(self) -> float:
         return self._data['guildTag']
 
     @fetch_data('zone')
-    def get_zone(self) -> Optional[str]:
+    def zone(self) -> Optional[str]:
         return self._data['zone']
 
     @fetch_data('startTime')
-    def get_start_time(self) -> float:
+    def start_time(self) -> float:
         return self._data['startTime']
 
     @fetch_data('endTime')
-    def get_end_time(self) -> float:
+    def end_time(self) -> float:
         return self._data['endTime']
     
     @fetch_data('segments')
-    def get_segments(self) -> int:
+    def segments(self) -> int:
         return self._data['segments']
     
     def duration(self) -> float:
@@ -197,7 +195,7 @@ class FFLogsReport:
         Returns:
             The total duration of the report
         '''
-        return self.get_end_time() - self.get_start_time()
+        return self.end_time() - self.start_time()
     
     def fight_count(self) -> int:
         '''
@@ -207,13 +205,16 @@ class FFLogsReport:
         result = self._query_data('fights { id }')
         return len(result['reportData']['report']['fights'])
 
-    def get_fight_by_id(self, id: int) -> FFLogsFight:
+    def fight(self, id: int = -1) -> FFLogsFight:
         '''
         Args:
-            id: The ID of the fight to retrieve
+            id: The ID of the fight to retrieve. Default: last fight
         Returns:
             An FFLogsFight object or None if the fight is not in the report
         '''
+        if id == -1:
+            id = self.fight_count()
+
         if id < 1 or id > self.fight_count():
             return None
 

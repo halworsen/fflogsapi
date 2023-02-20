@@ -1,4 +1,4 @@
-from typing import List, Dict, Any
+from typing import Dict, Any, Optional
 from gql import gql
 from gql import Client as GQLClient
 from gql.transport.requests import RequestsHTTPTransport
@@ -11,7 +11,7 @@ import pickle
 from copy import deepcopy
 
 import fflogsapi.queries as qs
-from fflogsapi.data.report import FFLogsReport
+from fflogsapi.reports.report import FFLogsReport
 from fflogsapi.iterators.reportpageiterator import FFLogsReportPagesIterator
 
 def ensure_token(func):
@@ -155,15 +155,22 @@ class FFLogsClient:
 
     def pages(self, filters: dict = {}) -> FFLogsReportPagesIterator:
         '''
-        Returns an iterator over report pages
+        Iterate over pages of FFLogs reports.
+
+        Args:
+            filters: A dictionary containing filters to use when retrieving reports.
+        Returns:
+            An iterator over the pages of reports that match the given filters.
         '''
         return FFLogsReportPagesIterator(filters=filters, client=self)
 
     def get_report(self, code: str) -> FFLogsReport:
         '''
+        Retrieves the given report data from FFLogs.
+
         Args:
-            code: The report code
+            code: The report code.
         Returns:
-            A FFLogs report
+            A FFLogsReport object representing the report.
         '''
         return FFLogsReport(code=code, client=self)

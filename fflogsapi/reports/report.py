@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, List, Optional
 from fflogsapi.reports.fight import FFLogsFight
 
-from fflogsapi.iterators.reportiterator import FFLogsReportIterator
+from fflogsapi.iterators.report_iterator import FFLogsReportIterator
 from fflogsapi.data.dataclasses import FFLogsAbility, FFLogsActor
 import fflogsapi.queries as qs
 
@@ -76,7 +76,7 @@ class FFLogsReport:
         '''
         Query for a specific piece of information from a report.
         '''
-        result = self._client.q(qs.Q_REPORTDATA.format(
+        result = self._client.q(qs.Q_REPORT_DATA.format(
             reportCode=self.code,
             innerQuery=query
         ), ignore_cache=ignore_cache)

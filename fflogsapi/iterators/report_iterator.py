@@ -7,6 +7,9 @@ if TYPE_CHECKING:
     from fflogsapi.reports.report import FFLogsReport
 
 class FFLogsReportIterator:
+    '''
+    Iterates over a report, returning fights
+    '''
     def __init__(self, report: 'FFLogsReport', client: 'FFLogsClient') -> None:
         self._report = report
         self._client = client

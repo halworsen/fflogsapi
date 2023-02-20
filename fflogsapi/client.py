@@ -12,7 +12,7 @@ from copy import deepcopy
 
 import fflogsapi.queries as qs
 from fflogsapi.reports.report import FFLogsReport
-from fflogsapi.iterators.reportpageiterator import FFLogsReportPagesIterator
+from fflogsapi.reports.report_page import FFLogsReportPaginationIterator
 
 def ensure_token(func):
     '''
@@ -156,7 +156,7 @@ class FFLogsClient:
                 if time() >= expiry:
                     os.remove(os.path.join(self.CACHE_DIR, file))
 
-    def pages(self, filters: dict = {}) -> FFLogsReportPagesIterator:
+    def report_pages(self, filters: dict = {}) -> FFLogsReportPaginationIterator:
         '''
         Iterate over pages of FFLogs reports.
 
@@ -165,7 +165,7 @@ class FFLogsClient:
         Returns:
             An iterator over the pages of reports that match the given filters.
         '''
-        return FFLogsReportPagesIterator(filters=filters, client=self)
+        return FFLogsReportPaginationIterator(filters=filters, client=self)
 
     def get_report(self, code: str) -> FFLogsReport:
         '''

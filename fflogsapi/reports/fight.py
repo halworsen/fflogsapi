@@ -43,7 +43,7 @@ class FFLogsFight:
         '''
         Query for a specific piece of information from a fight
         '''
-        result = self._client.q(qs.Q_FIGHTDATA.format(
+        result = self._client.q(qs.Q_FIGHT_DATA.format(
             reportCode=self.report.code,
             fightID=self.fight_id,
             innerQuery=query,

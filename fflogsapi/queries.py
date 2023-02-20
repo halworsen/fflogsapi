@@ -5,7 +5,7 @@ Pre-baked GraphQL queries for the FFLogs API
 '''
 
 # Top level query for retrieving paginated reports
-Q_REPORTPAGINATION = """
+Q_REPORT_PAGINATION = """
 query {{
 	reportData {{
 		reports({filters}) {{
@@ -15,7 +15,8 @@ query {{
 }}
 """
 
-Q_REPORTDATA = """
+# Top level query for retrieving a specific report
+Q_REPORT_DATA = """
 query {{
 	reportData {{
 		report(code: "{reportCode}") {{
@@ -25,7 +26,8 @@ query {{
 }}
 """
 
-Q_FIGHTDATA = """
+# Query for retrieving a specific fight from a specific report (subquery of Q_REPORTDATA)
+Q_FIGHT_DATA = """
 query {{
 	reportData {{
 		report(code: "{reportCode}") {{

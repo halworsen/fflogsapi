@@ -66,6 +66,9 @@ class FFLogsClient:
         self.ignore_cache_expiry = ignore_cache_expiry
 
         if enable_caching:
+            if not os.path.exists(self.CACHE_DIR):
+                os.makedirs(self.CACHE_DIR)
+
             # pluck the freshest pickled cache and use that
             cache_files = list(filter(
                 lambda f: f.endswith('.pkl') and f[:-4].replace('.', '').isdigit(),

@@ -4,3 +4,4 @@ querycache/
 *.pkl
 *.png
 *.pyc
+test.py

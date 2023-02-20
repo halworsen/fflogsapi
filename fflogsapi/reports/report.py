@@ -243,7 +243,7 @@ class FFLogsReportIterator:
     def __next__(self) -> FFLogsFight:
         self._cur_encounter += 1
         if self._cur_encounter <= self._max_encounter:
-            return self._report.fight_by_id(self._cur_encounter)
+            return self._report.fight(self._cur_encounter)
         else:
             self._cur_encounter = 0
             raise StopIteration

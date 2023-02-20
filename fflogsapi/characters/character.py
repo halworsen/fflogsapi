@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Any, Dict, List, Optional
 from fflogsapi.util.filters import construct_filter_string
-import fflogsapi.queries as qs
+import fflogsapi.characters.queries as qs
 
 if TYPE_CHECKING:
     from fflogsapi.client import FFLogsClient

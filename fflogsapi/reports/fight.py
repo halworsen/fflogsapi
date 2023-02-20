@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple
-import fflogsapi.queries as qs
+import fflogsapi.reports.queries as qs
 from fflogsapi.util.filters import construct_filter_string
 
 if TYPE_CHECKING:

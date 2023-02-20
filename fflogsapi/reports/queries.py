@@ -1,20 +1,3 @@
-'''
-queries.py
-
-Pre-baked GraphQL queries for the FFLogs API
-'''
-
-# Retrieves only metadata from pages
-Q_PAGE_META = """
-current_page
-has_more_pages
-from
-to
-data {{
-	{idField}
-}}
-"""
-
 # Top level query for retrieving paginated reports
 Q_REPORT_PAGINATION = """
 query {{
@@ -45,28 +28,6 @@ query {{
 			fights(fightIDs: {fightID}) {{
 				{innerQuery}
 			}}
-		}}
-	}}
-}}
-"""
-
-# Top level query for retrieving paginated characters
-Q_CHARACTER_PAGINATION = """
-query {{
-	characterData {{
-		characters({filters}) {{
-			{innerQuery}
-		}}
-	}}
-}}
-"""
-
-# Retrieves character data
-Q_CHARACTER_DATA = """
-query {{
-	characterData {{
-		character({filters}) {{
-			{innerQuery}
 		}}
 	}}
 }}

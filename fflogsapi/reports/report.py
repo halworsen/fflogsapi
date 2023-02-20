@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, List, Optional
 from fflogsapi.reports.fight import FFLogsFight
 
 from fflogsapi.data.dataclasses import FFLogsAbility, FFLogsActor
-import fflogsapi.queries as qs
+import fflogsapi.reports.queries as qs
 
 if TYPE_CHECKING:
     from fflogsapi.client import FFLogsClient

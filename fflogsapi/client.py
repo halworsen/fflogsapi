@@ -10,7 +10,6 @@ import os
 import pickle
 from copy import deepcopy
 
-import fflogsapi.queries as qs
 from fflogsapi.reports.report import FFLogsReport
 from fflogsapi.reports.report_page import FFLogsReportPaginationIterator
 

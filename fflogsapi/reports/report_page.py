@@ -1,6 +1,6 @@
 from fflogsapi.data.page import FFLogsPage, FFLogsPaginationIterator
 from fflogsapi.reports.report import FFLogsReport
-import fflogsapi.queries as qs
+import fflogsapi.reports.queries as qs
 
 class FFLogsReportPage(FFLogsPage):
     '''

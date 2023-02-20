@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING, Any, Dict, Optional
-import fflogsapi.queries as qs
+import fflogsapi.data.queries as qs
 
 if TYPE_CHECKING:
     from client import FFLogsClient

@@ -1,12 +1,11 @@
 from typing import TYPE_CHECKING, List, Optional
-from fflogsapi.reports.fight import FFLogsFight
-
-from fflogsapi.data.dataclasses import FFLogsAbility, FFLogsActor
-import fflogsapi.reports.queries as qs
-from fflogsapi.util.decorators import fetch_data
+from ..data.dataclasses import FFLogsAbility, FFLogsActor
+from ..util.decorators import fetch_data
+from .fight import FFLogsFight
+from .queries import Q_REPORT_DATA
 
 if TYPE_CHECKING:
-    from fflogsapi.client import FFLogsClient
+    from ..client import FFLogsClient
 
 
 def fetch_master_data(func):
@@ -44,7 +43,7 @@ class FFLogsReport:
         '''
         Query for a specific piece of information from a report.
         '''
-        result = self._client.q(qs.Q_REPORT_DATA.format(
+        result = self._client.q(Q_REPORT_DATA.format(
             reportCode=self.code,
             innerQuery=query
         ), ignore_cache=ignore_cache)

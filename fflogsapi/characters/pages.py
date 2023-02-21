@@ -1,13 +1,13 @@
-from fflogsapi.data.page import FFLogsPage, FFLogsPaginationIterator
-from fflogsapi.characters.character import FFLogsCharacter
-import fflogsapi.characters.queries as qs
+from ..data.page import FFLogsPage, FFLogsPaginationIterator
+from .character import FFLogsCharacter
+from .queries import Q_CHARACTER_PAGINATION
 
 class FFLogsCharacterPage(FFLogsPage):
     '''
     Represents a page of characters on FFLogs.
     '''
 
-    PAGINATION_QUERY = qs.Q_CHARACTER_PAGINATION
+    PAGINATION_QUERY = Q_CHARACTER_PAGINATION
     PAGE_INDICES = ['characterData', 'characters']
     OBJECT_ID_FIELD = 'id'
 

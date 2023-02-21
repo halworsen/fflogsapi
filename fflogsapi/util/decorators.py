@@ -1,6 +1,7 @@
-from fflogsapi.util.indexing import itindex
+from .indexing import itindex
 
-def fetch_data(key) -> function:
+
+def fetch_data(key):
     '''
     Decorator that queries and stores the given `key` in a class's `_data` dictionary.
 

@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Any, Dict, Optional
-import fflogsapi.data.queries as qs
-from fflogsapi.util.indexing import itindex
+from ..util.indexing import itindex
+from .queries import Q_PAGE_META
 
 if TYPE_CHECKING:
     from client import FFLogsClient
@@ -48,7 +48,7 @@ class FFLogsPage:
         filters = ', '.join(self._custom_filters + [f'page: {self.page_num}'])
         page_data = self._client.q(self.PAGINATION_QUERY.format(
             filters=filters,
-            innerQuery=qs.Q_PAGE_META.format(idField=self.OBJECT_ID_FIELD),
+            innerQuery=Q_PAGE_META.format(idField=self.OBJECT_ID_FIELD),
         ))
 
         self.n_from = itindex(page_data, self.PAGE_INDICES)['from']

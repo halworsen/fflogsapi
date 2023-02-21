@@ -1,13 +1,13 @@
-from fflogsapi.data.page import FFLogsPage, FFLogsPaginationIterator
-from fflogsapi.reports.report import FFLogsReport
-import fflogsapi.reports.queries as qs
+from ..data.page import FFLogsPage, FFLogsPaginationIterator
+from .report import FFLogsReport
+from .queries import Q_REPORT_PAGINATION
 
 class FFLogsReportPage(FFLogsPage):
     '''
     Representation of a page of reports on FFLogs.
     '''
 
-    PAGINATION_QUERY = qs.Q_REPORT_PAGINATION
+    PAGINATION_QUERY = Q_REPORT_PAGINATION
     PAGE_INDICES = ['reportData', 'reports']
     OBJECT_ID_FIELD = 'code'
 

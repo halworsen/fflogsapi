@@ -1,10 +1,10 @@
 from typing import TYPE_CHECKING, Any, Dict, List, Optional
-from fflogsapi.util.decorators import fetch_data
-from fflogsapi.util.filters import construct_filter_string
-import fflogsapi.characters.queries as qs
+from ..util.decorators import fetch_data
+from ..util.filters import construct_filter_string
+from .queries import Q_CHARACTER_DATA
 
 if TYPE_CHECKING:
-    from fflogsapi.client import FFLogsClient
+    from ..client import FFLogsClient
 
 class FFLogsCharacter:
     '''
@@ -27,7 +27,7 @@ class FFLogsCharacter:
         Query for a specific piece of information about a character
         '''
         filters = ', '.join([f'{key}: {f}' for key, f in self.filters.items()])
-        result = self._client.q(qs.Q_CHARACTER_DATA.format(
+        result = self._client.q(Q_CHARACTER_DATA.format(
             filters=filters,
             innerQuery=query,
         ), ignore_cache=ignore_cache)

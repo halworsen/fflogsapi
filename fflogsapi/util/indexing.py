@@ -1,5 +1,6 @@
 from typing import Any
 
+
 def itindex(dictionary: dict, indices: list[str]) -> Any:
     '''
     Index a `dictionary` iteratively by a list of `indices`.

@@ -1,11 +1,11 @@
 from typing import TYPE_CHECKING, Any, Optional
-import fflogsapi.reports.queries as qs
-from fflogsapi.util.decorators import fetch_data
-from fflogsapi.util.filters import construct_filter_string
+from ..util.decorators import fetch_data
+from ..util.filters import construct_filter_string
+from .queries import Q_FIGHT_DATA
 
 if TYPE_CHECKING:
-    from fflogsapi.client import FFLogsClient
-    from fflogsapi.reports.report import FFLogsReport
+    from ..client import FFLogsClient
+    from .report import FFLogsReport
 
 
 class FFLogsFight:
@@ -21,7 +21,7 @@ class FFLogsFight:
 
     DATA_INDICES = ['reportData', 'report', 'fights', 0]
 
-    def __init__(self, report: FFLogsReport, fight_id: int, client: FFLogsClient) -> None:
+    def __init__(self, report: 'FFLogsReport', fight_id: int, client: 'FFLogsClient') -> None:
         self.report = report
         self.fight_id = fight_id
         self._client = client
@@ -31,7 +31,7 @@ class FFLogsFight:
         '''
         Query for a specific piece of information from a fight
         '''
-        result = self._client.q(qs.Q_FIGHT_DATA.format(
+        result = self._client.q(Q_FIGHT_DATA.format(
             reportCode=self.report.code,
             fightID=self.fight_id,
             innerQuery=query,

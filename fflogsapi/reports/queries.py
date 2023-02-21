@@ -32,3 +32,23 @@ query {{
 	}}
 }}
 """
+
+IQ_REPORT_MASTER_DATA = """
+masterData {
+    logVersion
+    actors {
+        gameID
+        id
+        name
+        server
+        petOwner
+        subType
+        type
+    }
+    abilities {
+        gameID
+        name
+        type
+    }
+}
+"""

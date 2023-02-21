@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Any, Dict, Optional
 import fflogsapi.data.queries as qs
+from fflogsapi.util.indexing import itindex
 
 if TYPE_CHECKING:
     from client import FFLogsClient
@@ -12,8 +13,8 @@ class FFLogsPage:
 
     # Base query from which to find pages
     PAGINATION_QUERY: str = ''
-    # What kind of object the page contains
-    PAGE_TYPE: str = ''
+    # How to index the queried data to reach page metadata
+    PAGE_INDICES: list = []
     # Field name of the ID/code of the object being paginated
     OBJECT_ID_FIELD: str = ''
 
@@ -50,11 +51,11 @@ class FFLogsPage:
             innerQuery=qs.Q_PAGE_META.format(idField=self.OBJECT_ID_FIELD),
         ))
 
-        self.n_from = page_data[f'{self.PAGE_TYPE}Data'][f'{self.PAGE_TYPE}s']['from']
-        self.n_to = page_data[f'{self.PAGE_TYPE}Data'][f'{self.PAGE_TYPE}s']['to']
+        self.n_from = itindex(page_data, self.PAGE_INDICES)['from']
+        self.n_to = itindex(page_data, self.PAGE_INDICES)['to']
 
         self._ids = []
-        for object in page_data[f'{self.PAGE_TYPE}Data'][f'{self.PAGE_TYPE}s']['data']:
+        for object in itindex(page_data, self.PAGE_INDICES)['data']:
             self._ids.append(object[self.OBJECT_ID_FIELD])
         
         self._initialized = True
@@ -135,8 +136,7 @@ class FFLogsPaginationIterator:
             innerQuery='last_page',
         ))
 
-        page_type = self.PAGE_CLASS.PAGE_TYPE
-        self._last_page = result[f'{page_type}Data'][f'{page_type}s']['last_page']
+        self._last_page = itindex(result, self.PAGE_INDICES)['last_page']
     
     def __iter__(self) -> 'FFLogsPaginationIterator':
         return self

@@ -1,7 +1,15 @@
-from typing import Any, Dict
+from typing import Any
 
 
-def construct_filter_string(filters: Dict[str, Any]) -> str:
+def construct_filter_string(filters: dict[str, Any]) -> str:
+    '''
+    Construct a filtering string from a dictionary of filters that can be used in GQL queries to filter values.
+
+    Args:
+        filters: A dictionary in which keys are the fields to filter, and values are the values to filter by.
+    Returns:
+        A filter string usable in GQL queries.
+    '''
     prepped_filters = []
     for key, f in filters.items():
         filter = ''

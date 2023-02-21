@@ -8,7 +8,7 @@ class FFLogsCharacterPage(FFLogsPage):
     '''
 
     PAGINATION_QUERY = qs.Q_CHARACTER_PAGINATION
-    PAGE_TYPE = 'character'
+    PAGE_INDICES = ['characterData', 'characters']
     OBJECT_ID_FIELD = 'id'
 
     def init_object(self, id: int) -> FFLogsCharacter:

@@ -1,28 +1,17 @@
 from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from fflogsapi.util.decorators import fetch_data
 from fflogsapi.util.filters import construct_filter_string
 import fflogsapi.characters.queries as qs
 
 if TYPE_CHECKING:
     from fflogsapi.client import FFLogsClient
 
-def fetch_data(key):
-    '''
-    Decorator that queries and stores the given key
-    '''
-    def decorator(func):
-        def ensured(*args, **kwargs):
-            self = args[0]
-            if key not in self._data:
-                result = self._query_data(key)
-                self._data[key] = result['characterData']['character'][key]
-            return func(*args, **kwargs)
-        return ensured
-    return decorator
-
 class FFLogsCharacter:
     '''
     Representation of a character on FFLogs.
     '''
+
+    DATA_INDICES = ['characterData', 'character']
 
     def __init__(self, filters: dict = {}, id: int = -1, client: 'FFLogsClient' = None) -> None:
         self.filters = filters.copy()

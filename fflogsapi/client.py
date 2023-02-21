@@ -11,10 +11,10 @@ import pickle
 from copy import deepcopy
 
 from fflogsapi.reports.report import FFLogsReport
-from fflogsapi.reports.report_page import FFLogsReportPaginationIterator
+from fflogsapi.reports.pages import FFLogsReportPaginationIterator
 
 from fflogsapi.characters.character import FFLogsCharacter
-from fflogsapi.characters.character_page import FFLogsCharacterPaginationIterator
+from fflogsapi.characters.pages import FFLogsCharacterPaginationIterator
 
 def ensure_token(func):
     '''

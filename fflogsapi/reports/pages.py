@@ -8,7 +8,7 @@ class FFLogsReportPage(FFLogsPage):
     '''
 
     PAGINATION_QUERY = qs.Q_REPORT_PAGINATION
-    PAGE_TYPE = 'report'
+    PAGE_INDICES = ['reportData', 'reports']
     OBJECT_ID_FIELD = 'code'
 
     def init_object(self, code: str) -> FFLogsReport:

@@ -3,24 +3,11 @@ from fflogsapi.reports.fight import FFLogsFight
 
 from fflogsapi.data.dataclasses import FFLogsAbility, FFLogsActor
 import fflogsapi.reports.queries as qs
+from fflogsapi.util.decorators import fetch_data
 
 if TYPE_CHECKING:
     from fflogsapi.client import FFLogsClient
 
-
-def fetch_data(key):
-    '''
-    Decorator that queries and stores the given key
-    '''
-    def decorator(func):
-        def ensured(*args, **kwargs):
-            self = args[0]
-            if key not in self._data:
-                result = self._query_data(key)
-                self._data[key] = result['reportData']['report'][key]
-            return func(*args, **kwargs)
-        return ensured
-    return decorator
 
 def fetch_master_data(func):
     '''
@@ -39,25 +26,7 @@ class FFLogsReport:
     Representation of a report on FFLogs.
     '''
 
-    MASTER_DATA_QUERY = """
-        masterData {
-            logVersion
-            actors {
-                gameID
-                id
-                name
-                server
-                petOwner
-                subType
-                type
-            }
-            abilities {
-                gameID
-                name
-                type
-            }
-        }
-    """
+    DATA_INDICES = ['reportData', 'report']
 
     def __init__(self, code: str, client: 'FFLogsClient' = None) -> None:
         self.code = code
@@ -86,7 +55,7 @@ class FFLogsReport:
         '''
         Fetches and stores report master data
         '''
-        result = self._query_data(self.MASTER_DATA_QUERY)
+        result = self._query_data(self.IQ_REPORT_MASTER_DATA)
         master_data = result['reportData']['report']['masterData']
         self._data['masterData'] = {
             'logVersion': master_data['logVersion'],

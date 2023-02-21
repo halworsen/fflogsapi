@@ -1,25 +1,11 @@
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Optional
 import fflogsapi.reports.queries as qs
+from fflogsapi.util.decorators import fetch_data
 from fflogsapi.util.filters import construct_filter_string
 
 if TYPE_CHECKING:
     from fflogsapi.client import FFLogsClient
     from fflogsapi.reports.report import FFLogsReport
-
-
-def fetch_data(key):
-    '''
-    Decorator that queries and stores the given key
-    '''
-    def decorator(func):
-        def ensured(*args, **kwargs):
-            self = args[0]
-            if key not in self._data:
-                result = self._query_data(key)
-                self._data[key] = result['reportData']['report']['fights'][0][key]
-            return func(*args, **kwargs)
-        return ensured
-    return decorator
 
 
 class FFLogsFight:
@@ -33,13 +19,15 @@ class FFLogsFight:
         "size", "standardComposition", "hasEcho"
     ]
 
-    def __init__(self, report: 'FFLogsReport', fight_id: int, client: 'FFLogsClient') -> None:
+    DATA_INDICES = ['reportData', 'report', 'fights', 0]
+
+    def __init__(self, report: FFLogsReport, fight_id: int, client: FFLogsClient) -> None:
         self.report = report
         self.fight_id = fight_id
         self._client = client
         self._data = {}
 
-    def _query_data(self, query: str, ignore_cache: bool = False) -> Dict[Any, Any]:
+    def _query_data(self, query: str, ignore_cache: bool = False) -> dict[Any, Any]:
         '''
         Query for a specific piece of information from a fight
         '''
@@ -135,7 +123,7 @@ class FFLogsFight:
         return self._data['encounter_id']
 
     @fetch_data('friendlyPlayers')
-    def friendly_players(self) -> List[int]:
+    def friendly_players(self) -> list[int]:
         '''
         Returns:
             The friendly players in the fight
@@ -165,7 +153,7 @@ class FFLogsFight:
         '''
         return self.end_time() - self.start_time()
     
-    def _prepare_data_filters(self, filters: Dict[str, Any]) -> Tuple[str, Dict[str, Any]]:
+    def _prepare_data_filters(self, filters: dict[str, Any]) -> tuple[str, dict[str, Any]]:
         fight_start, fight_end = self.start_time(), self.end_time()
 
         # defaulting for start/end times.
@@ -181,7 +169,7 @@ class FFLogsFight:
 
         return construct_filter_string(filters), filters
     
-    def fight_events(self, filters: Dict[str, Any] = {}) -> Dict[Any, Any]:
+    def fight_events(self, filters: dict[str, Any] = {}) -> dict[Any, Any]:
         '''
         Retrieves the events of the fight.
 
@@ -218,7 +206,7 @@ class FFLogsFight:
 
         return fight_events
 
-    def fight_graph(self, filters: Dict[str, Any] = {}) -> Dict[Any, Any]:
+    def fight_graph(self, filters: dict[str, Any] = {}) -> dict[Any, Any]:
         '''
         Retrieves the graph information for the fight,
         i.e. damage done, healing done, etc. for various points in the fight.
@@ -239,7 +227,7 @@ class FFLogsFight:
         result = self.report._query_data(f'graph({graph_filters})')
         return result['reportData']['report']['graph']
 
-    def fight_table(self, filters: Dict[str, str] = {}) -> Dict[Any, Any]:
+    def fight_table(self, filters: dict[str, str] = {}) -> dict[Any, Any]:
         '''
         Retrieves the table information for the fight.
 
@@ -258,7 +246,7 @@ class FFLogsFight:
         result = self.report._query_data(f'table({table_filters})')
         return result['reportData']['report']['table']['data']
     
-    def rankings(self) -> Dict[Any, Any]:
+    def rankings(self) -> dict[Any, Any]:
         '''
         Retrieves ranking data for the fight.
 

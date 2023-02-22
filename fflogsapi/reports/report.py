@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, List, Optional
 from ..data.dataclasses import FFLogsAbility, FFLogsActor
 from ..util.decorators import fetch_data
 from .fight import FFLogsFight
-from .queries import Q_REPORT_DATA
+from .queries import Q_REPORT_DATA, IQ_REPORT_MASTER_DATA
 
 if TYPE_CHECKING:
     from ..client import FFLogsClient
@@ -54,7 +54,7 @@ class FFLogsReport:
         '''
         Fetches and stores report master data
         '''
-        result = self._query_data(self.IQ_REPORT_MASTER_DATA)
+        result = self._query_data(IQ_REPORT_MASTER_DATA)
         master_data = result['reportData']['report']['masterData']
         self._data['masterData'] = {
             'logVersion': master_data['logVersion'],

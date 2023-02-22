@@ -90,6 +90,10 @@ class FFLogsClient:
         self._transport = RequestsHTTPTransport(url=self.CLIENT_API_URL)
         self._gql_client = GQLClient(transport=self._transport, fetch_schema_from_transport=True)
 
+    def close(self):
+        self.oauth_session.close()
+        self._transport.close()
+
     @ensure_token
     def q(self, query: str, ignore_cache: bool = False) -> Dict[str, Any]:
         '''

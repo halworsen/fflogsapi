@@ -120,7 +120,7 @@ class FFLogsFight:
         Returns:
             The encounter ID of the fight
         '''
-        return self._data['encounter_id']
+        return self._data['encounterID']
 
     @fetch_data('friendlyPlayers')
     def friendly_players(self) -> list[int]:

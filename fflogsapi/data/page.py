@@ -136,7 +136,7 @@ class FFLogsPaginationIterator:
             innerQuery='last_page',
         ))
 
-        self._last_page = itindex(result, self.PAGE_INDICES)['last_page']
+        self._last_page = itindex(result, self.PAGE_CLASS.PAGE_INDICES)['last_page']
     
     def __iter__(self) -> 'FFLogsPaginationIterator':
         return self

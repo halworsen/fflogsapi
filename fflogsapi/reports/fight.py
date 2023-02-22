@@ -126,7 +126,7 @@ class FFLogsFight:
     def friendly_players(self) -> list[int]:
         '''
         Returns:
-            The friendly players in the fight
+            The IDs of all friendly players in the fight
         '''
         return self._data['friendlyPlayers']
 
@@ -225,7 +225,7 @@ class FFLogsFight:
         graph_filters, _ = self._prepare_data_filters(filters.copy())
 
         result = self.report._query_data(f'graph({graph_filters})')
-        return result['reportData']['report']['graph']
+        return result['reportData']['report']['graph']['data']
 
     def fight_table(self, filters: dict[str, str] = {}) -> dict[Any, Any]:
         '''

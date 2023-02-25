@@ -10,11 +10,9 @@ import os
 import pickle
 from copy import deepcopy
 
-from .reports.report import FFLogsReport
-from .reports.pages import FFLogsReportPaginationIterator
+from .reports.client_extensions import ReportsMixin
+from .characters.client_extensions import CharactersMixin
 
-from .characters.character import FFLogsCharacter
-from .characters.pages import FFLogsCharacterPaginationIterator
 
 def ensure_token(func):
     '''
@@ -33,7 +31,13 @@ def ensure_token(func):
     return ensured
 
 
-class FFLogsClient:
+class FFLogsClient(
+        ReportsMixin,
+        CharactersMixin,
+    ):
+    '''
+    A client capable of communicating with the FFLogs V2 GraphQL API.
+    '''
 
     CLIENT_API_URL = 'https://www.fflogs.com/api/v2/client'
     OAUTH_TOKEN_URL = 'https://www.fflogs.com/oauth/token'
@@ -49,14 +53,15 @@ class FFLogsClient:
         ignore_cache_expiry: bool = False,
     ) -> None:
         '''
-        Initialize the FFLogs API client
+        Initialize the FFLogs API client.
 
         Args:
             client_id: Client application ID
             client_secret: Client application secret
             enable_caching: If enabled, the client will cache the result of queries for up to a time specified by the cache_expiry argument
             cache_expiry: How long to keep query results in cache. Default: 86400 (1 day)
-            cache_override: If set, force the client to load cached queries from the given path
+            cache_override: If set, force the client to load cached queries from the given file path
+            ignore_cache_expiry: If set to True, the client will load the most up-to-date cache, even if it has expired
         '''
         self.auth = HTTPBasicAuth(client_id, client_secret)
         self.oauth_session = OAuth2Session(client=oauth2.BackendApplicationClient(client_id))
@@ -71,17 +76,18 @@ class FFLogsClient:
             if not os.path.exists(self.CACHE_DIR):
                 os.makedirs(self.CACHE_DIR)
 
-            # pluck the freshest pickled cache and use that
-            cache_files = list(filter(
-                lambda f: f.endswith('.pkl') and f[:-4].replace('.', '').isdigit(),
-                os.listdir(self.CACHE_DIR)
-            ))
             cache_path = ''
-            if len(cache_files):
-                max_expiry_cache = max(cache_files, key=lambda fn: float(fn[:-4]))
-                cache_path = os.path.join(self.CACHE_DIR, max_expiry_cache)
             if cache_override:
                 cache_path = cache_override
+            else:
+                # pluck the freshest pickled cache and use that
+                cache_files = list(filter(
+                    lambda f: f.endswith('.pkl') and f[:-4].replace('.', '').isdigit(),
+                    os.listdir(self.CACHE_DIR)
+                ))
+                if len(cache_files):
+                    max_expiry_cache = max(cache_files, key=lambda fn: float(fn[:-4]))
+                    cache_path = os.path.join(self.CACHE_DIR, max_expiry_cache)
 
             if cache_path:
                 with open(cache_path, 'rb') as f:
@@ -101,7 +107,7 @@ class FFLogsClient:
 
         Args:
             query: The GraphQL query to execute
-            ignore_cache: Whether or not to ignore cached results. Note that the query result is still re-cached.
+            ignore_cache: Whether or not to ignore cached results, forcing a re-fetch of the data.
         '''
         if self.cache_queries and not ignore_cache and query in self._query_cache:
             cached_result = self._query_cache[query]
@@ -161,51 +167,3 @@ class FFLogsClient:
                 expiry = float(file[:-4])
                 if time() >= expiry:
                     os.remove(os.path.join(self.CACHE_DIR, file))
-
-    def report_pages(self, filters: dict = {}) -> FFLogsReportPaginationIterator:
-        '''
-        Iterate over pages of FFLogs reports.
-
-        Args:
-            filters: A dictionary containing filters to use when retrieving reports.
-        Returns:
-            An iterator over the pages of reports that match the given filters.
-        '''
-        return FFLogsReportPaginationIterator(filters=filters, client=self)
-
-    def get_report(self, code: str) -> FFLogsReport:
-        '''
-        Retrieves the given report data from FFLogs.
-
-        Args:
-            code: The report code.
-        Returns:
-            A FFLogsReport object representing the report.
-        '''
-        return FFLogsReport(code=code, client=self)
-
-    def character_pages(self, guild_id: int) -> FFLogsCharacterPaginationIterator:
-        '''
-        Iterate over pages of FFLogs characters in a specific guild.
-
-        Args:
-            guild_id: The ID of the guild to retrieve characters from.
-        Returns:
-            An iterator over the pages of characters that are in the given guild.
-        '''
-        return FFLogsCharacterPaginationIterator(filters={'guildID': guild_id}, client=self)
-
-    def get_character(self, filters: dict = {}, id: Optional[int] = None) -> FFLogsCharacter:
-        '''
-        Retrieves character data from FFLogs.
-        Note that it is possible to use only the filters argument. The id argument is implemented for ease of use.
-
-        Args:
-            filters: Optional filters to find the character by. Valid filter fields are: id, name, server slug and server region. Default: {}
-            id: The ID of the character to retrieve. Default: None
-        Returns:
-            A FFLogsCharacter representing the requested character.
-        '''
-        if 'id' not in filters and id is not None:
-            filters['id'] = id
-        return FFLogsCharacter(filters=filters, client=self)

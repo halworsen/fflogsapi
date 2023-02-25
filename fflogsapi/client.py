@@ -12,7 +12,7 @@ from copy import deepcopy
 
 from .reports.client_extensions import ReportsMixin
 from .characters.client_extensions import CharactersMixin
-
+from .world.client_extensions import WorldMixin
 
 def ensure_token(func):
     '''
@@ -34,6 +34,7 @@ def ensure_token(func):
 class FFLogsClient(
         ReportsMixin,
         CharactersMixin,
+        WorldMixin,
     ):
     '''
     A client capable of communicating with the FFLogs V2 GraphQL API.

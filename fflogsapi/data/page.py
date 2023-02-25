@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Optional
 from ..util.indexing import itindex
 from .queries import Q_PAGE_META
 
@@ -20,13 +20,15 @@ class FFLogsPage:
 
     def __init__(self,
         page_num: int,
-        filters: Dict[str, str] = {},
+        filters: dict[str, str] = {},
         client: 'FFLogsClient' = None,
-    ):
+        additional_formatting: dict[str, str] = {},
+    ) -> None:
         self.page_num = page_num
         self.n_from = -1
         self.n_to = -1
         self.filters = filters
+        self.additional_formatting = additional_formatting
         self.data = {}
 
         self._client = client
@@ -49,6 +51,7 @@ class FFLogsPage:
         page_data = self._client.q(self.PAGINATION_QUERY.format(
             filters=filters,
             innerQuery=Q_PAGE_META.format(idField=self.OBJECT_ID_FIELD),
+            **self.additional_formatting,
         ))
 
         self.n_from = itindex(page_data, self.PAGE_INDICES)['from']
@@ -125,15 +128,25 @@ class FFLogsPaginationIterator:
     # The page class of the pages in the pagination
     PAGE_CLASS = None
 
-    def __init__(self, client: 'FFLogsClient', filters: Dict[str, str] = {}) -> None:
+    def __init__(
+        self,
+        client: 'FFLogsClient',
+        filters: dict[str, str] = {},
+        additional_formatting: dict[str, str] = {},
+    ) -> None:
+        '''
+        If the pagination query requires any additional formatting, it can be specified using `additional_formatting`.
+        '''
         self._client = client
         self._cur_page = 0
         self._filters = filters
+        self.additional_formatting = additional_formatting
 
-        filters = ', '.join([f'{key}: {f}' for key, f in filters.items()])
+        filters = ', '.join([f'{key}: {f}' for key, f in filters.items()] + ['page: 1'])
         result = self._client.q(self.PAGE_CLASS.PAGINATION_QUERY.format(
             filters=filters,
             innerQuery='last_page',
+            **additional_formatting,
         ))
 
         self._last_page = itindex(result, self.PAGE_CLASS.PAGE_INDICES)['last_page']
@@ -148,6 +161,7 @@ class FFLogsPaginationIterator:
                 page_num=self._cur_page,
                 filters=self._filters,
                 client=self._client,
+                additional_formatting=self.additional_formatting,
             )
         else:
             self._cur_page = 0

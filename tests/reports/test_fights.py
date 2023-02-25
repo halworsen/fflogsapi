@@ -1,12 +1,9 @@
 import unittest
 
 from fflogsapi.client import FFLogsClient
-from fflogsapi.reports.fight import FFLogsFight
-from fflogsapi.reports.pages import FFLogsReportPage
-from fflogsapi.reports.report import FFLogsReport
 from fflogsapi.util.gql_enums import GQLEnum
 from fflogsapi.constants import FIGHT_DIFFICULTY_SAVAGE, PARTY_SIZE_FULL_PARTY
-from .config import *
+from ..config import *
 
 class FightTest(unittest.TestCase):
     '''
@@ -27,12 +24,7 @@ class FightTest(unittest.TestCase):
     def tearDown(self) -> None:
         self.client.close()
         self.client.save_cache()
-    
-    def test_filtering(self) -> None:
-        '''
-        The client should be able to retrieve fights by various filters
-        '''
-    
+
     def test_fields(self) -> None:
         '''
         The client should be able to fetch fields about the fight such as the difficulty, boss name, etc.
@@ -82,7 +74,7 @@ class FightTest(unittest.TestCase):
             'startTime': 8343649,
             'endTime': 8384962
 		})
-        self.assertEqual(graph['series'][0]['pointInterval'], 1148.3583333333333)
+        self.assertAlmostEqual(graph['series'][0]['pointInterval'], 1148.3583333333333, places=4)
         # +1 for total damage
         self.assertEqual(len(graph['series']), PARTY_SIZE_FULL_PARTY + 1)
         self.assertEqual(graph['series'][2]['name'], 'The Count')

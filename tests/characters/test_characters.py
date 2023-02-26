@@ -28,7 +28,6 @@ class CharacterTest(unittest.TestCase):
 
     def tearDown(self) -> None:
         self.client.close()
-        self.client.save_cache()
 
     def test_specific_character(self) -> None:
         '''

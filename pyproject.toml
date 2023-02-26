@@ -52,3 +52,7 @@ src_paths = ['fflogsapi', 'tests']
 max-line-length = 100
 in-place = true
 recursive = true
+
+[tool.pytest.ini_options]
+# you typically do not want to run this as it nukes the query caches
+addopts = '--ignore=tests/test_caching.py'

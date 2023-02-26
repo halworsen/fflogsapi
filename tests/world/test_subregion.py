@@ -19,7 +19,6 @@ class SubregionTest(unittest.TestCase):
 
     def tearDown(self) -> None:
         self.client.close()
-        self.client.save_cache()
 
     def test_name(self) -> None:
         '''

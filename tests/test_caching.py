@@ -17,10 +17,11 @@ class CacheTest(unittest.TestCase):
     CACHE_EXPIRY = 2  # seconds
 
     def setUp(self) -> None:
-        # The cache directory must be empty before starting these tests
-        for fn in os.listdir(FFLogsClient.CACHE_DIR):
-            os.remove(os.path.join(FFLogsClient.CACHE_DIR, fn))
-        os.rmdir(FFLogsClient.CACHE_DIR)
+        # The cache directory must be empty before starting these tests (if it exists)
+        if os.path.exists(FFLogsClient.CACHE_DIR):
+            for fn in os.listdir(FFLogsClient.CACHE_DIR):
+                os.remove(os.path.join(FFLogsClient.CACHE_DIR, fn))
+            os.rmdir(FFLogsClient.CACHE_DIR)
 
         self.client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, cache_expiry=self.CACHE_EXPIRY)
         # Query for some expansion information to get a query in the cache

@@ -1,6 +1,15 @@
 # fflogsapi
 
-fflogsapi is a lazy Python 3 client for the FFLogs API with query caching functionality.
+fflogsapi is a lazy Python 3 client for [fflogs](https://www.fflogs.com/)' v2 API with query caching functionality.
+
+## Features
+
+* Retrieve information from fflogs' v2 GraphQL API
+* Lazy evaluation
+  * Queries for data are not executed until it is explicitly needed
+* Query caching
+  * Requesting the same data twice will instead fetch the result from cache
+  * Customizable cache lifetime and options to ignore cached results
 
 ## Example usage
 
@@ -22,6 +31,7 @@ for fight in report:
     if not fight.is_kill():
         print(f'Percentage reached: {fight.percentage()}')
 
+client.close()
 client.save_cache()
 ```
 
@@ -36,5 +46,6 @@ for page in client.report_pages(filters={ 'guildID': 80551 }):
     for report in page:
         print(report.title(), f'Duration: {report.duration()}')
 
+client.close()
 client.save_cache()
 ```

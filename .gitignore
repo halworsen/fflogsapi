@@ -3,10 +3,10 @@ __pycache__/
 
 venv/
 *.egg-info
+dist/
 
 querycache/
 *.pkl
-
 test.py
 
 .vscode/

@@ -3,7 +3,7 @@ import unittest
 from fflogsapi.client import FFLogsClient
 from fflogsapi.constants import FIGHT_DIFFICULTY_RAID, FIGHT_DIFFICULTY_SAVAGE
 from fflogsapi.world.expansion import FFLogsExpansion, FFLogsZone
-from ..config import *
+from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET
 
 
 class ZoneTest(unittest.TestCase):

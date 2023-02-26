@@ -8,7 +8,7 @@ from fflogsapi.world.region import (
     FFLogsRegionServerPage,
     FFLogsRegionServerPaginationIterator,
 )
-from ..config import *
+from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET
 
 class RegionTest(unittest.TestCase):
     '''

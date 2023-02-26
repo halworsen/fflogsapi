@@ -4,7 +4,7 @@ from fflogsapi.characters.character import FFLogsCharacter
 from fflogsapi.client import FFLogsClient
 from fflogsapi.world.pages import FFLogsServerCharacterPage, FFLogsServerCharacterPaginationIterator
 from fflogsapi.world.region import FFLogsRegion, FFLogsSubregion
-from ..config import *
+from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET
 
 class ServerTest(unittest.TestCase):
     '''

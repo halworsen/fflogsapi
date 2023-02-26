@@ -4,7 +4,7 @@ from fflogsapi.client import FFLogsClient
 from fflogsapi.util.gql_enums import GQLEnum
 from fflogsapi.constants import PARTY_SIZE_FULL_PARTY
 from fflogsapi.world.expansion import FFLogsZone
-from ..config import *
+from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET
 
 class EncounterTest(unittest.TestCase):
     '''

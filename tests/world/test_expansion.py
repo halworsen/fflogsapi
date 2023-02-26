@@ -2,7 +2,7 @@ import unittest
 
 from fflogsapi.client import FFLogsClient
 from fflogsapi.world.expansion import FFLogsExpansion, FFLogsZone
-from ..config import *
+from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET
 
 class ExpansionTest(unittest.TestCase):
     '''

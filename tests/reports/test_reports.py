@@ -4,7 +4,7 @@ from fflogsapi.client import FFLogsClient
 from fflogsapi.reports.fight import FFLogsFight
 from fflogsapi.reports.pages import FFLogsReportPage
 from fflogsapi.reports.report import FFLogsReport
-from ..config import *
+from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET
 
 class ReportTest(unittest.TestCase):
     '''

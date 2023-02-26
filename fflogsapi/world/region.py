@@ -5,7 +5,7 @@ FFLogs' hierarchy for servers is region (geographical region) -> subregion (data
 
 from typing import TYPE_CHECKING, Any
 
-from fflogsapi.data.page import FFLogsPage, FFLogsPaginationIterator
+from ..data.page import FFLogsPage, FFLogsPaginationIterator
 
 from ..util.decorators import fetch_data
 from ..util.indexing import itindex

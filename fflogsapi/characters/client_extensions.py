@@ -24,8 +24,8 @@ class CharactersMixin:
 
         Args:
             filters: Optional filters to find the character by.
-                     Valid filter fields are: id, name, server slug and server region. Default: {}
-            id: The ID of the character to retrieve. Default: None
+                     Valid filter fields are: id, name, serverSlug and serverRegion.
+            id: The ID of the character to retrieve.
         Returns:
             A FFLogsCharacter representing the requested character.
         '''

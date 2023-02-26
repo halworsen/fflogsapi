@@ -34,7 +34,7 @@ jobs:
         pip install -e.[test]
     - name: Run caching tests with pytest
       run: |
-        pytest tests/test_caching.py
+        pytest tests/client/test_caching.py
     - name: Test with pytest
       run: |
         pytest

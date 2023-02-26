@@ -6,12 +6,14 @@ FFLogs' hierarchy for these is expansion -> zone -> encounter.
 from typing import TYPE_CHECKING, Any
 
 from fflogsapi.util.indexing import itindex
+
 from ..util.decorators import fetch_data
 from ..util.filters import construct_filter_string
 from .queries import Q_ENCOUNTER, Q_EXPANSION, Q_ZONE
 
 if TYPE_CHECKING:
     from ..client import FFLogsClient
+
 
 class FFLogsExpansion:
     '''
@@ -67,6 +69,7 @@ class FFLogsExpansion:
         zone_ids = [e['id'] for e in zones['worldData']['expansion']['zones']]
 
         return [FFLogsZone(id=id, client=self._client) for id in zone_ids]
+
 
 class FFLogsZone:
     '''
@@ -170,8 +173,10 @@ class FFLogsZone:
         Returns:
             The expansion that this zone belongs to.
         '''
-        expac_id = itindex(self._query_data('expansion{ id }'), self.DATA_INDICES)['expansion']['id']
+        expac_id = itindex(self._query_data('expansion{ id }'), self.DATA_INDICES)[
+            'expansion']['id']
         return FFLogsExpansion(id=expac_id, client=self._client)
+
 
 class FFLogsEncounter:
     '''

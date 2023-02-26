@@ -1,7 +1,9 @@
 from typing import Optional
-from .expansion import FFLogsExpansion, FFLogsZone, FFLogsEncounter
-from .region import FFLogsRegion, FFLogsServer, FFLogsSubregion
+
+from .expansion import FFLogsEncounter, FFLogsExpansion, FFLogsZone
 from .queries import Q_EXPANSION_LIST, Q_REGION_LIST, Q_ZONE_LIST
+from .region import FFLogsRegion, FFLogsServer, FFLogsSubregion
+
 
 class WorldMixin:
     def get_encounter(self, id: int) -> FFLogsEncounter:
@@ -14,7 +16,7 @@ class WorldMixin:
             A FFLogsEncounter object representing the encounter.
         '''
         return FFLogsEncounter(id=id, client=self)
-    
+
     def get_expansion(self, id: int) -> FFLogsExpansion:
         '''
         Retrieves the given expansion data from FFLogs.
@@ -25,7 +27,7 @@ class WorldMixin:
             A FFLogsExpansion object representing the expansion.
         '''
         return FFLogsExpansion(id=id, client=self)
-    
+
     def get_all_expansions(self) -> list[FFLogsExpansion]:
         '''
         Retrieves a list of all expansions supported by FFLogs.
@@ -62,13 +64,14 @@ class WorldMixin:
         ))['worldData']['regions']
 
         return [FFLogsRegion(id=r['id'], client=self) for r in regions]
-    
+
     def get_server(self, filters: dict = {}, id: Optional[int] = None) -> FFLogsServer:
         '''
         Retrieves server information from FFLogs given server filters.
 
         Args:
-            filters: Optional filters to find the server by. Valid filter fields are: id, region, slug. Default: {}
+            filters: Optional filters to find the server by.
+                     Valid filter fields are: id, region, slug. Default: {}
             id: The ID of the server to retrieve. Default: None
         Returns:
             A FFLogsServer object representing the server.

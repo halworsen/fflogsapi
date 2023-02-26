@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING, Any, Optional
+
 from ..util.decorators import fetch_data
 from ..util.filters import construct_filter_string
 from .queries import Q_FIGHT_DATA
@@ -152,7 +153,7 @@ class FFLogsFight:
             The total duration of the right
         '''
         return self.end_time() - self.start_time()
-    
+
     def _prepare_data_filters(self, filters: dict[str, Any]) -> tuple[str, dict[str, Any]]:
         fight_start, fight_end = self.start_time(), self.end_time()
 
@@ -161,14 +162,14 @@ class FFLogsFight:
         if 'startTime' not in filters:
             filters['startTime'] = fight_start
         elif filters['startTime'] < fight_start:
-                raise ValueError('Cannot retrieve fight events before the fight has started!')
+            raise ValueError('Cannot retrieve fight events before the fight has started!')
         if 'endTime' not in filters:
             filters['endTime'] = fight_end
         elif filters['endTime'] > fight_end:
-                raise ValueError('Cannot retrieve fight events after the fight has ended!')
+            raise ValueError('Cannot retrieve fight events after the fight has ended!')
 
         return construct_filter_string(filters), filters
-    
+
     def fight_events(self, filters: dict[str, Any] = {}) -> dict[Any, Any]:
         '''
         Retrieves the events of the fight.
@@ -176,7 +177,8 @@ class FFLogsFight:
         If start/end time is not specified in filters, the default is the start/end of the fight.
 
         Args:
-            filters: Key-value filters to filter the event log by. E.g. present/absent buffs, target IDs, etc.
+            filters: Key-value filters to filter the event log by.
+                     E.g. present/absent buffs, target IDs, etc.
         Returns:
             A dictionary of all events in the fight or None if the fight has zero duration
         '''
@@ -191,7 +193,8 @@ class FFLogsFight:
         result = self.report._query_data(f'events({filter_string}) {{ data, nextPageTimestamp }}')
         fight_events = result['reportData']['report']['events']['data']
 
-        # Check if there are more pages to this fight. If so, retrieve all of them and merge the data
+        # Check if there are more pages to this fight.
+        # If so, retrieve all of them and merge the data.
         next_page = result['reportData']['report']['events']['nextPageTimestamp']
         while next_page and next_page < desired_end:
             time_range = filters['endTime'] - filters['startTime']
@@ -199,7 +202,8 @@ class FFLogsFight:
             filters['endTime'] = min(next_page + time_range, desired_end)
 
             filter_string = self._construct_filter_string(filters)
-            result = self.report._query_data(f'events({filter_string}) {{ data, nextPageTimestamp }}')
+            result = self.report._query_data(
+                f'events({filter_string}) {{ data, nextPageTimestamp }}')
             events = result['reportData']['report']['events']['data']
             fight_events += events
             next_page = result['reportData']['report']['events']['nextPageTimestamp']
@@ -215,7 +219,8 @@ class FFLogsFight:
         If start/end time is not specified in filters, the default is the start/end of the fight.
 
         Args:
-            filters: Key-value filters to filter the graph by. E.g. present/absent buffs, target IDs, etc.
+            filters: Key-value filters to filter the graph by.
+                     E.g. present/absent buffs, target IDs, etc.
         Returns:
             A dictionary of graph information for the fight or None if the fight has zero duration
         '''
@@ -234,7 +239,8 @@ class FFLogsFight:
         If start/end time is not specified in filters, the default is the start/end of the fight.
 
         Args:
-            filters: Key-value filters to filter the table by. E.g. present/absent buffs, target IDs, etc.
+            filters: Key-value filters to filter the table by.
+                     E.g. present/absent buffs, target IDs, etc.
         Returns:
             A dictionary of table information for the fight or None if the fight has zero duration
         '''
@@ -245,7 +251,7 @@ class FFLogsFight:
 
         result = self.report._query_data(f'table({table_filters})')
         return result['reportData']['report']['table']['data']
-    
+
     def rankings(self) -> dict[Any, Any]:
         '''
         Retrieves ranking data for the fight.
@@ -255,4 +261,3 @@ class FFLogsFight:
         '''
         result = self.report._query_data(f'rankings(fightIDs: {self.fight_id})')
         return result['reportData']['report']['rankings']['data']
-

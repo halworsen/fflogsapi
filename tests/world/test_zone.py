@@ -3,6 +3,7 @@ import unittest
 from fflogsapi.client import FFLogsClient
 from fflogsapi.constants import FIGHT_DIFFICULTY_RAID, FIGHT_DIFFICULTY_SAVAGE
 from fflogsapi.world.expansion import FFLogsExpansion, FFLogsZone
+
 from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET
 
 
@@ -15,7 +16,7 @@ class ZoneTest(unittest.TestCase):
         self.client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, cache_expiry=CACHE_EXPIRY)
         # abyssos has id 49
         self.zone = self.client.get_zone(id=49)
-    
+
     def tearDown(self) -> None:
         self.client.close()
         self.client.save_cache()
@@ -27,7 +28,7 @@ class ZoneTest(unittest.TestCase):
         self.assertEqual(self.zone.id(), 49)
         self.assertEqual(self.zone.name(), 'Abyssos')
         # frozen is not tested as zones become frozen after time
-    
+
     def test_zone_list(self) -> None:
         '''
         The client should be able to retrieve a list of all supported zones in an expansion.
@@ -52,7 +53,7 @@ class ZoneTest(unittest.TestCase):
         difficulties = self.zone.difficulties()
         self.assertEqual(len(difficulties), 2)
         retrieved_difficulties = [d['id'] for d in difficulties]
-        
+
         self.assertSetEqual(
             set(retrieved_difficulties),
             set((FIGHT_DIFFICULTY_RAID, FIGHT_DIFFICULTY_SAVAGE))
@@ -70,7 +71,7 @@ class ZoneTest(unittest.TestCase):
             set(retrieved_encounters),
             set(('Nophica', 'Althyk and Nymeia', 'Halone', 'Menphina')),
         )
-    
+
     def test_expansion(self) -> None:
         '''
         The client should be able to get the expansion to which a zone belongs.
@@ -78,7 +79,7 @@ class ZoneTest(unittest.TestCase):
         expac = self.zone.expansion()
         self.assertIsInstance(expac, FFLogsExpansion)
         self.assertEqual(expac.name(), 'Endwalker')
-    
+
     def test_partitions(self) -> None:
         '''
         The client should be able to get information about partitions supported by a zone.
@@ -88,6 +89,7 @@ class ZoneTest(unittest.TestCase):
         self.assertIsInstance(partitions[0], dict)
         self.assertIsInstance(partitions[0]['id'], int)
         self.assertIsInstance(partitions[0]['name'], str)
+
 
 if __name__ == '__main__':
     unittest.main()

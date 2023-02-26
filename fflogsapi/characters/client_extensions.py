@@ -3,6 +3,7 @@ from typing import Optional
 from .character import FFLogsCharacter
 from .pages import FFLogsCharacterPaginationIterator
 
+
 class CharactersMixin:
     def character_pages(self, guild_id: int) -> FFLogsCharacterPaginationIterator:
         '''
@@ -18,10 +19,12 @@ class CharactersMixin:
     def get_character(self, filters: dict = {}, id: Optional[int] = None) -> FFLogsCharacter:
         '''
         Retrieves character data from FFLogs.
-        Note that it is possible to use only the filters argument. The id argument is implemented for ease of use.
+        Note that it is possible to use only the filters argument.
+        The id argument is implemented for ease of use.
 
         Args:
-            filters: Optional filters to find the character by. Valid filter fields are: id, name, server slug and server region. Default: {}
+            filters: Optional filters to find the character by.
+                     Valid filter fields are: id, name, server slug and server region. Default: {}
             id: The ID of the character to retrieve. Default: None
         Returns:
             A FFLogsCharacter representing the requested character.

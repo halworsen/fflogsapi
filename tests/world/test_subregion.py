@@ -1,13 +1,11 @@
 import unittest
 
 from fflogsapi.client import FFLogsClient
-from fflogsapi.world.region import (
-    FFLogsRegion,
-    FFLogsServer,
-    FFLogsSubregionServerPage,
-    FFLogsSubregionServerPaginationIterator,
-)
+from fflogsapi.world.region import (FFLogsRegion, FFLogsServer, FFLogsSubregionServerPage,
+                                    FFLogsSubregionServerPaginationIterator,)
+
 from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET
+
 
 class SubregionTest(unittest.TestCase):
     '''
@@ -48,6 +46,7 @@ class SubregionTest(unittest.TestCase):
 
         server = page.__iter__().__next__()
         self.assertIsInstance(server, FFLogsServer)
+
 
 if __name__ == '__main__':
     unittest.main()

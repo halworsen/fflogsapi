@@ -1,14 +1,12 @@
 import unittest
 
 from fflogsapi.client import FFLogsClient
-from fflogsapi.world.region import (
-    FFLogsRegion,
-    FFLogsSubregion,
-    FFLogsServer,
-    FFLogsRegionServerPage,
-    FFLogsRegionServerPaginationIterator,
-)
+from fflogsapi.world.region import (FFLogsRegion, FFLogsRegionServerPage,
+                                    FFLogsRegionServerPaginationIterator, FFLogsServer,
+                                    FFLogsSubregion,)
+
 from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET
+
 
 class RegionTest(unittest.TestCase):
     '''
@@ -47,7 +45,7 @@ class RegionTest(unittest.TestCase):
         subregions = self.region.subregions()
         for sr in subregions:
             self.assertIsInstance(sr, FFLogsSubregion)
-    
+
     def test_servers(self) -> None:
         '''
         The client should be able to provide a pagination of servers belonging to the region
@@ -60,6 +58,7 @@ class RegionTest(unittest.TestCase):
 
         server = page.__iter__().__next__()
         self.assertIsInstance(server, FFLogsServer)
+
 
 if __name__ == '__main__':
     unittest.main()

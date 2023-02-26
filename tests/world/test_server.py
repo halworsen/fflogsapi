@@ -1,10 +1,12 @@
 import unittest
-from fflogsapi.characters.character import FFLogsCharacter
 
+from fflogsapi.characters.character import FFLogsCharacter
 from fflogsapi.client import FFLogsClient
 from fflogsapi.world.pages import FFLogsServerCharacterPage, FFLogsServerCharacterPaginationIterator
 from fflogsapi.world.region import FFLogsRegion, FFLogsSubregion
+
 from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET
+
 
 class ServerTest(unittest.TestCase):
     '''
@@ -56,6 +58,7 @@ class ServerTest(unittest.TestCase):
         character = page.__iter__().__next__()
         self.assertIsInstance(character, FFLogsCharacter)
         self.assertIsNotNone(character.name())
+
 
 if __name__ == '__main__':
     unittest.main()

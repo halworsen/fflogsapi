@@ -2,7 +2,9 @@ import unittest
 
 from fflogsapi.client import FFLogsClient
 from fflogsapi.world.expansion import FFLogsExpansion, FFLogsZone
+
 from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET
+
 
 class ExpansionTest(unittest.TestCase):
     '''
@@ -45,6 +47,7 @@ class ExpansionTest(unittest.TestCase):
         self.assertGreater(len(zones), 0)
         for zone in zones:
             self.assertIsInstance(zone, FFLogsZone)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -7,13 +7,15 @@ from typing import TYPE_CHECKING, Any
 
 from fflogsapi.data.page import FFLogsPage, FFLogsPaginationIterator
 
-from .pages import FFLogsServerCharacterPaginationIterator
 from ..util.decorators import fetch_data
 from ..util.indexing import itindex
-from .queries import Q_REGION, Q_REGION_SERVER_PAGINATION, Q_SERVER, Q_SUBREGION, Q_SUBREGION_SERVER_PAGINATION
+from .pages import FFLogsServerCharacterPaginationIterator
+from .queries import (Q_REGION, Q_REGION_SERVER_PAGINATION, Q_SERVER, Q_SUBREGION,
+                      Q_SUBREGION_SERVER_PAGINATION,)
 
 if TYPE_CHECKING:
     from ..client import FFLogsClient
+
 
 class FFLogsRegion:
     '''
@@ -85,7 +87,10 @@ class FFLogsRegion:
         Returns:
             A pagination iterator of the region's servers.
         '''
-        return FFLogsRegionServerPaginationIterator(client=self._client, additional_formatting={'regionID': self._id})
+        return FFLogsRegionServerPaginationIterator(
+            client=self._client,
+            additional_formatting={'regionID': self._id}
+        )
 
     def subregions(self) -> list['FFLogsSubregion']:
         '''
@@ -97,9 +102,11 @@ class FFLogsRegion:
         subregions = itindex(self._query_data('subregions{ id }'), self.DATA_INDICES)['subregions']
         subregions = [d['id'] for d in subregions]
         if 'subregions' not in self._data:
-            self._data['subregions'] = [FFLogsSubregion(id=id, client=self._client) for id in subregions]
+            self._data['subregions'] = [FFLogsSubregion(
+                id=id, client=self._client) for id in subregions]
 
         return self._data['subregions']
+
 
 class FFLogsSubregion:
     '''
@@ -146,7 +153,8 @@ class FFLogsSubregion:
 
     def region(self) -> FFLogsRegion:
         '''
-        Get the subregion's parent region. This is the geographical region in which the data center resides.
+        Get the subregion's parent region.
+        This is the geographical region in which the data center resides.
 
         Returns:
             The subregion's parent region.
@@ -164,7 +172,11 @@ class FFLogsSubregion:
         Returns:
             A list of the subregion's servers.
         '''
-        return FFLogsSubregionServerPaginationIterator(client=self._client, additional_formatting={'subregionID': self._id})
+        return FFLogsSubregionServerPaginationIterator(
+            client=self._client,
+            additional_formatting={'subregionID': self._id}
+        )
+
 
 class FFLogsServer:
     '''
@@ -251,7 +263,8 @@ class FFLogsServer:
         Returns:
             The server's subregion.
         '''
-        subregion = itindex(self._query_data('subregion{ id }'), self.DATA_INDICES)['subregion']['id']
+        subregion = itindex(self._query_data('subregion{ id }'), self.DATA_INDICES)[
+            'subregion']['id']
         if 'subregion' not in self._data:
             self._data['subregion'] = FFLogsSubregion(id=subregion, client=self._client)
 
@@ -264,7 +277,11 @@ class FFLogsServer:
         Returns:
             A pagination iterator over all pages of characters belonging to the server.
         '''
-        return FFLogsServerCharacterPaginationIterator(client=self._client, additional_formatting={'serverID': self.id()})
+        return FFLogsServerCharacterPaginationIterator(
+            client=self._client,
+            additional_formatting={'serverID': self.id()}
+        )
+
 
 class FFLogsRegionServerPage(FFLogsPage):
     '''
@@ -281,12 +298,14 @@ class FFLogsRegionServerPage(FFLogsPage):
         '''
         return FFLogsServer(filters={'id': id}, client=self._client)
 
+
 class FFLogsRegionServerPaginationIterator(FFLogsPaginationIterator):
     '''
     Iterates over multiple pages of a region's servers
     '''
 
     PAGE_CLASS = FFLogsRegionServerPage
+
 
 class FFLogsSubregionServerPage(FFLogsRegionServerPage):
     '''
@@ -296,10 +315,10 @@ class FFLogsSubregionServerPage(FFLogsRegionServerPage):
     PAGINATION_QUERY = Q_SUBREGION_SERVER_PAGINATION
     PAGE_INDICES = ['worldData', 'subregion', 'servers']
 
+
 class FFLogsSubregionServerPaginationIterator(FFLogsPaginationIterator):
     '''
     Iterates over multiple pages of a subregion's servers
     '''
 
     PAGE_CLASS = FFLogsSubregionServerPage
-

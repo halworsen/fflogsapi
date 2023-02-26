@@ -40,10 +40,12 @@ build-backend = 'setuptools.build_meta'
 [tool.setuptools.packages.find]
 where = ['fflogsapi']
 
-[tool.flake8]
-max-line-length = 100
-
 [tool.isort]
 include_trailing_comma = true
 line_length = 100
-not_skip = '__init__.py'
+src_paths = ['fflogsapi', 'tests']
+
+[tool.autopep8]
+max-line-length = 100
+in-place = true
+recursive = true

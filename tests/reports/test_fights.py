@@ -1,16 +1,19 @@
 import unittest
 
 from fflogsapi.client import FFLogsClient
-from fflogsapi.util.gql_enums import GQLEnum
 from fflogsapi.constants import FIGHT_DIFFICULTY_SAVAGE, PARTY_SIZE_FULL_PARTY
+from fflogsapi.util.gql_enums import GQLEnum
+
 from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET
+
 
 class FightTest(unittest.TestCase):
     '''
     Test cases for FFLogs fights.
 
     This test case makes assumptions on the availability of a specific report.
-    If the tests break, it may be because visibility settings were changed or the report was deleted.
+    If the tests break, it may be because visibility settings
+    were changed or the report was deleted.
     '''
 
     SPECIFIC_REPORT_CODE = '2Kf9y6wzanWkBJ41'
@@ -20,14 +23,15 @@ class FightTest(unittest.TestCase):
         self.client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, cache_expiry=CACHE_EXPIRY)
         report = self.client.get_report(code=self.SPECIFIC_REPORT_CODE)
         self.fight = report.fight(id=self.SPECIFIC_FIGHT_ID)
-    
+
     def tearDown(self) -> None:
         self.client.close()
         self.client.save_cache()
 
     def test_fields(self) -> None:
         '''
-        The client should be able to fetch fields about the fight such as the difficulty, boss name, etc.
+        The client should be able to fetch fields about the fight
+        such as the difficulty, boss name, etc.
         '''
         self.assertEqual(self.fight.name(), "Hephaistos II")
 
@@ -47,7 +51,7 @@ class FightTest(unittest.TestCase):
             self.fight.friendly_players(),
             [126, 125, 124, 91, 123, 38, 130, 129, 160],
         )
-    
+
     def test_events(self) -> None:
         '''
         The client should be able to fetch events that occured in a fight
@@ -73,13 +77,13 @@ class FightTest(unittest.TestCase):
         self.assertDictEqual(graph['downtime'][0], {
             'startTime': 8343649,
             'endTime': 8384962
-		})
+        })
         self.assertAlmostEqual(graph['series'][0]['pointInterval'], 1148.3583333333333, places=4)
         # +1 for total damage
         self.assertEqual(len(graph['series']), PARTY_SIZE_FULL_PARTY + 1)
         self.assertEqual(graph['series'][2]['name'], 'The Count')
         self.assertEqual(graph['series'][2]['total'], 1050501)
-    
+
     def test_table(self) -> None:
         '''
         The client should be able to fetch table information from the fight

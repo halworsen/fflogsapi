@@ -1,5 +1,5 @@
-from .page import FFLogsPage, FFLogsPageIterator, FFLogsPaginationIterator
 from .dataclasses import FFLogsAbility, FFLogsActor
+from .page import FFLogsPage, FFLogsPageIterator, FFLogsPaginationIterator
 
 __all__ = [
     'FFLogsPage',

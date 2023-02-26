@@ -1,5 +1,5 @@
-from .report import FFLogsReport
 from .pages import FFLogsReportPaginationIterator
+from .report import FFLogsReport
 
 
 class ReportsMixin:

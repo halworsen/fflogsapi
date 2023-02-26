@@ -4,14 +4,17 @@ from fflogsapi.client import FFLogsClient
 from fflogsapi.reports.fight import FFLogsFight
 from fflogsapi.reports.pages import FFLogsReportPage
 from fflogsapi.reports.report import FFLogsReport
+
 from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET
+
 
 class ReportTest(unittest.TestCase):
     '''
     Test cases for FFLogs reports.
 
     This test case makes assumptions on the availability of a specific report.
-    If the tests break, it may be because visibility settings were changed or the report was deleted.
+    If the tests break, it may be because visibility settings
+    were changed or the report was deleted.
     '''
 
     SPECIFIC_REPORT_CODE = '2Kf9y6wzanWkBJ41'
@@ -20,14 +23,15 @@ class ReportTest(unittest.TestCase):
         self.client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, cache_expiry=CACHE_EXPIRY)
 
         self.report = self.client.get_report(code=self.SPECIFIC_REPORT_CODE)
-    
+
     def tearDown(self) -> None:
         self.client.close()
         self.client.save_cache()
-    
+
     def test_invalid_report(self) -> None:
         '''
-        The client should raise an exception when attempting to fetch data from a nonexistent report.
+        The client should raise an exception when attempting
+        to fetch data from a nonexistent report.
 
         Preferably GQL should raise this error as it will likely include
         better information than the client could easily produce.
@@ -49,7 +53,7 @@ class ReportTest(unittest.TestCase):
 
         self.assertGreater(len(self.report.abilities()), 0)
         self.assertEqual(self.report.abilities()[0].game_id, 0)
-    
+
     def test_fields(self) -> None:
         '''
         The client should be able to fetch the report's fields.
@@ -59,7 +63,7 @@ class ReportTest(unittest.TestCase):
         self.assertEqual(self.report.end_time(), 1662781027781)
         self.assertEqual(self.report.segments(), 13)
         # exported segments, revision, visibility is not implemented
-    
+
     def test_fight(self) -> None:
         '''
         The client should be able to access individual fights through a report.
@@ -68,12 +72,14 @@ class ReportTest(unittest.TestCase):
         for fight in self.report.fights():
             self.assertIsInstance(fight, FFLogsFight)
 
+
 class ReportPageTest(unittest.TestCase):
     '''
     Tests for pages of a guild's reports.
 
     This test cases makes assumptions on the availability of a guild/user.
-    If the tests break, it may be because visibility settings were changed or the guild/user was deleted.
+    If the tests break, it may be because visibility settings
+    were changed or the guild/user was deleted.
     '''
 
     SPECIFIC_GUILD = 81924
@@ -81,7 +87,7 @@ class ReportPageTest(unittest.TestCase):
 
     def setUp(self) -> None:
         self.client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, cache_expiry=CACHE_EXPIRY)
-    
+
     def tearDown(self) -> None:
         self.client.close()
         self.client.save_cache()

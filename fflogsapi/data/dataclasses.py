@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+
 @dataclass
 class FFLogsAbility:
     '''
@@ -8,6 +9,7 @@ class FFLogsAbility:
     game_id: int
     name: str
     type: str
+
 
 @dataclass
 class FFLogsActor:

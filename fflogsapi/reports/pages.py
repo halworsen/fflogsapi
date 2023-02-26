@@ -1,6 +1,7 @@
 from ..data.page import FFLogsPage, FFLogsPaginationIterator
-from .report import FFLogsReport
 from .queries import Q_REPORT_PAGINATION
+from .report import FFLogsReport
+
 
 class FFLogsReportPage(FFLogsPage):
     '''
@@ -16,6 +17,7 @@ class FFLogsReportPage(FFLogsPage):
         Initializes a report with the given ID (code).
         '''
         return FFLogsReport(code=code, client=self._client)
+
 
 class FFLogsReportPaginationIterator(FFLogsPaginationIterator):
     '''

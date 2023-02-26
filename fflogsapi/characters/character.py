@@ -1,10 +1,12 @@
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Dict
+
 from ..util.decorators import fetch_data
 from ..util.filters import construct_filter_string
 from .queries import Q_CHARACTER_DATA
 
 if TYPE_CHECKING:
     from ..client import FFLogsClient
+
 
 class FFLogsCharacter:
     '''
@@ -42,7 +44,8 @@ class FFLogsCharacter:
         Returns:
             The character's ID.
         '''
-        # A tiny bit of bookkeeping. Store the ID if we don't have it already, then use it to filter in the future
+        # A tiny bit of bookkeeping. Store the ID if we don't have it already,
+        # then use it to filter in the future
         if self._id == -1:
             self._id = self._data['id']
             self.filters = {'id': self._id}
@@ -57,7 +60,7 @@ class FFLogsCharacter:
             The character's Lodestone ID.
         '''
         return self._data['lodestoneID']
-    
+
     @fetch_data('name')
     def name(self) -> str:
         '''

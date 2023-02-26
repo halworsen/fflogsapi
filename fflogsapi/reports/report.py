@@ -1,8 +1,9 @@
 from typing import TYPE_CHECKING, List, Optional
+
 from ..data.dataclasses import FFLogsAbility, FFLogsActor
 from ..util.decorators import fetch_data
 from .fight import FFLogsFight
-from .queries import Q_REPORT_DATA, IQ_REPORT_MASTER_DATA
+from .queries import IQ_REPORT_MASTER_DATA, Q_REPORT_DATA
 
 if TYPE_CHECKING:
     from ..client import FFLogsClient
@@ -35,10 +36,10 @@ class FFLogsReport:
 
     def __iter__(self) -> 'FFLogsReportIterator':
         return FFLogsReportIterator(report=self, client=self._client)
-    
+
     def fights(self) -> List[FFLogsFight]:
         return list(self.__iter__())
-    
+
     def _query_data(self, query: str, ignore_cache: bool = False) -> None:
         '''
         Query for a specific piece of information from a report.
@@ -73,7 +74,7 @@ class FFLogsReport:
                 pet_owner=actor_data['petOwner'],
             )
             self._data['masterData']['actors'].append(actor)
-        
+
         for ability_data in master_data['abilities']:
             ability = FFLogsAbility(
                 game_id=ability_data['gameID'],
@@ -98,7 +99,7 @@ class FFLogsReport:
 
             for field in FFLogsFight.batch_fields:
                 fight._data[field] = fight_data[field]
-            
+
             self._fights[fight_data['id']] = fight
 
     @fetch_master_data
@@ -108,7 +109,7 @@ class FFLogsReport:
             A list of all actors in the report
         '''
         return self._data['masterData']['actors']
-    
+
     @fetch_master_data
     def abilities(self) -> List[FFLogsAbility]:
         '''
@@ -133,14 +134,6 @@ class FFLogsReport:
     def owner(self) -> str:
         return self._data['owner']
 
-    @fetch_data('guild')
-    def end_time(self) -> float:
-        return self._data['guild']
-
-    @fetch_data('guildTag')
-    def guild_tag(self) -> float:
-        return self._data['guildTag']
-
     @fetch_data('zone')
     def zone(self) -> Optional[str]:
         return self._data['zone']
@@ -152,18 +145,18 @@ class FFLogsReport:
     @fetch_data('endTime')
     def end_time(self) -> float:
         return self._data['endTime']
-    
+
     @fetch_data('segments')
     def segments(self) -> int:
         return self._data['segments']
-    
+
     def duration(self) -> float:
         '''
         Returns:
             The total duration of the report
         '''
         return self.end_time() - self.start_time()
-    
+
     def fight_count(self) -> int:
         '''
         Returns:
@@ -195,16 +188,18 @@ class FFLogsReport:
 
         return self._fights[id]
 
+
 class FFLogsReportIterator:
     '''
     Iterates over a report, returning fights
     '''
+
     def __init__(self, report: FFLogsReport, client: 'FFLogsClient') -> None:
         self._report = report
         self._client = client
         self._cur_encounter = 0
         self._max_encounter = report.fight_count()
-    
+
     def __iter__(self) -> 'FFLogsReportIterator':
         return self
 

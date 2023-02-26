@@ -8,3 +8,5 @@ querycache/
 *.pkl
 
 test.py
+
+.vscode/

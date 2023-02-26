@@ -1,18 +1,20 @@
-from typing import Dict, Any, Optional
-from gql import gql
-from gql import Client as GQLClient
-from gql.transport.requests import RequestsHTTPTransport
-import oauthlib.oauth2 as oauth2
-from requests_oauthlib import OAuth2Session
-from requests.auth import HTTPBasicAuth
-from time import time
 import os
 import pickle
 from copy import deepcopy
+from time import time
+from typing import Any, Dict
 
-from .reports.client_extensions import ReportsMixin
+import oauthlib.oauth2 as oauth2
+from gql import Client as GQLClient
+from gql import gql
+from gql.transport.requests import RequestsHTTPTransport
+from requests.auth import HTTPBasicAuth
+from requests_oauthlib import OAuth2Session
+
 from .characters.client_extensions import CharactersMixin
+from .reports.client_extensions import ReportsMixin
 from .world.client_extensions import WorldMixin
+
 
 def ensure_token(func):
     '''
@@ -22,7 +24,7 @@ def ensure_token(func):
         self = args[0]
         try:
             return func(*args, **kwargs)
-        except:
+        except Exception:
             self.token = self.oauth_session.fetch_token(
                 self.OAUTH_TOKEN_URL,
                 auth=self.auth,
@@ -32,10 +34,10 @@ def ensure_token(func):
 
 
 class FFLogsClient(
-        ReportsMixin,
-        CharactersMixin,
-        WorldMixin,
-    ):
+    ReportsMixin,
+    CharactersMixin,
+    WorldMixin,
+):
     '''
     A client capable of communicating with the FFLogs V2 GraphQL API.
     '''
@@ -59,10 +61,12 @@ class FFLogsClient(
         Args:
             client_id: Client application ID
             client_secret: Client application secret
-            enable_caching: If enabled, the client will cache the result of queries for up to a time specified by the cache_expiry argument
+            enable_caching: If enabled, the client will cache the result of queries
+                            for up to a time specified by the cache_expiry argument
             cache_expiry: How long to keep query results in cache. Default: 86400 (1 day)
             cache_override: If set, force the client to load cached queries from the given file path
-            ignore_cache_expiry: If set to True, the client will load the most up-to-date cache, even if it has expired
+            ignore_cache_expiry: If set to True, the client will load the most up-to-date cache,
+                                 even if it has expired
         '''
         self.auth = HTTPBasicAuth(client_id, client_secret)
         self.oauth_session = OAuth2Session(client=oauth2.BackendApplicationClient(client_id))
@@ -154,7 +158,7 @@ class FFLogsClient(
         '''
         for query, entry in self._query_cache.items():
             self._query_cache[query] = (entry[0] + extension_time, entry[1])
-    
+
     def clean_cache(self) -> None:
         '''
         Delete expired cache files

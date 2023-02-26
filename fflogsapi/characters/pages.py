@@ -2,6 +2,7 @@ from ..data.page import FFLogsPage, FFLogsPaginationIterator
 from .character import FFLogsCharacter
 from .queries import Q_CHARACTER_PAGINATION
 
+
 class FFLogsCharacterPage(FFLogsPage):
     '''
     Represents a page of characters on FFLogs.
@@ -16,6 +17,7 @@ class FFLogsCharacterPage(FFLogsPage):
         Initializes a character with the given ID.
         '''
         return FFLogsCharacter(id=id, client=self._client)
+
 
 class FFLogsCharacterPaginationIterator(FFLogsPaginationIterator):
     '''

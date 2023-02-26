@@ -1,7 +1,5 @@
 from typing import TYPE_CHECKING, Any, Dict
 
-from ..world.region import FFLogsServer
-
 from ..util.indexing import itindex
 from ..util.decorators import fetch_data
 from ..util.filters import construct_filter_string
@@ -9,6 +7,7 @@ from .queries import Q_CHARACTER_DATA
 
 if TYPE_CHECKING:
     from ..client import FFLogsClient
+    from ..world.region import FFLogsServer
 
 
 class FFLogsCharacter:
@@ -81,6 +80,7 @@ class FFLogsCharacter:
         Returns:
             The character's server.
         '''
+        from ..world.region import FFLogsServer
         server_id = itindex(self._query_data('server{ id }'), self.DATA_INDICES)['server']['id']
         return FFLogsServer(filters={'id': server_id}, client=self._client)
 

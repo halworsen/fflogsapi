@@ -1,9 +1,9 @@
 import unittest
 
 from fflogsapi.client import FFLogsClient
-from fflogsapi.world.region import (FFLogsRegion, FFLogsRegionServerPage,
-                                    FFLogsRegionServerPaginationIterator, FFLogsServer,
-                                    FFLogsSubregion,)
+from fflogsapi.world.pages import FFLogsRegionServerPage, FFLogsRegionServerPaginationIterator
+from fflogsapi.world.region import FFLogsRegion, FFLogsSubregion
+from fflogsapi.world.server import FFLogsServer
 
 from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET
 

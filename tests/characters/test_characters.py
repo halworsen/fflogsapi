@@ -1,11 +1,9 @@
 import unittest
 
-from fflogsapi.constants import FIGHT_DIFFICULTY_SAVAGE
-
-from fflogsapi.world.region import FFLogsServer
-
 from fflogsapi.client import FFLogsClient
+from fflogsapi.constants import FIGHT_DIFFICULTY_SAVAGE
 from fflogsapi.util.gql_enums import GQLEnum
+from fflogsapi.world.server import FFLogsServer
 
 from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET
 

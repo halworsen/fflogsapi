@@ -173,8 +173,8 @@ class FFLogsZone:
         Returns:
             The expansion that this zone belongs to.
         '''
-        expac_id = itindex(self._query_data('expansion{ id }'), self.DATA_INDICES)[
-            'expansion']['id']
+        result = self._query_data('expansion{ id }')
+        expac_id = itindex(result, self.DATA_INDICES)['expansion']['id']
         return FFLogsExpansion(id=expac_id, client=self._client)
 
 
@@ -240,15 +240,12 @@ class FFLogsEncounter:
         Returns:
             The encounter's filtered character ranking data.
         '''
-        filter_string = construct_filter_string(filters)
-        if filter_string != '':
-            filter_string = f'({filter_string})'
+        filters = construct_filter_string(filters)
+        if filters:
+            filters = f'({filters})'
 
-        result = self._query_data(f'characterRankings{filter_string}')
-        if 'characterRankings' not in self._data:
-            self._data['characterRankings'] = result['worldData']['encounter']['characterRankings']
-
-        return self._data['characterRankings']
+        result = self._query_data(f'characterRankings{filters}')
+        return itindex(result, self.DATA_INDICES)['characterRankings']
 
     def fight_rankings(self, filters: dict[str, Any] = {}) -> dict:
         '''
@@ -260,12 +257,9 @@ class FFLogsEncounter:
         Returns:
             The encounter's filtered fight ranking data.
         '''
-        filter_string = construct_filter_string(filters)
-        if filter_string != '':
-            filter_string = f'({filter_string})'
+        filters = construct_filter_string(filters)
+        if filters:
+            filters = f'({filters})'
 
-        result = self._query_data(f'fightRankings{filter_string}')
-        if 'fightRankings' not in self._data:
-            self._data['fightRankings'] = result['worldData']['encounter']['fightRankings']
-
-        return self._data['fightRankings']
+        result = self._query_data(f'fightRankings{filters}')
+        return itindex(result, self.DATA_INDICES)['fightRankings']

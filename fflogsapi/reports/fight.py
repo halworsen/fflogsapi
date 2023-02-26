@@ -201,7 +201,7 @@ class FFLogsFight:
             filters['startTime'] = next_page
             filters['endTime'] = min(next_page + time_range, desired_end)
 
-            filter_string = self._construct_filter_string(filters)
+            filter_string = construct_filter_string(filters)
             result = self.report._query_data(
                 f'events({filter_string}) {{ data, nextPageTimestamp }}')
             events = result['reportData']['report']['events']['data']

@@ -216,7 +216,7 @@ class FFLogsServer:
     @fetch_data('name')
     def name(self) -> str:
         '''
-        Get the server's name. E.g. Europe, North America, etc.
+        Get the server's name. E.g. Lich, Tonberry, Siren, etc.
 
         Returns:
             The server's name.
@@ -245,7 +245,7 @@ class FFLogsServer:
 
     def region(self) -> FFLogsRegion:
         '''
-        Get the server's region. This is the geographical region in which the data center resides.
+        Get the server's region. This is the geographical region in which the server resides.
 
         Returns:
             The server's region.

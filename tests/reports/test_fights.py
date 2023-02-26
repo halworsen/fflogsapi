@@ -81,8 +81,10 @@ class FightTest(unittest.TestCase):
         self.assertAlmostEqual(graph['series'][0]['pointInterval'], 1148.3583333333333, places=4)
         # +1 for total damage
         self.assertEqual(len(graph['series']), PARTY_SIZE_FULL_PARTY + 1)
-        self.assertEqual(graph['series'][2]['name'], 'The Count')
-        self.assertEqual(graph['series'][2]['total'], 1050501)
+
+        count_data = list(filter(lambda d: d['name'] == 'The Count', graph['series']))[0]
+        self.assertEqual(count_data['name'], 'The Count')
+        self.assertEqual(count_data['total'], 1050501)
 
     def test_table(self) -> None:
         '''

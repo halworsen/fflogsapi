@@ -29,5 +29,3 @@ jobs:
       with:
         user: __token__
         password: ${{ secrets.PYPI_API_TOKEN }}
-        # remove to publish to public index
-        repository_url: https://test.pypi.org/legacy/

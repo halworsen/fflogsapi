@@ -1,6 +1,14 @@
 name: Tests
 
-on: [push, pull_request]
+on: 
+  push:
+    paths:
+    - 'fflogsapi/*'
+    - 'tests/*'
+  pull_request:
+    branches:
+    - 'master'
+    - 'dev'
 
 permissions:
   contents: read

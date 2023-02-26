@@ -4,6 +4,8 @@ __pycache__/
 venv/
 *.egg-info
 dist/
+.coverage
+coverage.xml
 
 querycache/
 *.pkl

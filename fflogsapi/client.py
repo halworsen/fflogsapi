@@ -63,7 +63,7 @@ class FFLogsClient(
             client_secret: Client application secret
             enable_caching: If enabled, the client will cache the result of queries
                             for up to a time specified by the cache_expiry argument
-            cache_expiry: How long to keep query results in cache. Default: 86400 (1 day)
+            cache_expiry: How long to keep query results in cache, in seconds. Default is 1 day.
             cache_override: If set, force the client to load cached queries from the given file path
             ignore_cache_expiry: If set to True, the client will load the most up-to-date cache,
                                  even if it has expired
@@ -140,7 +140,7 @@ class FFLogsClient(
             os.makedirs(self.CACHE_DIR)
 
         # annotate the cache file with the largest expiry time
-        # cache files with a timestamp larger than the current time are fully expired
+        # that way cache files with a timestamp larger than the current time are fully expired
         max_expiry = max(self._query_cache.values(), key=lambda q: q[0])
         cache_file_path = os.path.join(self.CACHE_DIR, f'{max_expiry[0]}.pkl')
         with open(cache_file_path, 'wb+') as f:

@@ -2,10 +2,12 @@ from typing import TYPE_CHECKING, Any, Dict
 
 from ..util.decorators import fetch_data
 from ..util.filters import construct_filter_string
+from ..util.indexing import itindex
 from .queries import Q_CHARACTER_DATA
 
 if TYPE_CHECKING:
     from ..client import FFLogsClient
+    from ..world.server import FFLogsServer
 
 
 class FFLogsCharacter:
@@ -28,7 +30,7 @@ class FFLogsCharacter:
         '''
         Query for a specific piece of information about a character
         '''
-        filters = ', '.join([f'{key}: {f}' for key, f in self.filters.items()])
+        filters = construct_filter_string(self.filters)
         result = self._client.q(Q_CHARACTER_DATA.format(
             filters=filters,
             innerQuery=query,
@@ -71,15 +73,16 @@ class FFLogsCharacter:
         '''
         return self._data['name']
 
-    @fetch_data('server')
-    def server(self) -> str:
+    def server(self) -> 'FFLogsServer':
         '''
-        Get the name of the server the character belongs to.
+        Get the server the character belongs to.
 
         Returns:
             The character's server.
         '''
-        return self._data['server']
+        from ..world.server import FFLogsServer
+        server_id = itindex(self._query_data('server{ id }'), self.DATA_INDICES)['server']['id']
+        return FFLogsServer(filters={'id': server_id}, client=self._client)
 
     @fetch_data('guildRank')
     def fc_rank(self) -> str:
@@ -91,15 +94,21 @@ class FFLogsCharacter:
         '''
         return self._data['guildRank']
 
-    @fetch_data('gameData')
-    def game_data(self) -> Dict:
+    def game_data(self, filters: dict = {}) -> dict:
         '''
         Get cached game data tied to the character, such as gear.
 
+        Args:
+            filters: Filter game data to a specific specID or force an update by the API.
         Returns:
             The character's game data.
         '''
-        return self._data['gameData']
+        filters = construct_filter_string(filters)
+        if filters:
+            filters = f'({filters})'
+
+        result = self._query_data(f'gameData{filters}')
+        return itindex(result, self.DATA_INDICES)['gameData']
 
     @fetch_data('hidden')
     def hidden(self) -> bool:
@@ -120,12 +129,12 @@ class FFLogsCharacter:
         Returns:
             The character's filtered ranking data.
         '''
-        filter_string = construct_filter_string(filters)
-        if filter_string != '':
-            filter_string = f'({filter_string})'
+        filters = construct_filter_string(filters)
+        if filters:
+            filters = f'({filters})'
 
-        result = self._query_data(f'encounterRankings{filter_string}')
-        return result['characterData']['character']['encounterRankings']
+        result = self._query_data(f'encounterRankings{filters}')
+        return itindex(result, self.DATA_INDICES)['encounterRankings']
 
     def zone_rankings(self, filters: Dict[str, Any] = {}) -> Dict:
         '''
@@ -136,9 +145,9 @@ class FFLogsCharacter:
         Returns:
             The character's filtered ranking data.
         '''
-        filter_string = construct_filter_string(filters)
-        if filter_string != '':
-            filter_string = f'({filter_string})'
+        filters = construct_filter_string(filters)
+        if filters:
+            filters = f'({filters})'
 
-        result = self._query_data(f'zoneRankings{filter_string}')
-        return result['characterData']['character']['zoneRankings']
+        result = self._query_data(f'zoneRankings{filters}')
+        return itindex(result, self.DATA_INDICES)['zoneRankings']

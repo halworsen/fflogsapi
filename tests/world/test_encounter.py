@@ -3,7 +3,7 @@ import unittest
 from fflogsapi.client import FFLogsClient
 from fflogsapi.constants import PARTY_SIZE_FULL_PARTY
 from fflogsapi.util.gql_enums import GQLEnum
-from fflogsapi.world.expansion import FFLogsZone
+from fflogsapi.world.zone import FFLogsZone
 
 from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET
 
@@ -20,7 +20,6 @@ class EncounterTest(unittest.TestCase):
 
     def tearDown(self) -> None:
         self.client.close()
-        self.client.save_cache()
 
     def test_fields(self) -> None:
         '''

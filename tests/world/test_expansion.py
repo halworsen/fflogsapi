@@ -1,7 +1,8 @@
 import unittest
 
 from fflogsapi.client import FFLogsClient
-from fflogsapi.world.expansion import FFLogsExpansion, FFLogsZone
+from fflogsapi.world.expansion import FFLogsExpansion
+from fflogsapi.world.zone import FFLogsZone
 
 from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET
 
@@ -18,7 +19,6 @@ class ExpansionTest(unittest.TestCase):
 
     def tearDown(self) -> None:
         self.client.close()
-        self.client.save_cache()
 
     def test_name(self) -> None:
         '''

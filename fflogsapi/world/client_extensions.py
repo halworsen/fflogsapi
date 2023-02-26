@@ -1,8 +1,11 @@
 from typing import Optional
 
-from .expansion import FFLogsEncounter, FFLogsExpansion, FFLogsZone
+from .encounter import FFLogsEncounter
+from .expansion import FFLogsExpansion
 from .queries import Q_EXPANSION_LIST, Q_REGION_LIST, Q_ZONE_LIST
-from .region import FFLogsRegion, FFLogsServer, FFLogsSubregion
+from .region import FFLogsRegion, FFLogsSubregion
+from .server import FFLogsServer
+from .zone import FFLogsZone
 
 
 class WorldMixin:

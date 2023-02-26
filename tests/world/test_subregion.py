@@ -1,8 +1,9 @@
 import unittest
 
 from fflogsapi.client import FFLogsClient
-from fflogsapi.world.region import (FFLogsRegion, FFLogsServer, FFLogsSubregionServerPage,
-                                    FFLogsSubregionServerPaginationIterator,)
+from fflogsapi.world.pages import FFLogsSubregionServerPage, FFLogsSubregionServerPaginationIterator
+from fflogsapi.world.region import FFLogsRegion
+from fflogsapi.world.server import FFLogsServer
 
 from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET
 
@@ -18,7 +19,6 @@ class SubregionTest(unittest.TestCase):
 
     def tearDown(self) -> None:
         self.client.close()
-        self.client.save_cache()
 
     def test_name(self) -> None:
         '''

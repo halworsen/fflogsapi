@@ -4,7 +4,7 @@ from time import sleep, time
 
 from fflogsapi.client import FFLogsClient
 
-from .config import CLIENT_ID, CLIENT_SECRET
+from ..config import CLIENT_ID, CLIENT_SECRET
 
 
 class CacheTest(unittest.TestCase):

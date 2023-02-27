@@ -10,12 +10,13 @@ fflogsapi is a lazy Python 3 client for [fflogs](https://www.fflogs.com/)' v2 AP
 
 ## Features
 
-* Retrieve information from fflogs' v2 GraphQL API
+* Retrieve information from FF Logs' v2 GraphQL API
 * Lazy evaluation
   * Queries for data are not executed until it is explicitly needed
 * Query caching
   * Requesting the same data twice will instead fetch the result from cache
   * Customizable cache lifetime and options to ignore cached results
+* Sensible interfaces to parts of the API that aren't well defined in the schema
 
 ## Example usage
 
@@ -29,7 +30,7 @@ report = client.get_report('rGARYmQwTKbahXz9')
 
 for fight in report:
     print(f'Fight #{fight.fight_id}:', fight.name(), f'- Kill: {fight.is_kill()}')
-    pot_table = fight.fight_table(filters={'sourceAurasPresent': 'Medicated'})
+    pot_table = fight.table(filters={'sourceAurasPresent': 'Medicated'})
     potted_damage = 0
     for damage in pot_table['damageDone']:
         potted_damage += damage['total']

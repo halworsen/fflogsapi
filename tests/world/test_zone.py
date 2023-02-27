@@ -13,21 +13,25 @@ class ZoneTest(unittest.TestCase):
     Test cases for FFLogs zone information.
     '''
 
-    def setUp(self) -> None:
-        self.client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, cache_expiry=CACHE_EXPIRY)
-        # abyssos has id 49
-        self.zone = self.client.get_zone(id=49)
+    ZONE_ID = 49
 
-    def tearDown(self) -> None:
-        self.client.close()
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, cache_expiry=CACHE_EXPIRY)
+        cls.zone = cls.client.get_zone(id=cls.ZONE_ID)
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        cls.client.close()
+        cls.client.save_cache()
 
     def test_fields(self) -> None:
         '''
         The client should be able to fetch simple fields from the zone
         '''
-        self.assertEqual(self.zone.id(), 49)
+        self.assertEqual(self.zone.id(), self.ZONE_ID)
         self.assertEqual(self.zone.name(), 'Abyssos')
-        # frozen is not tested as zones become frozen after time
+        self.assertIsInstance(self.zone.frozen(), bool)
 
     def test_zone_list(self) -> None:
         '''

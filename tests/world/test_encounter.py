@@ -13,19 +13,23 @@ class EncounterTest(unittest.TestCase):
     Test cases for FFLogs encounter information.
     '''
 
-    def setUp(self) -> None:
-        self.client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, cache_expiry=CACHE_EXPIRY)
-        # hephaistos 2 has id 87
-        self.encounter = self.client.get_encounter(id=87)
+    ENCOUNTER_ID = 87
 
-    def tearDown(self) -> None:
-        self.client.close()
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, cache_expiry=CACHE_EXPIRY)
+        cls.encounter = cls.client.get_encounter(id=cls.ENCOUNTER_ID)
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        cls.client.close()
+        cls.client.save_cache()
 
     def test_fields(self) -> None:
         '''
         The client should be able to fetch simple fields from the encounter
         '''
-        self.assertEqual(self.encounter.id(), 87)
+        self.assertEqual(self.encounter.id(), self.ENCOUNTER_ID)
         self.assertEqual(self.encounter.name(), 'Hephaistos II')
 
     def test_character_rankings(self) -> None:

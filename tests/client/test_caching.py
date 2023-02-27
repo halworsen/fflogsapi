@@ -16,26 +16,38 @@ class CacheTest(unittest.TestCase):
 
     CACHE_EXPIRY = 2  # seconds
 
-    def setUp(self) -> None:
+    @classmethod
+    def setUpClass(cls) -> None:
         # The cache directory must be empty before starting these tests (if it exists)
         if os.path.exists(FFLogsClient.CACHE_DIR):
             for fn in os.listdir(FFLogsClient.CACHE_DIR):
                 os.remove(os.path.join(FFLogsClient.CACHE_DIR, fn))
             os.rmdir(FFLogsClient.CACHE_DIR)
 
-        self.client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, cache_expiry=self.CACHE_EXPIRY)
+        cls.client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, cache_expiry=cls.CACHE_EXPIRY)
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        cls.client.close()
+
+    def setUp(self) -> None:
         # Query for some expansion information to get a query in the cache
         expac = self.client.get_expansion(id=1)
         expac.name()
 
-    def tearDown(self) -> None:
-        self.client.close()
+    def test_caching(self) -> None:
+        '''
+        The client should not break when using data from cache.
+        '''
+        # same code is already run during setup
+        expac = self.client.get_expansion(id=1)
+        expac.name()
 
     def test_cache_saving(self) -> None:
         '''
         The client should be able to save a file containing cached query results
         '''
-        self.client.save_cache()
+        self.client.save_cache(silent=False)
         self.assertTrue(os.path.exists(FFLogsClient.CACHE_DIR))
         cache_expiry = list(map(lambda f: float(f[:-4]), os.listdir(FFLogsClient.CACHE_DIR)))[0]
         self.assertAlmostEqual(time() + self.CACHE_EXPIRY, cache_expiry, places=1)

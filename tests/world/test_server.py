@@ -13,12 +13,15 @@ class ServerTest(unittest.TestCase):
     Test cases for FFLogs server information.
     '''
 
-    def setUp(self) -> None:
-        self.client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, cache_expiry=CACHE_EXPIRY)
-        self.server = self.client.get_server(id=1)
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, cache_expiry=CACHE_EXPIRY)
+        cls.server = cls.client.get_server(id=1)
 
-    def tearDown(self) -> None:
-        self.client.close()
+    @classmethod
+    def tearDownClass(cls) -> None:
+        cls.client.close()
+        cls.client.save_cache()
 
     def test_simple_fields(self) -> None:
         '''

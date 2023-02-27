@@ -12,18 +12,23 @@ class ExpansionTest(unittest.TestCase):
     Test cases for FFLogs expansion information.
     '''
 
-    def setUp(self) -> None:
-        self.client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, cache_expiry=CACHE_EXPIRY)
-        # shadowbringers has id 3
-        self.expansion = self.client.get_expansion(id=3)
+    EXPAC_ID = 3  # shadowbringers
 
-    def tearDown(self) -> None:
-        self.client.close()
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, cache_expiry=CACHE_EXPIRY)
+        cls.expansion = cls.client.get_expansion(id=cls.EXPAC_ID)
 
-    def test_name(self) -> None:
+    @classmethod
+    def tearDownClass(cls) -> None:
+        cls.client.close()
+        cls.client.save_cache()
+
+    def test_fields(self) -> None:
         '''
-        The client should be able to fetch the name of the expansion.
+        The client should be able to fetch the id and name of the expansion.
         '''
+        self.assertEqual(self.expansion.id(), self.EXPAC_ID)
         self.assertEqual(self.expansion.name(), 'Shadowbringers')
 
     def test_expansion_list(self) -> None:

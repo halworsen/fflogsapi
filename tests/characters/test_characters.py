@@ -17,17 +17,20 @@ class CharacterTest(unittest.TestCase):
     were changed or the character was deleted.
     '''
 
-    def setUp(self) -> None:
-        self.client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, cache_expiry=CACHE_EXPIRY)
-        self.character = self.client.get_character(id=19181640)
-        self.named_character = self.client.get_character(filters={
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, cache_expiry=CACHE_EXPIRY)
+        cls.character = cls.client.get_character(id=19181640)
+        cls.named_character = cls.client.get_character(filters={
             'name': 'Dylan Kusarigama',
             'serverRegion': 'EU',
             'serverSlug': 'Lich',
         })
 
-    def tearDown(self) -> None:
-        self.client.close()
+    @classmethod
+    def tearDownClass(cls) -> None:
+        cls.client.close()
+        cls.client.save_cache()
 
     def test_specific_character(self) -> None:
         '''
@@ -43,6 +46,9 @@ class CharacterTest(unittest.TestCase):
         self.assertEqual(self.character.name(), 'Dylan Kusarigama')
         self.assertIsInstance(self.character.server(), FFLogsServer)
         self.assertEqual(self.character.lodestone_id(), 28321575)
+        # considering these as volatile. there is no point in testing for specific values
+        self.assertIsInstance(self.character.fc_rank(), int)
+        self.assertIsInstance(self.character.hidden(), bool)
 
     def test_encounter_rankings(self) -> None:
         '''
@@ -72,7 +78,7 @@ class CharacterTest(unittest.TestCase):
         '''
         The client should be able to fetch game data about the character.
         '''
-        game_data = self.character.game_data()
+        game_data = self.character.game_data(filters={'forceUpdate': True})
         self.assertIsInstance(game_data, dict)
 
 

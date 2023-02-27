@@ -4,6 +4,7 @@ from fflogsapi.client import FFLogsClient
 from fflogsapi.reports.fight import FFLogsFight
 from fflogsapi.reports.pages import FFLogsReportPage
 from fflogsapi.reports.report import FFLogsReport
+from fflogsapi.world.zone import FFLogsZone
 
 from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET
 
@@ -19,13 +20,15 @@ class ReportTest(unittest.TestCase):
 
     SPECIFIC_REPORT_CODE = '2Kf9y6wzanWkBJ41'
 
-    def setUp(self) -> None:
-        self.client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, cache_expiry=CACHE_EXPIRY)
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, cache_expiry=CACHE_EXPIRY)
+        cls.report = cls.client.get_report(code=cls.SPECIFIC_REPORT_CODE)
 
-        self.report = self.client.get_report(code=self.SPECIFIC_REPORT_CODE)
-
-    def tearDown(self) -> None:
-        self.client.close()
+    @classmethod
+    def tearDownClass(cls) -> None:
+        cls.client.close()
+        cls.client.save_cache()
 
     def test_invalid_report(self) -> None:
         '''
@@ -47,11 +50,23 @@ class ReportTest(unittest.TestCase):
         self.assertIsNotNone(self.report.log_version())
         self.assertEqual(self.report.log_version(), 53)
 
-        self.assertGreater(len(self.report.actors()), 0)
-        self.assertEqual(self.report.actors()[0].name, 'Environment')
+        actors = self.report.actors()
+        self.assertGreater(len(actors), 0)
+        actor_data = [{'name': actor.name, 'job': actor.job()} for actor in actors]
+        self.assertIn({'name': 'Milotiq Umida', 'job': 'DarkKnight'}, actor_data)
 
-        self.assertGreater(len(self.report.abilities()), 0)
-        self.assertEqual(self.report.abilities()[0].game_id, 0)
+        abilities = self.report.abilities()
+        self.assertGreater(len(abilities), 0)
+        ability_ids = [ability.game_id for ability in abilities]
+        self.assertIn(0, ability_ids)
+
+    def test_zone(self) -> None:
+        '''
+        The client should be able to get the *primary* zone of the report
+        '''
+        zone = self.report.zone()
+        self.assertIsInstance(zone, FFLogsZone)
+        self.assertEqual(zone.id(), 49)
 
     def test_fields(self) -> None:
         '''
@@ -60,6 +75,7 @@ class ReportTest(unittest.TestCase):
         self.assertEqual(self.report.title(), 'Abyssos')
         self.assertEqual(self.report.start_time(), 1662771478876)
         self.assertEqual(self.report.end_time(), 1662781027781)
+        self.assertEqual(self.report.duration(), 1662781027781 - 1662771478876)
         self.assertEqual(self.report.segments(), 13)
         # exported segments, revision, visibility is not implemented
 
@@ -70,6 +86,13 @@ class ReportTest(unittest.TestCase):
         self.assertIsInstance(self.report.fight(), FFLogsFight)
         for fight in self.report.fights():
             self.assertIsInstance(fight, FFLogsFight)
+    
+    def test_nonexistent_fight(self) -> None:
+        '''
+        The client should return None when requesting a fight that does not exist.
+        '''
+        fake_fight = self.report.fight(id=123456789)
+        self.assertIsNone(fake_fight)
 
 
 class ReportPageTest(unittest.TestCase):

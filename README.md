@@ -3,6 +3,7 @@
 fflogsapi is a lazy Python 3 client for [fflogs](https://www.fflogs.com/)' v2 API with query caching functionality.
 
 [![Tests](https://github.com/halworsen/fflogsapi/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/halworsen/fflogsapi/actions/workflows/test.yml)
+[![Linting](https://github.com/halworsen/fflogsapi/actions/workflows/lint.yml/badge.svg?branch=master)](https://github.com/halworsen/fflogsapi/actions/workflows/lint.yml)
 [![codecov](https://codecov.io/gh/halworsen/fflogsapi/branch/master/graph/badge.svg?token=YTEGMDJOGL)](https://codecov.io/gh/halworsen/fflogsapi)
 
 ---

@@ -1,0 +1,40 @@
+name: Linting
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+    - fflogsapi/*
+    - tests/*
+  pull_request:
+    branches:
+    - master
+    - dev
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.9'
+    - name: Install dev dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e.[dev]
+    - name: Run flake8
+      run: flake8 fflogsapi
+    - name: Check import order with isort
+      run: isort --check-only fflogsapi
+    - name: Run flake8 on test code
+      continue-on-error: true # lint errors in test code is not a massive deal
+      run: flake8 tests
+    - name: Check import order with isort on test code
+      continue-on-error: true
+      run: isort --check-only tests

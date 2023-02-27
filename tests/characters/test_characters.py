@@ -1,5 +1,7 @@
 import unittest
 
+from fflogsapi.characters.character import FFLogsCharacter
+from fflogsapi.characters.pages import FFLogsCharacterPage
 from fflogsapi.client import FFLogsClient
 from fflogsapi.constants import FIGHT_DIFFICULTY_SAVAGE
 from fflogsapi.util.gql_enums import GQLEnum
@@ -80,6 +82,16 @@ class CharacterTest(unittest.TestCase):
         '''
         game_data = self.character.game_data(filters={'forceUpdate': True})
         self.assertIsInstance(game_data, dict)
+
+    def test_character_pagination(self) -> None:
+        '''
+        The client should be able to fetch a pagination of characters belonging to a guild.
+        '''
+        character_pages = self.client.character_pages(guild_id=111093)
+        for page in character_pages:
+            self.assertIsInstance(page, FFLogsCharacterPage)
+            for character in page:
+                self.assertIsInstance(character, FFLogsCharacter)
 
 
 if __name__ == '__main__':

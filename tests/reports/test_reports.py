@@ -86,7 +86,7 @@ class ReportTest(unittest.TestCase):
         self.assertIsInstance(self.report.fight(), FFLogsFight)
         for fight in self.report.fights():
             self.assertIsInstance(fight, FFLogsFight)
-    
+
     def test_nonexistent_fight(self) -> None:
         '''
         The client should return None when requesting a fight that does not exist.

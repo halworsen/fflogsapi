@@ -2,9 +2,9 @@ import os
 import pickle
 from copy import deepcopy
 from time import time
-from typing import Any, Dict
+from typing import Any
+from .user_auth import UserAuthMixin
 
-import oauthlib.oauth2 as oauth2
 from gql import Client as GQLClient
 from gql import gql
 from gql.transport.requests import RequestsHTTPTransport
@@ -34,6 +34,7 @@ def ensure_token(func):
 
 
 class FFLogsClient(
+    UserAuthMixin,
     ReportsMixin,
     CharactersMixin,
     WorldMixin,
@@ -42,14 +43,19 @@ class FFLogsClient(
     A client capable of communicating with the FFLogs V2 GraphQL API.
     '''
 
-    CLIENT_API_URL = 'https://www.fflogs.com/api/v2/client'
+    API_URL = 'https://www.fflogs.com/api/v2'
+    CLIENT_ENDPOINT = '/client'
+    USER_ENDPOINT = '/user'
+
     OAUTH_TOKEN_URL = 'https://www.fflogs.com/oauth/token'
+
     CACHE_DIR = './querycache'
 
     def __init__(
         self,
         client_id: str,
         client_secret: str,
+        mode: str = 'client',
         enable_caching: bool = True,
         cache_expiry: int = 86400,
         cache_override: str = '',
@@ -61,15 +67,17 @@ class FFLogsClient(
         Args:
             client_id: Client application ID
             client_secret: Client application secret
+            mode: Whether to use the client or user endpoint. Client mode gives public API access,
+                  while user mode allows access to private information. User mode requires login.
             enable_caching: If enabled, the client will cache the result of queries
-                            for up to a time specified by the cache_expiry argument
+                            for up to a time specified by the cache_expiry argument.
             cache_expiry: How long to keep query results in cache, in seconds. Default is 1 day.
             cache_override: If set, force the client to load cached queries from the given file path
             ignore_cache_expiry: If set to True, the client will load the most up-to-date cache,
                                  even if it has expired
         '''
         self.auth = HTTPBasicAuth(client_id, client_secret)
-        self.oauth_session = OAuth2Session(client=oauth2.BackendApplicationClient(client_id))
+        self.oauth_session = OAuth2Session(client_id=client_id)
         self.token = {}
 
         self._query_cache = {}
@@ -98,7 +106,19 @@ class FFLogsClient(
                 with open(cache_path, 'rb') as f:
                     self._query_cache = pickle.load(f)
 
-        self._transport = RequestsHTTPTransport(url=self.CLIENT_API_URL)
+        endpoint = ''
+        if mode == 'client':
+            endpoint = self.CLIENT_ENDPOINT
+        elif mode == 'user':
+            endpoint = self.USER_ENDPOINT
+            # for user mode, the user must login through their browser
+            # see auth.py
+            self.user_auth()
+        if not endpoint:
+            raise ValueError(
+                f'Invalid API client mode (must be either \'client\' or \'user\', got {mode})'
+            )
+        self._transport = RequestsHTTPTransport(url=self.API_URL + endpoint)
         self._gql_client = GQLClient(transport=self._transport, fetch_schema_from_transport=True)
 
     def close(self):
@@ -106,7 +126,7 @@ class FFLogsClient(
         self._transport.close()
 
     @ensure_token
-    def q(self, query: str, ignore_cache: bool = False) -> Dict[str, Any]:
+    def q(self, query: str, ignore_cache: bool = False) -> dict[str, Any]:
         '''
         Executes a GraphQL query against the FFLogs API
 

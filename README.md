@@ -11,6 +11,7 @@ fflogsapi is a lazy Python 3 client for [fflogs](https://www.fflogs.com/)' v2 AP
 ## Features
 
 * Retrieve information from FF Logs' v2 GraphQL API
+  * Including private information only accessible through the user API
 * Lazy evaluation
   * Queries for data are not executed until it is explicitly needed
 * Query caching
@@ -56,3 +57,22 @@ for page in client.report_pages(filters={ 'guildID': 80551 }):
 client.close()
 client.save_cache()
 ```
+
+## User mode
+
+The default mode of the client is 'client' mode, which uses the public API. This is by far the most
+convenient method to use the client, and usually provides enough functionality for the majority of
+use cases.
+
+If you need access to private information, however, it is possible to use the client in user mode,
+granting access to extra information such as private reports provided by the user API.
+
+To use user mode, you must first specify `https://localhost:4433` as the redirect URL in your API
+client on FF Logs. Then, provide the `mode='user'` kwarg to the client when instantiating it:
+```python
+client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, mode='user')
+```
+
+This will have the client popup a browser window for the user for login, after which the client has access to the
+user API. Note that the client will generate a self-signed certificate to serve the redirect.
+Your browser will likely produce a warning about this, although it is safe to ignore.

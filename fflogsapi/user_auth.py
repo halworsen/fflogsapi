@@ -3,15 +3,15 @@ Client extensions for the authorization code flow, granting private user access 
 '''
 
 import os
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import ssl
 import webbrowser
-from cryptography import x509
-from cryptography.x509.oid import NameOID
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives.asymmetric import rsa
 from datetime import datetime, timedelta
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+
+from cryptography import x509
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.asymmetric import rsa
+from cryptography.x509.oid import NameOID
 
 
 class UserAuthMixin:

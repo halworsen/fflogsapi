@@ -7,17 +7,17 @@ import pickle
 from copy import deepcopy
 from time import time
 from typing import Any
-from .user_auth import UserAuthMixin
 
 from gql import Client as GQLClient
 from gql import gql
 from gql.transport.requests import RequestsHTTPTransport
+from oauthlib.oauth2 import BackendApplicationClient, WebApplicationClient
 from requests.auth import HTTPBasicAuth
 from requests_oauthlib import OAuth2Session
-from oauthlib.oauth2 import BackendApplicationClient, WebApplicationClient
 
 from .characters.client_extensions import CharactersMixin
 from .reports.client_extensions import ReportsMixin
+from .user_auth import UserAuthMixin
 from .world.client_extensions import WorldMixin
 
 

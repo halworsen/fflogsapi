@@ -1,11 +1,9 @@
 from typing import TYPE_CHECKING
 
-from ..util.indexing import itindex
-
-from ..world.zone import FFLogsZone
-
 from ..data.dataclasses import FFLogsAbility, FFLogsActor
 from ..util.decorators import fetch_data
+from ..util.indexing import itindex
+from ..world.zone import FFLogsZone
 from .fight import FFLogsFight
 from .queries import IQ_REPORT_MASTER_DATA, Q_REPORT_DATA
 

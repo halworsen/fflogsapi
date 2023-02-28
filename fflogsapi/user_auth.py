@@ -27,18 +27,20 @@ class UserAuthMixin:
     CERT_PATH = './fflogsapi/fflogs_auth_redirect_cert.pem'
     KEY_PATH = './fflogsapi/fflogs_auth_redirect_key.pem'
 
+    MANUAL_AUTH_RESPONSE = ''
+
     def set_auth_response(self, response: str) -> None:
         '''
         Manually set the authorization response
         '''
-        self.manual_auth_response = response
+        self.MANUAL_AUTH_RESPONSE = response
 
     def user_auth(self) -> None:
         '''
         Prompt the user to login through their browser and fetch an authorization token.
         '''
         response = ''
-        if not self.manual_auth_response:
+        if not self.MANUAL_AUTH_RESPONSE:
             auth_url, _ = self.oauth_session.authorization_url(
                 self.OAUTH_USER_AUTH_URI,
             )
@@ -52,7 +54,7 @@ class UserAuthMixin:
             response = self.capture_auth_response()
             self._remove_x509_cert()
         else:
-            response = self.manual_auth_response
+            response = self.MANUAL_AUTH_RESPONSE
 
         self.token = self.oauth_session.fetch_token(
             self.OAUTH_TOKEN_URL,

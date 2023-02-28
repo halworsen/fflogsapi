@@ -1,3 +1,7 @@
+'''
+The client implementation that allows communication with the FF Logs API.
+'''
+
 import os
 import pickle
 from copy import deepcopy
@@ -10,6 +14,7 @@ from gql import gql
 from gql.transport.requests import RequestsHTTPTransport
 from requests.auth import HTTPBasicAuth
 from requests_oauthlib import OAuth2Session
+from oauthlib.oauth2 import BackendApplicationClient, WebApplicationClient
 
 from .characters.client_extensions import CharactersMixin
 from .reports.client_extensions import ReportsMixin
@@ -25,10 +30,15 @@ def ensure_token(func):
         try:
             return func(*args, **kwargs)
         except Exception:
-            self.token = self.oauth_session.fetch_token(
-                self.OAUTH_TOKEN_URL,
-                auth=self.auth,
-            )
+            if self.mode == 'user':
+                # for user mode, the user must login through their browser
+                # see auth.py
+                self.user_auth()
+            elif self.mode == 'client':
+                self.token = self.oauth_session.fetch_token(
+                    self.OAUTH_TOKEN_URL,
+                    auth=self.auth,
+                )
             return func(*args, **kwargs)
     return ensured
 
@@ -77,8 +87,12 @@ class FFLogsClient(
                                  even if it has expired
         '''
         self.auth = HTTPBasicAuth(client_id, client_secret)
-        self.oauth_session = OAuth2Session(client_id=client_id)
+        oauth_client = BackendApplicationClient(client_id=client_id)
+        if mode == 'user':
+            oauth_client = WebApplicationClient(client_id=client_id)
+        self.oauth_session = OAuth2Session(client=oauth_client)
         self.token = {}
+        self.mode = mode
 
         self._query_cache = {}
         self.cache_expiry = cache_expiry
@@ -111,9 +125,6 @@ class FFLogsClient(
             endpoint = self.CLIENT_ENDPOINT
         elif mode == 'user':
             endpoint = self.USER_ENDPOINT
-            # for user mode, the user must login through their browser
-            # see auth.py
-            self.user_auth()
         if not endpoint:
             raise ValueError(
                 f'Invalid API client mode (must be either \'client\' or \'user\', got {mode})'

@@ -14,16 +14,23 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.x509.oid import NameOID
 
 
-class UserAuthMixin:
+class UserModeAuthMixin:
     '''
-    Note that for this to work, one of the client's redirect URL must be https://localhost:4443.
+    Mixins that enable the client to authenticate against the API using the authorization code flow,
+    granting user-level access to private parts of the API.
+
+    Note that for this to work, at least one of the client's redirect URL must be set to
+    https://localhost:4443 in FF Logs' client management (or whatever port is used by the client).
+    This is because the client will attempt to redirect the user to a web server hosted locally
+    by the client in order to capture the authorization response.
     '''
+
     OAUTH_USER_AUTH_URI = 'https://www.fflogs.com/oauth/authorize'
     OAUTH_CAPTURE_PORT = 4443
     OAUTH_REDIRECT_URI = f'https://localhost:{OAUTH_CAPTURE_PORT}/'
 
-    # the self-signed certificates generated expire in this amount of minutes
-    CERT_EXPIRY_MINUTES = 5
+    # How long the self-signed certificate generated for the OAuth redirect last
+    CERT_EXPIRY_MINUTES = 5  # minutes
     CERT_PATH = './fflogsapi/fflogs_auth_redirect_cert.pem'
     KEY_PATH = './fflogsapi/fflogs_auth_redirect_key.pem'
 
@@ -31,7 +38,12 @@ class UserAuthMixin:
 
     def set_auth_response(self, response: str) -> None:
         '''
-        Manually set the authorization response
+        Manually set the authorization response after user login.
+
+        You can use this if you want to handle the user auth flow yourself,
+        but this must be called before the first use of the client.
+
+        When using this, you must also handle token refresh logic yourself.
         '''
         self.MANUAL_AUTH_RESPONSE = response
 
@@ -85,7 +97,7 @@ class UserAuthMixin:
             .add_extension(
                 x509.SubjectAlternativeName([x509.DNSName(u'localhost')]),
                 critical=False,
-            ) \
+        ) \
             .sign(key, hashes.SHA256())
 
         if not os.path.exists(os.path.dirname(self.KEY_PATH)):
@@ -126,7 +138,7 @@ class UserAuthMixin:
             def do_GET(self):
                 # i'm not a huge fan of this but it works
                 nonlocal auth_response
-                auth_response = UserAuthMixin.OAUTH_REDIRECT_URI + self.path
+                auth_response = UserModeAuthMixin.OAUTH_REDIRECT_URI + self.path
                 self.send_response(200)
                 self.send_header('Content-Type', 'text/html')
                 self.end_headers()

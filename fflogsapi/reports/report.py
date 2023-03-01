@@ -1,7 +1,9 @@
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING
 
 from ..data.dataclasses import FFLogsAbility, FFLogsActor
 from ..util.decorators import fetch_data
+from ..util.indexing import itindex
+from ..world.zone import FFLogsZone
 from .fight import FFLogsFight
 from .queries import IQ_REPORT_MASTER_DATA, Q_REPORT_DATA
 
@@ -37,7 +39,7 @@ class FFLogsReport:
     def __iter__(self) -> 'FFLogsReportIterator':
         return FFLogsReportIterator(report=self, client=self._client)
 
-    def fights(self) -> List[FFLogsFight]:
+    def fights(self) -> list[FFLogsFight]:
         return list(self.__iter__())
 
     def _query_data(self, query: str, ignore_cache: bool = False) -> None:
@@ -83,27 +85,8 @@ class FFLogsReport:
             )
             self._data['masterData']['abilities'].append(ability)
 
-    def fetch_batch(self) -> None:
-        '''
-        Attempt to fetch and store large amounts of fights in a single query
-        '''
-        fight_query = ', '.join(FFLogsFight.batch_fields)
-        query = f'fights {{ {fight_query} }}'
-        result = self._query_data(query)
-        data = result['reportData']['report']['fights']
-        for fight_data in data:
-            fight = self._fights.get(
-                fight_data['id'],
-                FFLogsFight(report=self, fight_id=fight_data['id'], client=self._client),
-            )
-
-            for field in FFLogsFight.batch_fields:
-                fight._data[field] = fight_data[field]
-
-            self._fights[fight_data['id']] = fight
-
     @fetch_master_data
-    def actors(self) -> List[FFLogsActor]:
+    def actors(self) -> list[FFLogsActor]:
         '''
         Returns:
             A list of all actors in the report
@@ -111,7 +94,7 @@ class FFLogsReport:
         return self._data['masterData']['actors']
 
     @fetch_master_data
-    def abilities(self) -> List[FFLogsAbility]:
+    def abilities(self) -> list[FFLogsAbility]:
         '''
         Returns:
             A list of all abilities in the report
@@ -134,9 +117,13 @@ class FFLogsReport:
     def owner(self) -> str:
         return self._data['owner']
 
-    @fetch_data('zone')
-    def zone(self) -> Optional[str]:
-        return self._data['zone']
+    def zone(self) -> FFLogsZone:
+        '''
+        Returns:
+            The principal zone for fights in this report.
+        '''
+        zone_id = itindex(self._query_data('zone{ id }'), self.DATA_INDICES)['zone']['id']
+        return FFLogsZone(id=zone_id)
 
     @fetch_data('startTime')
     def start_time(self) -> float:

@@ -3,18 +3,21 @@
 fflogsapi is a lazy Python 3 client for [fflogs](https://www.fflogs.com/)' v2 API with query caching functionality.
 
 [![Tests](https://github.com/halworsen/fflogsapi/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/halworsen/fflogsapi/actions/workflows/test.yml)
+[![Linting](https://github.com/halworsen/fflogsapi/actions/workflows/lint.yml/badge.svg?branch=master)](https://github.com/halworsen/fflogsapi/actions/workflows/lint.yml)
 [![codecov](https://codecov.io/gh/halworsen/fflogsapi/branch/master/graph/badge.svg?token=YTEGMDJOGL)](https://codecov.io/gh/halworsen/fflogsapi)
 
 ---
 
 ## Features
 
-* Retrieve information from fflogs' v2 GraphQL API
+* Retrieve information from FF Logs' v2 GraphQL API
+  * Including private information only accessible through the user API
 * Lazy evaluation
   * Queries for data are not executed until it is explicitly needed
 * Query caching
   * Requesting the same data twice will instead fetch the result from cache
   * Customizable cache lifetime and options to ignore cached results
+* Sensible interfaces to parts of the API that aren't well defined in the schema
 
 ## Example usage
 
@@ -28,7 +31,7 @@ report = client.get_report('rGARYmQwTKbahXz9')
 
 for fight in report:
     print(f'Fight #{fight.fight_id}:', fight.name(), f'- Kill: {fight.is_kill()}')
-    pot_table = fight.fight_table(filters={'sourceAurasPresent': 'Medicated'})
+    pot_table = fight.table(filters={'sourceAurasPresent': 'Medicated'})
     potted_damage = 0
     for damage in pot_table['damageDone']:
         potted_damage += damage['total']
@@ -54,3 +57,22 @@ for page in client.report_pages(filters={ 'guildID': 80551 }):
 client.close()
 client.save_cache()
 ```
+
+## User mode
+
+The default mode of the client is 'client' mode, which uses the public API. This is by far the most
+convenient method to use the client, and usually provides enough functionality for the majority of
+use cases.
+
+If you need access to private information, however, it is possible to use the client in user mode,
+granting access to extra information such as private reports provided by the user API.
+
+To use user mode, you must first specify `https://localhost:4433` as the redirect URL in your API
+client on FF Logs. Then, provide the `mode='user'` kwarg to the client when instantiating it:
+```python
+client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, mode='user')
+```
+
+This will have the client popup a browser window for the user for login, after which the client has access to the
+user API. Note that the client will generate a self-signed certificate to serve the redirect.
+Your browser will likely produce a warning about this, although it is safe to ignore.

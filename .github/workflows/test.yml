@@ -58,6 +58,15 @@ jobs:
         pip install -e.[test]
     - name: Test for code coverage
       run: |
-        pytest --cov=fflogsapi --cov-report=xml
+        pytest --cov=fflogsapi
+        mv .coverage .coverage-core
+    - name: Test coverage of caching tests
+      run: |
+        pytest --cov=fflogsapi tests/client/test_caching.py
+        mv .coverage .coverage-caching
+    - name: Combine coverage reports
+      run: |
+        coverage combine .coverage-core .coverage-caching
+        coverage xml
     - name: Upload coverage report to Codecov
       uses: codecov/codecov-action@v3.1.1

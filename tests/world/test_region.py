@@ -13,12 +13,17 @@ class RegionTest(unittest.TestCase):
     Test cases for FFLogs region information.
     '''
 
-    def setUp(self) -> None:
-        self.client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, cache_expiry=CACHE_EXPIRY)
-        self.region = self.client.get_region(id=1)
+    REGION_ID = 1
 
-    def tearDown(self) -> None:
-        self.client.close()
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, cache_expiry=CACHE_EXPIRY)
+        cls.region = cls.client.get_region(id=cls.REGION_ID)
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        cls.client.close()
+        cls.client.save_cache()
 
     def test_all_regions(self) -> None:
         '''
@@ -33,6 +38,7 @@ class RegionTest(unittest.TestCase):
         '''
         The client should be able to fetch simple fields about the region.
         '''
+        self.assertEqual(self.region.id(), self.REGION_ID)
         self.assertEqual(self.region.name(), 'North America')
         self.assertEqual(self.region.compact_name(), 'NA')
         self.assertEqual(self.region.slug(), 'NA')

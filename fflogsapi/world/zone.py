@@ -54,7 +54,7 @@ class FFLogsZone:
         return self._data['name']
 
     @fetch_data('frozen')
-    def frozen(self) -> str:
+    def frozen(self) -> bool:
         '''
         Get whether or not data about the zone has been permanently frozen.
 

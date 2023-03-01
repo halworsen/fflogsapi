@@ -1,55 +1,83 @@
+'''
+The client implementation that allows communication with the FF Logs API.
+'''
+
 import os
 import pickle
 from copy import deepcopy
 from time import time
-from typing import Any, Dict
+from typing import Any
 
-import oauthlib.oauth2 as oauth2
 from gql import Client as GQLClient
 from gql import gql
 from gql.transport.requests import RequestsHTTPTransport
+from oauthlib.oauth2 import BackendApplicationClient, WebApplicationClient
 from requests.auth import HTTPBasicAuth
 from requests_oauthlib import OAuth2Session
 
 from .characters.client_extensions import CharactersMixin
 from .reports.client_extensions import ReportsMixin
+from .user.client_extensions import UserMixin
+from .user_auth import UserModeAuthMixin
 from .world.client_extensions import WorldMixin
 
 
 def ensure_token(func):
     '''
-    Ensures the given function has a valid OAuth token
+    Ensures the given function has a valid OAuth token.
     '''
     def ensured(*args, **kwargs):
         self = args[0]
         try:
             return func(*args, **kwargs)
         except Exception:
-            self.token = self.oauth_session.fetch_token(
-                self.OAUTH_TOKEN_URL,
-                auth=self.auth,
-            )
+            if self.mode == 'user':
+                # for user mode, the user must login through their browser
+                # see auth.py
+                self.user_auth()
+            elif self.mode == 'client':
+                self.token = self.oauth_session.fetch_token(
+                    self.OAUTH_TOKEN_URL,
+                    auth=self.auth,
+                )
             return func(*args, **kwargs)
     return ensured
 
 
 class FFLogsClient(
+    UserModeAuthMixin,
     ReportsMixin,
     CharactersMixin,
     WorldMixin,
+    UserMixin,
 ):
     '''
     A client capable of communicating with the FFLogs V2 GraphQL API.
+
+    Capabilities of the client are defined on a per-module basis. Generally, each data structure in
+    the API's schema will have its own module. See client_extensions.py in each module for
+    details on the capabilities provided by that module.
+
+    Caching is enabled by default, but can be overriden with the enable_caching parameter when
+    instantiating the client. A cache of executed queries will then be maintained by the client.
+    To save the query cache for later reuse, you must manually call save_cache() on the client.
+    It's also possible to extend the lifetime of all cache queries with extend_cache(), or to
+    manually clean up old cache files with clean_cache().
     '''
 
-    CLIENT_API_URL = 'https://www.fflogs.com/api/v2/client'
+    API_URL = 'https://www.fflogs.com/api/v2'
+    CLIENT_ENDPOINT = '/client'
+    USER_ENDPOINT = '/user'
+
     OAUTH_TOKEN_URL = 'https://www.fflogs.com/oauth/token'
+
     CACHE_DIR = './querycache'
 
     def __init__(
         self,
         client_id: str,
         client_secret: str,
+        mode: str = 'client',
         enable_caching: bool = True,
         cache_expiry: int = 86400,
         cache_override: str = '',
@@ -58,19 +86,35 @@ class FFLogsClient(
         '''
         Initialize the FFLogs API client.
 
+        Two modes of use are supported by the client - `client` and `user` mode.
+        When in client mode, the API client can access the public API. To access private information
+        such as private logs or hidden characters' information, you must use user mode.
+
         Args:
             client_id: Client application ID
             client_secret: Client application secret
+            mode: Whether to use the client or user endpoint. Client mode gives public API access,
+                  while user mode allows access to private information. User mode requires login.
             enable_caching: If enabled, the client will cache the result of queries
-                            for up to a time specified by the cache_expiry argument
+                            for up to a time specified by the cache_expiry argument.
             cache_expiry: How long to keep query results in cache, in seconds. Default is 1 day.
             cache_override: If set, force the client to load cached queries from the given file path
             ignore_cache_expiry: If set to True, the client will load the most up-to-date cache,
                                  even if it has expired
         '''
         self.auth = HTTPBasicAuth(client_id, client_secret)
-        self.oauth_session = OAuth2Session(client=oauth2.BackendApplicationClient(client_id))
+        oauth_client = None
+        if mode == 'client':
+            oauth_client = BackendApplicationClient(client_id=client_id)
+        elif mode == 'user':
+            oauth_client = WebApplicationClient(client_id=client_id)
+        else:
+            raise ValueError(
+                f'Invalid API client mode (must be either \'client\' or \'user\', got {mode})'
+            )
+        self.oauth_session = OAuth2Session(client=oauth_client)
         self.token = {}
+        self.mode = mode
 
         self._query_cache = {}
         self.cache_expiry = cache_expiry
@@ -98,7 +142,8 @@ class FFLogsClient(
                 with open(cache_path, 'rb') as f:
                     self._query_cache = pickle.load(f)
 
-        self._transport = RequestsHTTPTransport(url=self.CLIENT_API_URL)
+        endpoint = self.CLIENT_ENDPOINT if mode == 'client' else self.USER_ENDPOINT
+        self._transport = RequestsHTTPTransport(url=self.API_URL + endpoint)
         self._gql_client = GQLClient(transport=self._transport, fetch_schema_from_transport=True)
 
     def close(self):
@@ -106,9 +151,20 @@ class FFLogsClient(
         self._transport.close()
 
     @ensure_token
-    def q(self, query: str, ignore_cache: bool = False) -> Dict[str, Any]:
+    def q(self, query: str, ignore_cache: bool = False) -> dict[str, Any]:
         '''
-        Executes a GraphQL query against the FFLogs API
+        Executes a GraphQL query against the FFLogs API.
+
+        Generally, you should not use this unless you need to execute a query that is not properly
+        supported by the client. You can also use this function to query for more information in
+        batch than the client normally would.
+
+        The result of the query is stored in cache by default, and will be returned in place of a
+        real query result if the same query is repeated. If you need up-to-date query results,
+        use `ignore_cache` to force the client to query the actual API for the information.
+        Note that the result is still cached if the client has caching enabled, so any repeat of
+        the same query that does not use `ignore_cache` will always return the last result of
+        actually executing the query.
 
         Args:
             query: The GraphQL query to execute
@@ -134,7 +190,15 @@ class FFLogsClient(
 
     def save_cache(self, silent: bool = True) -> None:
         '''
-        Stores the cached queries in pickled format
+        Stores all cached queries in pickled format.
+
+        The query cache file is stored in the directory specified by `CACHE_DIR`. The file name
+        is the the unix timestamp of the query with the largest expiry time. This means that
+        there is no guarantee that all queries in the cache are usable, but there is at least some
+        useful data in the cache.
+
+        Args:
+            silent: If False, print the path of the cache file.
         '''
         if not os.path.exists(self.CACHE_DIR):
             os.makedirs(self.CACHE_DIR)
@@ -151,17 +215,21 @@ class FFLogsClient(
 
     def extend_cache(self, extension_time: int) -> None:
         '''
-        Extend the lifetime of cache entries
+        Extend the lifetime of all cache entries.
 
         Args:
-            extension_time: How much time to add to the cache entry expiry time
+            extension_time: How much time to add to the cache entries' expiry time, in seconds.
         '''
         for query, entry in self._query_cache.items():
             self._query_cache[query] = (entry[0] + extension_time, entry[1])
 
     def clean_cache(self) -> None:
         '''
-        Delete expired cache files
+        Delete expired cache files.
+
+        This goes through the cache file directory, deleting all pickled files with a timestamp less
+        than the current unix timestamp. Such cache files are guaranteed not to contain useful data
+        anymore.
         '''
         cache_files = list(filter(
             lambda f: f.endswith('.pkl') and f[:-4].replace('.', '').isdigit(),

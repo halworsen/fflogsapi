@@ -40,15 +40,6 @@ class FFLogsFight:
 
         return result
 
-    def fetch_batch(self) -> None:
-        '''
-        Attempt to fetch and store large amounts of fight information in a single query
-        '''
-        result = self._query_data(', '.join(self.batch_fields))
-        data = result['reportData']['report']['fights'][0]
-        for field in self.batch_fields:
-            self._data[field] = data[field]
-
     @fetch_data('name')
     def name(self) -> str:
         '''
@@ -170,7 +161,7 @@ class FFLogsFight:
 
         return construct_filter_string(filters), filters
 
-    def fight_events(self, filters: dict[str, Any] = {}) -> dict[Any, Any]:
+    def events(self, filters: dict[str, Any] = {}) -> dict[Any, Any]:
         '''
         Retrieves the events of the fight.
 
@@ -203,14 +194,15 @@ class FFLogsFight:
 
             filter_string = construct_filter_string(filters)
             result = self.report._query_data(
-                f'events({filter_string}) {{ data, nextPageTimestamp }}')
+                f'events({filter_string}) {{ data, nextPageTimestamp }}'
+            )
             events = result['reportData']['report']['events']['data']
             fight_events += events
             next_page = result['reportData']['report']['events']['nextPageTimestamp']
 
         return fight_events
 
-    def fight_graph(self, filters: dict[str, Any] = {}) -> dict[Any, Any]:
+    def graph(self, filters: dict[str, Any] = {}) -> dict[Any, Any]:
         '''
         Retrieves the graph information for the fight,
         i.e. damage done, healing done, etc. for various points in the fight.
@@ -232,7 +224,7 @@ class FFLogsFight:
         result = self.report._query_data(f'graph({graph_filters})')
         return result['reportData']['report']['graph']['data']
 
-    def fight_table(self, filters: dict[str, str] = {}) -> dict[Any, Any]:
+    def table(self, filters: dict[str, str] = {}) -> dict[Any, Any]:
         '''
         Retrieves the table information for the fight.
 

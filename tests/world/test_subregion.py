@@ -13,17 +13,23 @@ class SubregionTest(unittest.TestCase):
     Test cases for FFLogs subregion information.
     '''
 
-    def setUp(self) -> None:
-        self.client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, cache_expiry=CACHE_EXPIRY)
-        self.subregion = self.client.get_subregion(id=1)
+    SUBREGION_ID = 1
 
-    def tearDown(self) -> None:
-        self.client.close()
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, cache_expiry=CACHE_EXPIRY)
+        cls.subregion = cls.client.get_subregion(id=cls.SUBREGION_ID)
 
-    def test_name(self) -> None:
+    @classmethod
+    def tearDownClass(cls) -> None:
+        cls.client.close()
+        cls.client.save_cache()
+
+    def test_fields(self) -> None:
         '''
-        The client should be able to fetch the name of the subregion.
+        The client should be able to fetch the id and name of the subregion.
         '''
+        self.assertEqual(self.subregion.id(), self.SUBREGION_ID)
         self.assertEqual(self.subregion.name(), 'Aether')
 
     def test_region(self) -> None:

@@ -6,7 +6,7 @@ from .user import FFLogsUser
 
 class UserMixin:
     '''
-    Client extensions to support the user data objects of the FF Logs API
+    Client extensions to support the user data exposed by the FF Logs API.
     '''
 
     def get_current_user(self) -> Optional[FFLogsUser]:

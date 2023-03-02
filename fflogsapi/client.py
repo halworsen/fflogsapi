@@ -16,6 +16,7 @@ from requests.auth import HTTPBasicAuth
 from requests_oauthlib import OAuth2Session
 
 from .characters.client_extensions import CharactersMixin
+from .prograce.client_extensions import ProgressRaceMixin
 from .reports.client_extensions import ReportsMixin
 from .user.client_extensions import UserMixin
 from .user_auth import UserModeAuthMixin
@@ -50,6 +51,7 @@ class FFLogsClient(
     CharactersMixin,
     WorldMixin,
     UserMixin,
+    ProgressRaceMixin,
 ):
     '''
     A client capable of communicating with the FFLogs V2 GraphQL API.

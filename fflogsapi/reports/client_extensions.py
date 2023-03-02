@@ -3,6 +3,10 @@ from .report import FFLogsReport
 
 
 class ReportsMixin:
+    '''
+    Client extensions to support report data exposed by the FF Logs API.
+    '''
+
     def report_pages(self, filters: dict = {}) -> FFLogsReportPaginationIterator:
         '''
         Iterate over pages of FFLogs reports.

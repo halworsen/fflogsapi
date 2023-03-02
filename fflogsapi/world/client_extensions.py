@@ -9,6 +9,10 @@ from .zone import FFLogsZone
 
 
 class WorldMixin:
+    '''
+    Client extensions to support world data exposed by the FF Logs API.
+    '''
+
     def get_encounter(self, id: int) -> FFLogsEncounter:
         '''
         Retrieves the given encounter data from FFLogs.

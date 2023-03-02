@@ -33,14 +33,14 @@ class FFLogsRegionServerPage(FFLogsPage):
 
     PAGINATION_QUERY = Q_REGION_SERVER_PAGINATION
     PAGE_INDICES = ['worldData', 'region', 'servers']
-    OBJECT_ID_FIELD = 'id'
+    DATA_FIELDS = ['id']
 
-    def init_object(self, id: int) -> 'FFLogsServer':
+    def init_object(self, data: dict) -> 'FFLogsServer':
         '''
         Initializes a server with the given ID.
         '''
         from .server import FFLogsServer
-        return FFLogsServer(filters={'id': id}, client=self._client)
+        return FFLogsServer(filters={'id': data['id']}, client=self._client)
 
 
 class FFLogsRegionServerPaginationIterator(FFLogsPaginationIterator):

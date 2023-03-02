@@ -10,13 +10,13 @@ class FFLogsCharacterPage(FFLogsPage):
 
     PAGINATION_QUERY = Q_CHARACTER_PAGINATION
     PAGE_INDICES = ['characterData', 'characters']
-    OBJECT_ID_FIELD = 'id'
+    DATA_FIELDS = ['id']
 
-    def init_object(self, id: int) -> FFLogsCharacter:
+    def init_object(self, data: dict) -> FFLogsCharacter:
         '''
         Initializes a character with the given ID.
         '''
-        return FFLogsCharacter(id=id, client=self._client)
+        return FFLogsCharacter(id=data['id'], client=self._client)
 
 
 class FFLogsCharacterPaginationIterator(FFLogsPaginationIterator):

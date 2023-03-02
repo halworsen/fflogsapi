@@ -10,13 +10,13 @@ class FFLogsReportPage(FFLogsPage):
 
     PAGINATION_QUERY = Q_REPORT_PAGINATION
     PAGE_INDICES = ['reportData', 'reports']
-    OBJECT_ID_FIELD = 'code'
+    DATA_FIELDS = ['code']
 
-    def init_object(self, code: str) -> FFLogsReport:
+    def init_object(self, data: dict) -> FFLogsReport:
         '''
-        Initializes a report with the given ID (code).
+        Initializes a report with the given code.
         '''
-        return FFLogsReport(code=code, client=self._client)
+        return FFLogsReport(code=data['code'], client=self._client)
 
 
 class FFLogsReportPaginationIterator(FFLogsPaginationIterator):

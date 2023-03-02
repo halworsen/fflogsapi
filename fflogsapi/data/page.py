@@ -17,8 +17,8 @@ class FFLogsPage:
     PAGINATION_QUERY: str = ''
     # How to index the queried data to reach page metadata
     PAGE_INDICES: list = []
-    # Field name of the ID/code of the object being paginated
-    OBJECT_ID_FIELD: str = ''
+    # The data fields of the objects in the page to retrieve
+    DATA_FIELDS = []
 
     def __init__(self,
                  page_num: int,
@@ -31,11 +31,11 @@ class FFLogsPage:
         self.n_to = -1
         self.filters = filters
         self.additional_formatting = additional_formatting
-        self.data = {}
+        self.data = None
+        self.objects = None
 
         self._client = client
         self._initialized = False
-        self._ids = []
 
         self._custom_filters = []
         for key, filter in filters.items():
@@ -49,19 +49,18 @@ class FFLogsPage:
         Retrieves metadata about data contained in this page.
         Specifically, IDs/codes are gathered and stored.
         '''
-        filters = ', '.join(self._custom_filters + [f'page: {self.page_num}'])
+        filters = ','.join(self._custom_filters + [f'page: {self.page_num}'])
+        data_fields = ','.join(self.DATA_FIELDS)
         page_data = self._client.q(self.PAGINATION_QUERY.format(
             filters=filters,
-            innerQuery=Q_PAGE_META.format(idField=self.OBJECT_ID_FIELD),
+            innerQuery=Q_PAGE_META.format(dataFields=data_fields),
             **self.additional_formatting,
         ))
 
         self.n_from = itindex(page_data, self.PAGE_INDICES)['from']
         self.n_to = itindex(page_data, self.PAGE_INDICES)['to']
-
-        self._ids = []
-        for object in itindex(page_data, self.PAGE_INDICES)['data']:
-            self._ids.append(object[self.OBJECT_ID_FIELD])
+        self.data = itindex(page_data, self.PAGE_INDICES)['data']
+        self.objects = [None] * len(self.data)
 
         self._initialized = True
 
@@ -75,32 +74,31 @@ class FFLogsPage:
 
         return (self.n_to - self.n_from) + 1
 
-    def init_object(self, id: Any) -> Any:
+    def init_object(self, data: dict) -> Any:
         '''
         Initializes an instance of the object being paginated. Up to implementation.
         '''
         pass
 
-    def object(self, id: Any) -> Optional[Any]:
+    def object(self, idx: int) -> Optional[Any]:
         '''
         Get a specific object from this page.
 
         Args:
-            id: The id of the object to retrieve from the page
+            idx: The page index of the object to retrieve from the page
         Returns:
             An object or None if the object is not contained in the page
         '''
         if not self._initialized:
             self._query_page()
 
-        if id not in self._ids:
+        if idx < 0 or idx > len(self.data):
             return None
 
-        if id not in self.data:
-            object = self.init_object(id)
-            self.data[id] = object
+        if self.objects[idx] is None:
+            self.objects[idx] = self.init_object(self.data[idx])
 
-        return self.data[id]
+        return self.objects[idx]
 
 
 class FFLogsPageIterator:
@@ -110,18 +108,18 @@ class FFLogsPageIterator:
 
     def __init__(self, page: 'FFLogsPage') -> None:
         self._page = page
-        self._cur_id = -1
+        self._cur_idx = -1
         self._max_amount = page.count()
 
     def __iter__(self) -> 'FFLogsPageIterator':
         return self
 
     def __next__(self) -> Any:
-        self._cur_id += 1
-        if self._cur_id < self._max_amount:
-            return self._page.object(self._page._ids[self._cur_id])
+        self._cur_idx += 1
+        if self._cur_idx < self._max_amount:
+            return self._page.object(self._cur_idx)
         else:
-            self._cur_id = -1
+            self._cur_idx = -1
             raise StopIteration
 
 

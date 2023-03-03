@@ -6,7 +6,7 @@ from ..util.indexing import itindex
 from ..world.server import FFLogsServer
 from ..world.zone import FFLogsZone
 from .dataclasses import FFLogsGameFaction, FFLogsGuildZoneRankings, FFLogsRank, FFLogsReportTag
-from .pages import FFLogsGuildAttendancePaginationIterator, FFLogsGuildCharactersPaginationIterator
+from .pages import FFLogsCharacterPaginationIterator, FFLogsGuildAttendancePaginationIterator
 from .queries import Q_GUILD, Q_GUILD_RANKING
 
 if TYPE_CHECKING:
@@ -166,14 +166,14 @@ class FFLogsGuild:
             client=self._client,
         )
 
-    def characters(self) -> FFLogsGuildCharactersPaginationIterator:
+    def characters(self) -> FFLogsCharacterPaginationIterator:
         '''
         Get a pagination of all characters belonging to the guild.
 
         Returns:
             An iterator over all guild character pages.
         '''
-        return FFLogsGuildCharactersPaginationIterator(
+        return FFLogsCharacterPaginationIterator(
             client=self._client,
             additional_formatting={'guildID': self.id()}
         )

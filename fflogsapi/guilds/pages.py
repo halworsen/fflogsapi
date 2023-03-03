@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from ..characters.pages import FFLogsCharacterPage
+from ..characters.character import FFLogsCharacter
 from ..data.page import FFLogsPage, FFLogsPaginationIterator
 from ..reports.report import FFLogsReport
 from ..world.zone import FFLogsZone
@@ -65,18 +65,25 @@ class FFLogsGuildAttendancePaginationIterator(FFLogsPaginationIterator):
     PAGE_CLASS = FFLogsGuildAttendancePage
 
 
-class FFLogsGuildCharactersPage(FFLogsCharacterPage):
+class FFLogsCharacterPage(FFLogsPage):
     '''
-    Represents a page of a guild's characters on FF Logs.
+    Represents a page of a guild's characters on FFLogs.
     '''
 
     PAGINATION_QUERY = Q_GUILD_CHARACTER_PAGINATION
     PAGE_INDICES = ['guildData', 'guild', 'members']
+    DATA_FIELDS = ['id']
+
+    def init_object(self, data: dict) -> FFLogsCharacter:
+        '''
+        Initializes a character with the given ID.
+        '''
+        return FFLogsCharacter(id=data['id'], client=self._client)
 
 
-class FFLogsGuildCharactersPaginationIterator(FFLogsPaginationIterator):
+class FFLogsCharacterPaginationIterator(FFLogsPaginationIterator):
     '''
-    Iterates over multiple pages of a guild's characters.
+    Iterates over multiple character pages
     '''
 
-    PAGE_CLASS = FFLogsGuildCharactersPage
+    PAGE_CLASS = FFLogsCharacterPage

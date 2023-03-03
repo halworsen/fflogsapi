@@ -41,10 +41,13 @@ class FFLogsPage:
         for key, filter in filters.items():
             self._custom_filters.append(f'{key}: {filter}')
 
-    def __iter__(self):
+    def __iter__(self) -> 'FFLogsPageIterator':
         return FFLogsPageIterator(page=self)
 
-    def _query_page(self):
+    def __len__(self) -> int:
+        return self.count()
+
+    def _query_page(self) -> None:
         '''
         Retrieves metadata about data contained in this page.
         Specifically, IDs/codes are gathered and stored.
@@ -134,7 +137,7 @@ class FFLogsPaginationIterator:
     def __init__(
         self,
         client: 'FFLogsClient',
-        filters: dict[str, str] = {},
+        filters: dict[str, Any] = {},
         additional_formatting: dict[str, str] = {},
     ) -> None:
         '''

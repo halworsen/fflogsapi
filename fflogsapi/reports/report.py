@@ -31,7 +31,7 @@ class FFLogsReport:
     DATA_INDICES = ['reportData', 'report']
 
     def __init__(self, code: str, client: 'FFLogsClient' = None) -> None:
-        self.code = code
+        self._code = code
         self._fights = {}
         self._data = {}
         self._client = client
@@ -47,7 +47,7 @@ class FFLogsReport:
         Query for a specific piece of information from a report.
         '''
         result = self._client.q(Q_REPORT_DATA.format(
-            reportCode=self.code,
+            reportCode=self._code,
             innerQuery=query
         ), ignore_cache=ignore_cache)
 
@@ -84,6 +84,13 @@ class FFLogsReport:
                 type=ability_data['type'],
             )
             self._data['masterData']['abilities'].append(ability)
+
+    def code(self) -> str:
+        '''
+        Returns:
+            The report code
+        '''
+        return self._code
 
     @fetch_master_data
     def actors(self) -> list[FFLogsActor]:

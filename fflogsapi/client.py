@@ -16,6 +16,7 @@ from requests.auth import HTTPBasicAuth
 from requests_oauthlib import OAuth2Session
 
 from .characters.client_extensions import CharactersMixin
+from .guilds.client_extensions import GuildsMixin
 from .prograce.client_extensions import ProgressRaceMixin
 from .reports.client_extensions import ReportsMixin
 from .user.client_extensions import UserMixin
@@ -49,6 +50,7 @@ class FFLogsClient(
     UserModeAuthMixin,
     ReportsMixin,
     CharactersMixin,
+    GuildsMixin,
     WorldMixin,
     UserMixin,
     ProgressRaceMixin,

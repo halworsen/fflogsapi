@@ -17,8 +17,12 @@ class FFLogsServer:
 
     DATA_INDICES = ['worldData', 'server']
 
-    def __init__(self, filters: dict = {}, client: 'FFLogsClient' = None) -> None:
+    def __init__(self, filters: dict = {}, id: int = -1, client: 'FFLogsClient' = None) -> None:
         self.filters = filters.copy()
+        if id != -1 and 'id' not in self.filters:
+            self.filters['id'] = id
+
+        self._id = self.filters['id'] if 'id' in self.filters else -1
         self._data = {}
         self._encounters = {}
         self._client = client
@@ -43,7 +47,10 @@ class FFLogsServer:
         Returns:
             The server's ID.
         '''
-        return self._data['id']
+        if self._id == -1:
+            self._id = self._data['id']
+            self.filters = {'id': self._id}
+        return self._id
 
     @fetch_data('name')
     def name(self) -> str:

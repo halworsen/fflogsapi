@@ -16,6 +16,8 @@ from requests.auth import HTTPBasicAuth
 from requests_oauthlib import OAuth2Session
 
 from .characters.client_extensions import CharactersMixin
+from .guilds.client_extensions import GuildsMixin
+from .prograce.client_extensions import ProgressRaceMixin
 from .reports.client_extensions import ReportsMixin
 from .user.client_extensions import UserMixin
 from .user_auth import UserModeAuthMixin
@@ -48,8 +50,10 @@ class FFLogsClient(
     UserModeAuthMixin,
     ReportsMixin,
     CharactersMixin,
+    GuildsMixin,
     WorldMixin,
     UserMixin,
+    ProgressRaceMixin,
 ):
     '''
     A client capable of communicating with the FFLogs V2 GraphQL API.
@@ -72,6 +76,8 @@ class FFLogsClient(
     OAUTH_TOKEN_URL = 'https://www.fflogs.com/oauth/token'
 
     CACHE_DIR = './querycache'
+
+    Q_RATE_LIMIT = 'query{{rateLimitData{innerQuery}}}'
 
     def __init__(
         self,
@@ -240,3 +246,37 @@ class FFLogsClient(
                 expiry = float(file[:-4])
                 if time() >= expiry:
                     os.remove(os.path.join(self.CACHE_DIR, file))
+
+    def rate_limit_allowance(self) -> int:
+        '''
+        Fetches the amount of points the API key is allowed to spend each hour.
+
+        Returns:
+            The total point allowance of the API key.
+        '''
+        return self.q(self.Q_RATE_LIMIT.format(
+            innerQuery='limitPerHour'
+        ))['rateLimitData']['limitPerHour']
+
+    def rate_limit_reset_time(self) -> int:
+        '''
+        Fetches the amount of seconds remaining until the hourly point allowance resets for
+        the current API key.
+
+        Returns:
+            Seconds left until points reset.
+        '''
+        return self.q(self.Q_RATE_LIMIT.format(
+            innerQuery='pointsResetIn'
+        ))['rateLimitData']['pointsResetIn']
+
+    def rate_limit_spent(self) -> float:
+        '''
+        Fetches the amount of points that have been spent by the API key the past hour.
+
+        Returns:
+            The amount of points spent.
+        '''
+        return self.q(self.Q_RATE_LIMIT.format(
+            innerQuery='pointsSpentThisHour'
+        ))['rateLimitData']['pointsSpentThisHour']

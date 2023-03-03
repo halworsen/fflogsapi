@@ -7,6 +7,7 @@ from .queries import Q_CHARACTER_DATA
 
 if TYPE_CHECKING:
     from ..client import FFLogsClient
+    from ..guilds.guild import FFLogsGuild
     from ..world.server import FFLogsServer
 
 
@@ -93,6 +94,17 @@ class FFLogsCharacter:
             The character's FC rank.
         '''
         return self._data['guildRank']
+
+    def guilds(self) -> list['FFLogsGuild']:
+        '''
+        Get a list of all guilds that this character belongs to.
+
+        Returns:
+            A list of guilds the character is in.
+        '''
+        from ..guilds.guild import FFLogsGuild
+        guilds = itindex(self._query_data('guilds{ id }'), self.DATA_INDICES)['guilds']
+        return [FFLogsGuild(id=guild['id'], client=self._client) for guild in guilds]
 
     def game_data(self, filters: dict = {}) -> dict:
         '''

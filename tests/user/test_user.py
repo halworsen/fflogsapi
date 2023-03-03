@@ -56,6 +56,13 @@ class CharacterTest(unittest.TestCase):
         with self.assertRaises(Exception):
             self.user.characters()
 
+    def test_user_guilds(self) -> None:
+        '''
+        The client should be able to get a list of the guilds that a character belongs to.
+        '''
+        with self.assertRaises(Exception):
+            self.user.guilds()
+
 
 if __name__ == '__main__':
     unittest.main()

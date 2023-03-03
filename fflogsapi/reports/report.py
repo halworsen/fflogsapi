@@ -1,14 +1,18 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from ..data.dataclasses import FFLogsAbility, FFLogsActor
+from ..user.user import FFLogsUser
 from ..util.decorators import fetch_data
 from ..util.indexing import itindex
+from ..world.region import FFLogsRegion
 from ..world.zone import FFLogsZone
 from .fight import FFLogsFight
 from .queries import IQ_REPORT_MASTER_DATA, Q_REPORT_DATA
 
 if TYPE_CHECKING:
     from ..client import FFLogsClient
+    from ..guilds.dataclasses import FFLogsReportTag
+    from ..guilds.guild import FFLogsGuild
 
 
 def fetch_master_data(func):
@@ -31,7 +35,7 @@ class FFLogsReport:
     DATA_INDICES = ['reportData', 'report']
 
     def __init__(self, code: str, client: 'FFLogsClient' = None) -> None:
-        self.code = code
+        self._code = code
         self._fights = {}
         self._data = {}
         self._client = client
@@ -47,7 +51,7 @@ class FFLogsReport:
         Query for a specific piece of information from a report.
         '''
         result = self._client.q(Q_REPORT_DATA.format(
-            reportCode=self.code,
+            reportCode=self._code,
             innerQuery=query
         ), ignore_cache=ignore_cache)
 
@@ -85,6 +89,13 @@ class FFLogsReport:
             )
             self._data['masterData']['abilities'].append(ability)
 
+    def code(self) -> str:
+        '''
+        Returns:
+            The report code
+        '''
+        return self._code
+
     @fetch_master_data
     def actors(self) -> list[FFLogsActor]:
         '''
@@ -111,11 +122,44 @@ class FFLogsReport:
 
     @fetch_data('title')
     def title(self) -> str:
+        '''
+        Returns:
+            The title of this report.
+        '''
         return self._data['title']
 
-    @fetch_data('owner')
-    def owner(self) -> str:
-        return self._data['owner']
+    def owner(self) -> FFLogsUser:
+        '''
+        Returns:
+            The user that owns this report.
+        '''
+        owner_id = itindex(self._query_data('owner{ id }'), self.DATA_INDICES)['owner']['id']
+        return FFLogsUser(id=owner_id, client=self._client)
+
+    def guild(self) -> Optional['FFLogsGuild']:
+        '''
+        Returns:
+            The guild this report belongs to, if any.
+        '''
+        from ..guilds.guild import FFLogsGuild
+        guild = itindex(self._query_data('guild{ id }'), self.DATA_INDICES)['guild']
+        if guild is None:
+            return None
+        return FFLogsGuild(id=guild['id'], client=self._client)
+
+    def tag(self) -> Optional['FFLogsReportTag']:
+        '''
+        The tag applied to this report used by the guild to which this report belongs. If a tag
+        was not applied, returns None.
+
+        Returns:
+            The report tag, if any.
+        '''
+        from ..guilds.dataclasses import FFLogsReportTag
+        tag = itindex(self._query_data('guildTag{ id, name }'), self.DATA_INDICES)['guildTag']
+        if tag is None:
+            return None
+        return FFLogsReportTag(id=tag['id'], name=tag['name'], guild=self.guild())
 
     def zone(self) -> FFLogsZone:
         '''
@@ -124,6 +168,14 @@ class FFLogsReport:
         '''
         zone_id = itindex(self._query_data('zone{ id }'), self.DATA_INDICES)['zone']['id']
         return FFLogsZone(id=zone_id)
+
+    def region(self) -> FFLogsRegion:
+        '''
+        Returns:
+            The region of the report.
+        '''
+        id = itindex(self._query_data('region{ id }'), self.DATA_INDICES)['region']['id']
+        return FFLogsRegion(id=id, client=self._client)
 
     @fetch_data('startTime')
     def start_time(self) -> float:

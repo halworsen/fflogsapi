@@ -6,7 +6,7 @@ from .user import FFLogsUser
 
 class UserMixin:
     '''
-    Client extensions to support the user data objects of the FF Logs API
+    Client extensions to support the user data exposed by the FF Logs API.
     '''
 
     def get_current_user(self) -> Optional[FFLogsUser]:
@@ -15,7 +15,7 @@ class UserMixin:
         '''
         if self.mode != 'user':
             error = 'The client must be in user mode to get the current user.'
-            error += '\nSee user_auth.py for documentation on setup required to use user mode.'
+            error += '\nSee the documentation for setup required to use user mode.'
             raise PermissionError(error)
 
         user_id = self.q(Q_CURRENT_USER.format(

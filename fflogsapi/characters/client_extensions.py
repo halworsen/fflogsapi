@@ -5,6 +5,10 @@ from .pages import FFLogsCharacterPaginationIterator
 
 
 class CharactersMixin:
+    '''
+    Client extensions to support character data exposed by the FF Logs API.
+    '''
+
     def character_pages(self, guild_id: int) -> FFLogsCharacterPaginationIterator:
         '''
         Iterate over pages of FFLogs characters in a specific guild.
@@ -16,7 +20,7 @@ class CharactersMixin:
         '''
         return FFLogsCharacterPaginationIterator(filters={'guildID': guild_id}, client=self)
 
-    def get_character(self, filters: dict = {}, id: Optional[int] = None) -> FFLogsCharacter:
+    def get_character(self, filters: dict = {}, id: Optional[int] = -1) -> FFLogsCharacter:
         '''
         Retrieves character data from FFLogs.
         Note that it is possible to use only the filters argument.
@@ -29,6 +33,4 @@ class CharactersMixin:
         Returns:
             A FFLogsCharacter representing the requested character.
         '''
-        if 'id' not in filters and id is not None:
-            filters['id'] = id
-        return FFLogsCharacter(filters=filters, client=self)
+        return FFLogsCharacter(filters=filters, id=id, client=self)

@@ -1,13 +1,11 @@
 import unittest
 
-from fflogsapi.world.region import FFLogsRegion
-
-from fflogsapi.guilds.dataclasses import FFLogsReportTag
-
 from fflogsapi.client import FFLogsClient
+from fflogsapi.guilds.dataclasses import FFLogsReportTag
 from fflogsapi.reports.fight import FFLogsFight
 from fflogsapi.reports.pages import FFLogsReportPage
 from fflogsapi.reports.report import FFLogsReport
+from fflogsapi.world.region import FFLogsRegion
 from fflogsapi.world.zone import FFLogsZone
 
 from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET

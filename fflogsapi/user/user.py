@@ -7,8 +7,9 @@ from ..util.indexing import itindex
 from .queries import Q_USER
 
 if TYPE_CHECKING:
-    from ..guilds.guild import FFLogsGuild
     from client import FFLogsClient
+
+    from ..guilds.guild import FFLogsGuild
 
 
 class FFLogsUser:

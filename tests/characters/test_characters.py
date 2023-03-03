@@ -1,11 +1,10 @@
 import unittest
 
-from fflogsapi.guilds.guild import FFLogsGuild
-
 from fflogsapi.characters.character import FFLogsCharacter
 from fflogsapi.characters.pages import FFLogsCharacterPage
 from fflogsapi.client import FFLogsClient
 from fflogsapi.constants import FIGHT_DIFFICULTY_SAVAGE
+from fflogsapi.guilds.guild import FFLogsGuild
 from fflogsapi.util.gql_enums import GQLEnum
 from fflogsapi.world.server import FFLogsServer
 

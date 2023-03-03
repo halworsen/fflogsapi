@@ -7,6 +7,7 @@ from ..util.indexing import itindex
 from .queries import Q_USER
 
 if TYPE_CHECKING:
+    from ..guilds.guild import FFLogsGuild
     from client import FFLogsClient
 
 
@@ -68,3 +69,20 @@ class FFLogsUser:
         ids = [c['id'] for c in characters]
 
         return [FFLogsCharacter(id=id, client=self._client) for id in ids]
+
+    def guilds(self) -> list['FFLogsGuild']:
+        '''
+        Get a list of all the guilds the user belongs to.
+
+        This is only available when the client is in user mode. If the client is in client mode,
+        the API will return an error stating that you do not have permission to view the user's
+        claimed characters.
+
+        Returns:
+            A list of guilds the user belongs to.
+        '''
+        from ..guilds.guild import FFLogsGuild
+        guilds = itindex(self._query_data('guilds { id }'), self.DATA_INDICES)['guilds']
+        ids = [guild['id'] for guild in guilds]
+
+        return [FFLogsGuild(id=id, client=self._client) for id in ids]

@@ -20,7 +20,7 @@ class CharactersMixin:
         '''
         return FFLogsCharacterPaginationIterator(filters={'guildID': guild_id}, client=self)
 
-    def get_character(self, filters: dict = {}, id: Optional[int] = None) -> FFLogsCharacter:
+    def get_character(self, filters: dict = {}, id: Optional[int] = -1) -> FFLogsCharacter:
         '''
         Retrieves character data from FFLogs.
         Note that it is possible to use only the filters argument.
@@ -33,6 +33,4 @@ class CharactersMixin:
         Returns:
             A FFLogsCharacter representing the requested character.
         '''
-        if 'id' not in filters and id is not None:
-            filters['id'] = id
-        return FFLogsCharacter(filters=filters, client=self)
+        return FFLogsCharacter(filters=filters, id=id, client=self)

@@ -1,5 +1,7 @@
 import unittest
 
+from fflogsapi.guilds.guild import FFLogsGuild
+
 from fflogsapi.characters.character import FFLogsCharacter
 from fflogsapi.characters.pages import FFLogsCharacterPage
 from fflogsapi.client import FFLogsClient
@@ -19,12 +21,15 @@ class CharacterTest(unittest.TestCase):
     were changed or the character was deleted.
     '''
 
+    CHARACTER_ID = 19181640
+    CHARACTER_NAME = 'Dylan Kusarigama'
+
     @classmethod
     def setUpClass(cls) -> None:
         cls.client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, cache_expiry=CACHE_EXPIRY)
-        cls.character = cls.client.get_character(id=19181640)
+        cls.character = cls.client.get_character(id=cls.CHARACTER_ID)
         cls.named_character = cls.client.get_character(filters={
-            'name': 'Dylan Kusarigama',
+            'name': cls.CHARACTER_NAME,
             'serverRegion': 'EU',
             'serverSlug': 'Lich',
         })
@@ -45,7 +50,8 @@ class CharacterTest(unittest.TestCase):
         The client should be able to fetch fields about the character
         such as their name, server, etc.
         '''
-        self.assertEqual(self.character.name(), 'Dylan Kusarigama')
+        self.assertEqual(self.character.id(), self.CHARACTER_ID)
+        self.assertEqual(self.character.name(), self.CHARACTER_NAME)
         self.assertIsInstance(self.character.server(), FFLogsServer)
         self.assertEqual(self.character.lodestone_id(), 28321575)
         # considering these as volatile. there is no point in testing for specific values
@@ -75,6 +81,16 @@ class CharacterTest(unittest.TestCase):
         })
         self.assertIsInstance(rankings, dict)
         self.assertEqual(rankings['difficulty'], FIGHT_DIFFICULTY_SAVAGE)
+
+    def test_guilds(self) -> None:
+        '''
+        The client should be able to fetch a list of all guilds the character belongs to.
+        '''
+        # get a character that actually belongs to a guild
+        surana = self.client.get_character(id=18994677)
+        guilds = surana.guilds()
+        self.assertIsInstance(guilds[0], FFLogsGuild)
+        self.assertEqual(guilds[0].id(), 110310)
 
     def test_game_data(self) -> None:
         '''

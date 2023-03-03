@@ -1,5 +1,9 @@
 import unittest
 
+from fflogsapi.world.region import FFLogsRegion
+
+from fflogsapi.guilds.dataclasses import FFLogsReportTag
+
 from fflogsapi.client import FFLogsClient
 from fflogsapi.reports.fight import FFLogsFight
 from fflogsapi.reports.pages import FFLogsReportPage
@@ -94,6 +98,48 @@ class ReportTest(unittest.TestCase):
         fake_fight = self.report.fight(id=123456789)
         self.assertIsNone(fake_fight)
 
+    def test_guild(self) -> None:
+        '''
+        The client should be able to fetch the guild this report belongs to.
+
+        It should return None for a personal log report.
+        '''
+        guild = self.report.guild()
+        self.assertEqual(guild.id(), 81924)
+        self.assertEqual(guild.name(), 'Kindred')
+
+        personal_report = self.client.get_report(code='BWgAdkachXJ3Drj9')
+        guild = personal_report.guild()
+        self.assertIsNone(guild)
+
+    def test_tag(self) -> None:
+        '''
+        The client should be able to get the tag of a report.
+        '''
+        tag = self.report.tag()
+        self.assertIsNone(tag)
+
+        report = self.client.get_report(code='V28qcCrfWFLRhgkK')
+        tag = report.tag()
+        self.assertIsInstance(tag, FFLogsReportTag)
+        self.assertEqual(tag.name, 'TOP Prog')
+
+    def test_owner(self) -> None:
+        '''
+        The client should be able to fetch the user that owns the report.
+        '''
+        owner = self.report.owner()
+        self.assertEqual(owner.id(), 315987)
+        self.assertEqual(owner.name(), 'Peridise')
+
+    def test_region(self) -> None:
+        '''
+        The client should be able to fetch the region of the report.
+        '''
+        region = self.report.region()
+        self.assertIsInstance(region, FFLogsRegion)
+        self.assertEqual(region.id(), 1)
+
 
 class ReportPageTest(unittest.TestCase):
     '''
@@ -104,8 +150,8 @@ class ReportPageTest(unittest.TestCase):
     were changed or the guild/user was deleted.
     '''
 
-    SPECIFIC_GUILD = 81924
-    SPECIFIC_USER = 315987
+    GUILD_ID = 81924
+    USER_ID = 315987
 
     def setUp(self) -> None:
         self.client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, cache_expiry=CACHE_EXPIRY)
@@ -118,7 +164,7 @@ class ReportPageTest(unittest.TestCase):
         '''
         The client should be able to handle pagination of guild reports
         '''
-        report_pages = self.client.report_pages({'guildID': self.SPECIFIC_GUILD})
+        report_pages = self.client.report_pages({'guildID': self.GUILD_ID})
 
         page_one = report_pages.__next__()
         self.assertIsInstance(page_one, FFLogsReportPage)
@@ -130,7 +176,7 @@ class ReportPageTest(unittest.TestCase):
         '''
         The client should be able to handle pagination of user reports
         '''
-        report_pages = self.client.report_pages({'userID': self.SPECIFIC_USER})
+        report_pages = self.client.report_pages({'userID': self.USER_ID})
 
         page_one = report_pages.__next__()
         self.assertIsInstance(page_one, FFLogsReportPage)

@@ -7,24 +7,12 @@ from ..world.region import FFLogsRegion
 from ..world.zone import FFLogsZone
 from .dataclasses import FFLogsActor, FFLogsReportAbility
 from .fight import FFLogsFight
-from .queries import IQ_REPORT_MASTER_DATA, Q_REPORT_DATA
+from .queries import IQ_REPORT_ABILITIES, IQ_REPORT_ACTORS, IQ_REPORT_LOG_VERSION, Q_REPORT_DATA
 
 if TYPE_CHECKING:
     from ..client import FFLogsClient
     from ..guilds.dataclasses import FFLogsReportTag
     from ..guilds.guild import FFLogsGuild
-
-
-def fetch_master_data(func):
-    '''
-    Decorator that queries for master data if needed before the function
-    '''
-    def ensured(*args, **kwargs):
-        self = args[0]
-        if 'masterData' not in self._data:
-            self._get_master_data()
-        return func(*args, **kwargs)
-    return ensured
 
 
 class FFLogsReport:
@@ -57,42 +45,6 @@ class FFLogsReport:
 
         return result
 
-    def _get_master_data(self) -> None:
-        '''
-        Fetches and stores report master data
-        '''
-        result = self._query_data(IQ_REPORT_MASTER_DATA)
-        master_data = result['reportData']['report']['masterData']
-        self._data['masterData'] = {
-            'logVersion': master_data['logVersion'],
-            'actors': [],
-            'abilities': [],
-        }
-
-        for actor_data in master_data['actors']:
-            jobs = self._client.jobs()
-            actor_job = list(filter(lambda j: j.slug == actor_data['subType'], jobs))
-
-            actor = FFLogsActor(
-                id=actor_data['id'],
-                name=actor_data['name'],
-                type=actor_data['type'],
-                sub_type=actor_data['subType'],
-                server=actor_data['server'],
-                game_id=actor_data['gameID'],
-                job=actor_job[0] if len(actor_job) else None,
-                pet_owner=actor_data['petOwner'],
-            )
-            self._data['masterData']['actors'].append(actor)
-
-        for ability_data in master_data['abilities']:
-            ability = FFLogsReportAbility(
-                game_id=ability_data['gameID'],
-                name=ability_data['name'],
-                type=ability_data['type'],
-            )
-            self._data['masterData']['abilities'].append(ability)
-
     def code(self) -> str:
         '''
         Returns:
@@ -100,29 +52,75 @@ class FFLogsReport:
         '''
         return self._code
 
-    @fetch_master_data
     def actors(self) -> list[FFLogsActor]:
         '''
         Returns:
             A list of all actors in the report
         '''
-        return self._data['masterData']['actors']
+        if 'masterActors' in self._data:
+            return self._data['masterActors']
 
-    @fetch_master_data
+        actors = itindex(
+            self._query_data(IQ_REPORT_ACTORS),
+            self.DATA_INDICES,
+        )['masterData']['actors']
+
+        all_actors = []
+        for actor in actors:
+            jobs = self._client.jobs()
+            actor_job = list(filter(lambda j: j.slug == actor['subType'], jobs))
+            actor = FFLogsActor(
+                id=actor['id'],
+                name=actor['name'],
+                type=actor['type'],
+                sub_type=actor['subType'],
+                server=actor['server'],
+                game_id=actor['gameID'],
+                job=actor_job[0] if len(actor_job) else None,
+                pet_owner=actor['petOwner'],
+            )
+
+            all_actors.append(actor)
+
+        self._data['masterActors'] = all_actors
+        return self._data['masterActors']
+
     def abilities(self) -> list[FFLogsReportAbility]:
         '''
         Returns:
             A list of all abilities in the report
         '''
-        return self._data['masterData']['abilities']
+        if 'masterAbilities' in self._data:
+            return self._data['masterAbilities']
 
-    @fetch_master_data
+        abilities = itindex(
+            self._query_data(IQ_REPORT_ABILITIES),
+            self.DATA_INDICES,
+        )['masterData']['abilities']
+
+        all_abilities = []
+        for ability in abilities:
+            ability = FFLogsReportAbility(
+                game_id=ability['gameID'],
+                name=ability['name'],
+                type=ability['type'],
+            )
+
+            all_abilities.append(ability)
+
+        self._data['masterAbilities'] = all_abilities
+        return self._data['masterAbilities']
+
     def log_version(self) -> int:
         '''
         Returns:
             The version of the client parser used to parse and upload the log file
         '''
-        return self._data['masterData']['logVersion']
+        version = itindex(
+            self._query_data(IQ_REPORT_LOG_VERSION),
+            self.DATA_INDICES,
+        )['masterData']['logVersion']
+        return version
 
     @fetch_data('title')
     def title(self) -> str:

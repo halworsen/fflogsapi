@@ -1,12 +1,12 @@
 import unittest
 
-from fflogsapi.guilds.guild import FFLogsGuild
-
 from fflogsapi.characters.character import FFLogsCharacter
 from fflogsapi.client import FFLogsClient
 from fflogsapi.guilds.dataclasses import (FFLogsAttendanceReport, FFLogsGuildZoneRankings,
                                           FFLogsRank, FFLogsReportTag,)
-from fflogsapi.guilds.pages import FFLogsGuildAttendancePaginationIterator, FFLogsGuildPage, FFLogsGuildPaginationIterator
+from fflogsapi.guilds.guild import FFLogsGuild
+from fflogsapi.guilds.pages import (FFLogsGuildAttendancePaginationIterator, FFLogsGuildPage,
+                                    FFLogsGuildPaginationIterator,)
 from fflogsapi.reports.report import FFLogsReport
 from fflogsapi.world.server import FFLogsServer
 from fflogsapi.world.zone import FFLogsZone
@@ -45,7 +45,7 @@ class FightTest(unittest.TestCase):
         The client should be able to find a guild both by ID and filter fields.
         '''
         self.assertEqual(self.guild.id(), self.named_guild.id())
-    
+
     def test_guild_pages(self) -> None:
         '''
         The client should be able to get a pagination of all guilds on the site.

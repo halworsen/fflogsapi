@@ -1,8 +1,7 @@
 from typing import TYPE_CHECKING, Any
 
-from ..util.filters import construct_filter_string
-
 from ..util.decorators import fetch_data
+from ..util.filters import construct_filter_string
 from ..util.indexing import itindex
 from .pages import FFLogsServerCharacterPaginationIterator
 from .queries import Q_SERVER

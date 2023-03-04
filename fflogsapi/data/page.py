@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING, Any, Optional
 
 from ..util.filters import construct_filter_string
-
 from ..util.indexing import itindex
 from .queries import Q_PAGE_META
 

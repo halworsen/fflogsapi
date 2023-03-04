@@ -71,5 +71,6 @@ class GameItemTest(unittest.TestCase):
         gc_names = [gc.name for gc in gcs]
         self.assertListEqual(sorted(all_gcs), sorted(gc_names))
 
+
 if __name__ == '__main__':
     unittest.main()

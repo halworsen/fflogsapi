@@ -1,10 +1,9 @@
 from typing import TYPE_CHECKING, Any, Union
 
-from ..util.filters import construct_filter_string
-
 from ..constants import FIGHT_DIFFICULTY_SAVAGE, PARTY_SIZE_FULL_PARTY
 from ..game.dataclasses import FFGrandCompany
 from ..util.decorators import fetch_data
+from ..util.filters import construct_filter_string
 from ..util.indexing import itindex
 from ..world.server import FFLogsServer
 from ..world.zone import FFLogsZone

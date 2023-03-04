@@ -54,8 +54,7 @@ class ReportTest(unittest.TestCase):
 
         actors = self.report.actors()
         self.assertGreater(len(actors), 0)
-        actor_data = [{'name': actor.name, 'job': actor.job()} for actor in actors]
-        self.assertIn({'name': 'Milotiq Umida', 'job': 'DarkKnight'}, actor_data)
+        self.assertIn('Milotiq Umida', [actor.name for actor in actors])
 
         abilities = self.report.abilities()
         self.assertGreater(len(abilities), 0)

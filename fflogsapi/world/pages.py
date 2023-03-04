@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
-from ..characters.pages import FFLogsCharacterPage
 from ..data.page import FFLogsPage, FFLogsPaginationIterator
+from ..guilds.pages import FFLogsCharacterPage
 from .queries import (Q_REGION_SERVER_PAGINATION, Q_SERVER_CHARACTER_PAGINATION,
                       Q_SUBREGION_SERVER_PAGINATION,)
 

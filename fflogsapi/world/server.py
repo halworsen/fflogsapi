@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, Any
 
 from ..util.decorators import fetch_data
+from ..util.filters import construct_filter_string
 from ..util.indexing import itindex
 from .pages import FFLogsServerCharacterPaginationIterator
 from .queries import Q_SERVER
@@ -31,7 +32,7 @@ class FFLogsServer:
         '''
         Query for a specific piece of information about a server
         '''
-        filters = ', '.join([f'{key}: {f}' for key, f in self.filters.items()])
+        filters = construct_filter_string(self.filters)
         result = self._client.q(Q_SERVER.format(
             filters=filters,
             innerQuery=query,

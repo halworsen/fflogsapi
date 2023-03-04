@@ -14,11 +14,13 @@ fflogsapi is a lazy Python 3 client for [fflogs](https://www.fflogs.com/)' v2 AP
 * Retrieve information from FF Logs' v2 GraphQL API
   * Including private information only accessible through the user API
 * Lazy evaluation
-  * Queries for data are not executed until it is explicitly needed
+  * Queries for data are not executed until the result is explicitly needed
 * Query caching
   * Requesting the same data twice will instead fetch the result from cache
   * Customizable cache lifetime and options to ignore cached results
-* Sensible interfaces to parts of the API that aren't well defined in the schema
+* Sensible interface to the API
+  * Iterate over things that are intuitively iterable
+  * Dataclasses for many objects exposed by the API
 
 ## Example usage
 

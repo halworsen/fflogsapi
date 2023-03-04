@@ -4,8 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-    - fflogsapi/*
-    - tests/*
+    - '**.py'
   pull_request:
     branches:
     - master

@@ -1,0 +1,2 @@
+ignore:
+  - "fflogsapi/user_auth.py" # explained in tests/user/test_user.py

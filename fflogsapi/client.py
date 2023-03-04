@@ -16,6 +16,7 @@ from requests.auth import HTTPBasicAuth
 from requests_oauthlib import OAuth2Session
 
 from .characters.client_extensions import CharactersMixin
+from .game.client_extensions import GameDataMixin
 from .guilds.client_extensions import GuildsMixin
 from .prograce.client_extensions import ProgressRaceMixin
 from .reports.client_extensions import ReportsMixin
@@ -53,6 +54,7 @@ class FFLogsClient(
     GuildsMixin,
     WorldMixin,
     UserMixin,
+    GameDataMixin,
     ProgressRaceMixin,
 ):
     '''

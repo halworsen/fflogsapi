@@ -1,24 +1,12 @@
 from typing import Optional
 
 from .character import FFLogsCharacter
-from .pages import FFLogsCharacterPaginationIterator
 
 
 class CharactersMixin:
     '''
     Client extensions to support character data exposed by the FF Logs API.
     '''
-
-    def character_pages(self, guild_id: int) -> FFLogsCharacterPaginationIterator:
-        '''
-        Iterate over pages of FFLogs characters in a specific guild.
-
-        Args:
-            guild_id: The ID of the guild to retrieve characters from.
-        Returns:
-            An iterator over the pages of characters that are in the given guild.
-        '''
-        return FFLogsCharacterPaginationIterator(filters={'guildID': guild_id}, client=self)
 
     def get_character(self, filters: dict = {}, id: Optional[int] = -1) -> FFLogsCharacter:
         '''

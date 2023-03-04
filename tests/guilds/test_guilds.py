@@ -4,7 +4,9 @@ from fflogsapi.characters.character import FFLogsCharacter
 from fflogsapi.client import FFLogsClient
 from fflogsapi.guilds.dataclasses import (FFLogsAttendanceReport, FFLogsGuildZoneRankings,
                                           FFLogsRank, FFLogsReportTag,)
-from fflogsapi.guilds.pages import FFLogsGuildAttendancePaginationIterator
+from fflogsapi.guilds.guild import FFLogsGuild
+from fflogsapi.guilds.pages import (FFLogsGuildAttendancePaginationIterator, FFLogsGuildPage,
+                                    FFLogsGuildPaginationIterator,)
 from fflogsapi.reports.report import FFLogsReport
 from fflogsapi.world.server import FFLogsServer
 from fflogsapi.world.zone import FFLogsZone
@@ -27,11 +29,36 @@ class FightTest(unittest.TestCase):
     def setUpClass(cls) -> None:
         cls.client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, cache_expiry=CACHE_EXPIRY)
         cls.guild = cls.client.get_guild(id=cls.GUILD_ID)
+        cls.named_guild = cls.client.get_guild(filters={
+            'name': 'Kindred',
+            'serverRegion': 'NA',
+            'serverSlug': 'Gilgamesh',
+        })
 
     @classmethod
     def tearDownClass(cls) -> None:
         cls.client.close()
         cls.client.save_cache()
+
+    def test_specific_guild(self) -> None:
+        '''
+        The client should be able to find a guild both by ID and filter fields.
+        '''
+        self.assertEqual(self.guild.id(), self.named_guild.id())
+
+    def test_guild_pages(self) -> None:
+        '''
+        The client should be able to get a pagination of all guilds on the site.
+        '''
+        guild_pages = self.client.guild_pages(filters={
+            'serverRegion': 'EU',
+        })
+        self.assertIsInstance(guild_pages, FFLogsGuildPaginationIterator)
+        first_page = guild_pages.__next__()
+        self.assertIsInstance(first_page, FFLogsGuildPage)
+
+        guild = first_page.__iter__().__next__()
+        self.assertIsInstance(guild, FFLogsGuild)
 
     def test_fields(self) -> None:
         '''
@@ -45,7 +72,7 @@ class FightTest(unittest.TestCase):
         self.assertEqual(self.guild.server().name(), 'Gilgamesh')
         self.assertEqual(self.guild.type(), '1')
 
-        self.assertEqual(self.guild.faction().name, 'The Immortal Flames')
+        self.assertEqual(self.guild.grand_company().name, 'The Immortal Flames')
 
         self.assertEqual(self.guild.competition_mode(), True)
         self.assertEqual(self.guild.stealth_mode(), False)
@@ -125,6 +152,21 @@ class FightTest(unittest.TestCase):
         This is pretty volatile so just do type checking
         '''
         rankings = self.guild.zone_rankings(zone=53)
+        self.assertIsInstance(rankings, FFLogsGuildZoneRankings)
+        self.assertIsNone(rankings.completion_speed)
+        self.assertIsNone(rankings.speed)
+        self.assertIsInstance(rankings.progress, tuple)
+
+        for rank in rankings.progress:
+            self.assertIsInstance(rank, FFLogsRank)
+        world = rankings.progress[0]
+        self.assertIsNone(world.percentile)
+        self.assertIsInstance(world.color, str)
+        self.assertIsInstance(world.number, int)
+
+        # same thing but use a FFLogsZone instead
+        zone = self.client.get_zone(id=53)
+        rankings = self.guild.zone_rankings(zone=zone)
         self.assertIsInstance(rankings, FFLogsGuildZoneRankings)
         self.assertIsNone(rankings.completion_speed)
         self.assertIsNone(rankings.speed)

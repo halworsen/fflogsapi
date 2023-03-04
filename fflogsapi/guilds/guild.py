@@ -1,12 +1,14 @@
 from typing import TYPE_CHECKING, Any, Union
 
 from ..constants import FIGHT_DIFFICULTY_SAVAGE, PARTY_SIZE_FULL_PARTY
+from ..game.dataclasses import FFGrandCompany
 from ..util.decorators import fetch_data
+from ..util.filters import construct_filter_string
 from ..util.indexing import itindex
 from ..world.server import FFLogsServer
 from ..world.zone import FFLogsZone
-from .dataclasses import FFLogsGameFaction, FFLogsGuildZoneRankings, FFLogsRank, FFLogsReportTag
-from .pages import FFLogsGuildAttendancePaginationIterator, FFLogsGuildCharactersPaginationIterator
+from .dataclasses import FFLogsGuildZoneRankings, FFLogsRank, FFLogsReportTag
+from .pages import FFLogsCharacterPaginationIterator, FFLogsGuildAttendancePaginationIterator
 from .queries import Q_GUILD, Q_GUILD_RANKING
 
 if TYPE_CHECKING:
@@ -33,8 +35,9 @@ class FFLogsGuild:
         '''
         Query for a specific piece of information about a guild
         '''
+        filters = construct_filter_string(self.filters)
         result = self._client.q(Q_GUILD.format(
-            guildID=self._id,
+            filters=filters,
             innerQuery=query,
         ), ignore_cache=ignore_cache)
 
@@ -137,18 +140,18 @@ class FFLogsGuild:
         tags = itindex(self._query_data(query='tags{ id, name }'), self.DATA_INDICES)['tags']
         return [FFLogsReportTag(id=tag['id'], name=tag['name'], guild=self) for tag in tags]
 
-    def faction(self) -> FFLogsGameFaction:
+    def grand_company(self) -> FFGrandCompany:
         '''
         Get the grand company to which this guild belongs.
 
         Returns:
             The grand company the guild belongs to.
         '''
-        faction = itindex(
+        grand_company = itindex(
             self._query_data(query='faction{ id, name }'),
             self.DATA_INDICES,
         )['faction']
-        return FFLogsGameFaction(id=faction['id'], name=faction['name'])
+        return FFGrandCompany(id=grand_company['id'], name=grand_company['name'])
 
     def attendance(self, filters: dict = {}) -> FFLogsGuildAttendancePaginationIterator:
         '''
@@ -166,14 +169,14 @@ class FFLogsGuild:
             client=self._client,
         )
 
-    def characters(self) -> FFLogsGuildCharactersPaginationIterator:
+    def characters(self) -> FFLogsCharacterPaginationIterator:
         '''
         Get a pagination of all characters belonging to the guild.
 
         Returns:
             An iterator over all guild character pages.
         '''
-        return FFLogsGuildCharactersPaginationIterator(
+        return FFLogsCharacterPaginationIterator(
             client=self._client,
             additional_formatting={'guildID': self.id()}
         )

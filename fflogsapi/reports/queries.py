@@ -33,9 +33,14 @@ query {{
 }}
 """
 
-IQ_REPORT_MASTER_DATA = """
+IQ_REPORT_LOG_VERSION = '''
 masterData {
     logVersion
+}
+'''
+
+IQ_REPORT_ACTORS = '''
+masterData {
     actors {
         gameID
         id
@@ -45,10 +50,15 @@ masterData {
         subType
         type
     }
+}
+'''
+
+IQ_REPORT_ABILITIES = '''
+masterData {
     abilities {
         gameID
         name
         type
     }
 }
-"""
+'''

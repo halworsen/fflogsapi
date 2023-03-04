@@ -1,4 +1,4 @@
-from .dataclasses import FFLogsAbility, FFLogsActor
+from ..reports.dataclasses import FFLogsActor
 from .page import FFLogsPage, FFLogsPageIterator, FFLogsPaginationIterator
 
 __all__ = [
@@ -6,6 +6,5 @@ __all__ = [
     'FFLogsPageIterator',
     'FFLogsPaginationIterator',
 
-    'FFLogsAbility',
     'FFLogsActor',
 ]

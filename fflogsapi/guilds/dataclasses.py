@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Optional
 
-from ..reports.report import FFLogsReport
 from ..world.zone import FFLogsZone
 
 if TYPE_CHECKING:
+    from ..reports.report import FFLogsReport
     from .guild import FFLogsGuild
 
 
@@ -19,15 +19,6 @@ class FFLogsReportTag:
 
 
 @dataclass
-class FFLogsGameFaction:
-    '''
-    A grand company.
-    '''
-    id: int
-    name: str
-
-
-@dataclass
 class FFLogsAttendanceReport:
     '''
     An attendance report belonging to a guild. The attendance report consists of a report and
@@ -37,7 +28,7 @@ class FFLogsAttendanceReport:
     indicates what capacity the player presented in. A presence value of 1 indicates the player
     was present, while a presence value of 2 indicates the player was present on bench.
     '''
-    report: FFLogsReport
+    report: 'FFLogsReport'
     players: tuple[tuple[str, int, str]]
     start: float
     zone: FFLogsZone

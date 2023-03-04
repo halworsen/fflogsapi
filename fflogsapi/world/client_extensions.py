@@ -72,20 +72,18 @@ class WorldMixin:
 
         return [FFLogsRegion(id=r['id'], client=self) for r in regions]
 
-    def get_server(self, filters: dict = {}, id: Optional[int] = None) -> FFLogsServer:
+    def get_server(self, filters: dict = {}, id: Optional[int] = -1) -> FFLogsServer:
         '''
         Retrieves server information from FFLogs given server filters.
 
         Args:
             filters: Optional filters to find the server by.
-                     Valid filter fields are: id, region, slug. Default: {}
-            id: The ID of the server to retrieve. Default: None
+                     Valid filter fields are: id, region, slug.
+            id: The ID of the server to retrieve.
         Returns:
             A FFLogsServer object representing the server.
         '''
-        if 'id' not in filters and id is not None:
-            filters['id'] = id
-        return FFLogsServer(filters=filters, client=self)
+        return FFLogsServer(filters=filters, id=id, client=self)
 
     def get_subregion(self, id: int) -> FFLogsSubregion:
         '''

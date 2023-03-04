@@ -2,7 +2,6 @@ from typing import TYPE_CHECKING
 
 from ..characters.character import FFLogsCharacter
 from ..data.page import FFLogsPage, FFLogsPaginationIterator
-from ..reports.report import FFLogsReport
 from ..world.zone import FFLogsZone
 from .dataclasses import FFLogsAttendanceReport
 from .queries import Q_GUILD_ATTENDANCE_PAGINATION, Q_GUILD_CHARACTER_PAGINATION
@@ -49,6 +48,7 @@ class FFLogsGuildAttendancePage(FFLogsPage):
         '''
         Creates an attendance report from the given data
         '''
+        from ..reports.report import FFLogsReport
         return FFLogsAttendanceReport(
             report=FFLogsReport(data['code']),
             players=[(p['name'], p['presence'], p['type']) for p in data['players']],

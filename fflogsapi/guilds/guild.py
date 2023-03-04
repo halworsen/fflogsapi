@@ -1,11 +1,12 @@
 from typing import TYPE_CHECKING, Any, Union
 
 from ..constants import FIGHT_DIFFICULTY_SAVAGE, PARTY_SIZE_FULL_PARTY
+from ..game.dataclasses import FFGrandCompany
 from ..util.decorators import fetch_data
 from ..util.indexing import itindex
 from ..world.server import FFLogsServer
 from ..world.zone import FFLogsZone
-from .dataclasses import FFLogsGameFaction, FFLogsGuildZoneRankings, FFLogsRank, FFLogsReportTag
+from .dataclasses import FFLogsGuildZoneRankings, FFLogsRank, FFLogsReportTag
 from .pages import FFLogsCharacterPaginationIterator, FFLogsGuildAttendancePaginationIterator
 from .queries import Q_GUILD, Q_GUILD_RANKING
 
@@ -137,18 +138,18 @@ class FFLogsGuild:
         tags = itindex(self._query_data(query='tags{ id, name }'), self.DATA_INDICES)['tags']
         return [FFLogsReportTag(id=tag['id'], name=tag['name'], guild=self) for tag in tags]
 
-    def faction(self) -> FFLogsGameFaction:
+    def grand_company(self) -> FFGrandCompany:
         '''
         Get the grand company to which this guild belongs.
 
         Returns:
             The grand company the guild belongs to.
         '''
-        faction = itindex(
+        grand_company = itindex(
             self._query_data(query='faction{ id, name }'),
             self.DATA_INDICES,
         )['faction']
-        return FFLogsGameFaction(id=faction['id'], name=faction['name'])
+        return FFGrandCompany(id=grand_company['id'], name=grand_company['name'])
 
     def attendance(self, filters: dict = {}) -> FFLogsGuildAttendancePaginationIterator:
         '''

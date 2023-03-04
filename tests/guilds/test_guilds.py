@@ -45,7 +45,7 @@ class FightTest(unittest.TestCase):
         self.assertEqual(self.guild.server().name(), 'Gilgamesh')
         self.assertEqual(self.guild.type(), '1')
 
-        self.assertEqual(self.guild.faction().name, 'The Immortal Flames')
+        self.assertEqual(self.guild.grand_company().name, 'The Immortal Flames')
 
         self.assertEqual(self.guild.competition_mode(), True)
         self.assertEqual(self.guild.stealth_mode(), False)

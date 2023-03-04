@@ -1,11 +1,11 @@
 from typing import TYPE_CHECKING, Optional
 
-from ..data.dataclasses import FFLogsAbility, FFLogsActor
 from ..user.user import FFLogsUser
 from ..util.decorators import fetch_data
 from ..util.indexing import itindex
 from ..world.region import FFLogsRegion
 from ..world.zone import FFLogsZone
+from .dataclasses import FFLogsActor, FFLogsReportAbility
 from .fight import FFLogsFight
 from .queries import IQ_REPORT_MASTER_DATA, Q_REPORT_DATA
 
@@ -70,6 +70,9 @@ class FFLogsReport:
         }
 
         for actor_data in master_data['actors']:
+            jobs = self._client.jobs()
+            actor_job = list(filter(lambda j: j.slug == actor_data['subType'], jobs))
+
             actor = FFLogsActor(
                 id=actor_data['id'],
                 name=actor_data['name'],
@@ -77,12 +80,13 @@ class FFLogsReport:
                 sub_type=actor_data['subType'],
                 server=actor_data['server'],
                 game_id=actor_data['gameID'],
+                job=actor_job[0] if len(actor_job) else None,
                 pet_owner=actor_data['petOwner'],
             )
             self._data['masterData']['actors'].append(actor)
 
         for ability_data in master_data['abilities']:
-            ability = FFLogsAbility(
+            ability = FFLogsReportAbility(
                 game_id=ability_data['gameID'],
                 name=ability_data['name'],
                 type=ability_data['type'],
@@ -105,7 +109,7 @@ class FFLogsReport:
         return self._data['masterData']['actors']
 
     @fetch_master_data
-    def abilities(self) -> list[FFLogsAbility]:
+    def abilities(self) -> list[FFLogsReportAbility]:
         '''
         Returns:
             A list of all abilities in the report

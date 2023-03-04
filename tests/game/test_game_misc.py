@@ -62,6 +62,14 @@ class GameItemTest(unittest.TestCase):
         job_names = [job.name for job in jobs]
         self.assertListEqual(sorted(job_names), sorted(all_jobs))
 
+    def test_grand_companies(self) -> None:
+        '''
+        The client should be able to get a list of all grand companies.
+        '''
+        gcs = self.client.grand_companies()
+        all_gcs = ['Order of the Twin Adder', 'The Immortal Flames', 'The Maelstrom']
+        gc_names = [gc.name for gc in gcs]
+        self.assertListEqual(sorted(all_gcs), sorted(gc_names))
 
 if __name__ == '__main__':
     unittest.main()

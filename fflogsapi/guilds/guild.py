@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING, Any, Union
 
+from ..util.filters import construct_filter_string
+
 from ..constants import FIGHT_DIFFICULTY_SAVAGE, PARTY_SIZE_FULL_PARTY
 from ..game.dataclasses import FFGrandCompany
 from ..util.decorators import fetch_data
@@ -34,8 +36,9 @@ class FFLogsGuild:
         '''
         Query for a specific piece of information about a guild
         '''
+        filters = construct_filter_string(self.filters)
         result = self._client.q(Q_GUILD.format(
-            guildID=self._id,
+            filters=filters,
             innerQuery=query,
         ), ignore_cache=ignore_cache)
 

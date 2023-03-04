@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING, Any, Optional
 
+from ..util.filters import construct_filter_string
+
 from ..util.indexing import itindex
 from .queries import Q_PAGE_META
 
@@ -29,17 +31,13 @@ class FFLogsPage:
         self.page_num = page_num
         self.n_from = -1
         self.n_to = -1
-        self.filters = filters
+        self.filters = filters.copy()
         self.additional_formatting = additional_formatting
         self.data = None
         self.objects = None
 
         self._client = client
         self._initialized = False
-
-        self._custom_filters = []
-        for key, filter in filters.items():
-            self._custom_filters.append(f'{key}: {filter}')
 
     def __iter__(self) -> 'FFLogsPageIterator':
         return FFLogsPageIterator(page=self)
@@ -52,7 +50,8 @@ class FFLogsPage:
         Retrieves metadata about data contained in this page.
         Specifically, IDs/codes are gathered and stored.
         '''
-        filters = ','.join(self._custom_filters + [f'page: {self.page_num}'])
+        self.filters['page'] = self.page_num
+        filters = construct_filter_string(self.filters)
         data_fields = ','.join(self.DATA_FIELDS)
         page_data = self._client.q(self.PAGINATION_QUERY.format(
             filters=filters,
@@ -146,10 +145,12 @@ class FFLogsPaginationIterator:
         '''
         self._client = client
         self._cur_page = 0
-        self._filters = filters
+        self._filters = filters.copy()
         self.additional_formatting = additional_formatting
 
-        filters = ', '.join([f'{key}: {f}' for key, f in filters.items()] + ['page: 1'])
+        pagination_filters = self._filters.copy()
+        pagination_filters['page'] = 1
+        filters = construct_filter_string(pagination_filters)
         result = self._client.q(self.PAGE_CLASS.PAGINATION_QUERY.format(
             filters=filters,
             innerQuery='last_page',

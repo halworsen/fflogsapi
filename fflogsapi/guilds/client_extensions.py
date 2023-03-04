@@ -14,19 +14,20 @@ class GuildsMixin:
         Iterate over pages of guilds on FF Logs.
 
         Args:
-            filters: A dictionary containing filters to use when finding guilds.
+            filters: Filters to find guilds by. `name`, `serverSlug` and `serverRegion` supported.
         Returns:
             An iterator over the pages of guilds that match the given filters.
         '''
         return FFLogsGuildPaginationIterator(filters=filters, client=self)
 
-    def get_guild(self, id: int) -> FFLogsGuild:
+    def get_guild(self, filters: dict = {}, id: int = -1) -> FFLogsGuild:
         '''
         Retrieves the given guild data from FFLogs.
 
         Args:
+            filters: Filters to find the guild by. Namely, `name`, `serverSlug` and `serverRegion`.
             id: The guild ID.
         Returns:
             A FFLogsGuild object representing the guild.
         '''
-        return FFLogsGuild(id=id, client=self)
+        return FFLogsGuild(filters=filters, id=id, client=self)

@@ -89,12 +89,12 @@ query {{
 
 # Query to retrieve information about all grand companies
 Q_GRAND_COMPANIES = '''
-query {{
-    gameData {{
-        factions {{
+query {
+    gameData {
+        factions {
             id,
             name,
-        }}
-    }}
-}}
+        }
+    }
+}
 '''

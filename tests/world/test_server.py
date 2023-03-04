@@ -17,11 +17,21 @@ class ServerTest(unittest.TestCase):
     def setUpClass(cls) -> None:
         cls.client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, cache_expiry=CACHE_EXPIRY)
         cls.server = cls.client.get_server(id=1)
+        cls.server_by_filters = cls.client.get_server(filters={
+            'region': 'NA',
+            'slug': 'Adamantoise',
+        })
 
     @classmethod
     def tearDownClass(cls) -> None:
         cls.client.close()
         cls.client.save_cache()
+
+    def test_server_by_filters(self) -> None:
+        '''
+        The client should be able to get a server by both ID and region+slug.
+        '''
+        self.assertEqual(self.server.id(), self.server_by_filters.id())
 
     def test_simple_fields(self) -> None:
         '''

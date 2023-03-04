@@ -24,6 +24,13 @@ class GameAbilityTest(unittest.TestCase):
         cls.client.close()
         cls.client.save_cache()
 
+    def test_unknown_ability(self) -> None:
+        '''
+        The 'unknown ability' should be supported.
+        '''
+        unkn = self.client.ability(id=0)
+        self.assertEqual(unkn.name, 'Unknown Ability')
+
     def test_ability(self) -> None:
         '''
         The client should be able to get information about a game ability.

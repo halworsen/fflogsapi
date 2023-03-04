@@ -2,7 +2,7 @@
 Q_GUILD = '''
 query {{
     guildData {{
-        guild(id: {guildID}) {{
+        guild({filters}) {{
             {innerQuery}
         }}
     }}

@@ -4,7 +4,7 @@ from ..characters.character import FFLogsCharacter
 from ..data.page import FFLogsPage, FFLogsPaginationIterator
 from ..world.zone import FFLogsZone
 from .dataclasses import FFLogsAttendanceReport
-from .queries import Q_GUILD_ATTENDANCE_PAGINATION, Q_GUILD_CHARACTER_PAGINATION
+from .queries import Q_GUILD_ATTENDANCE_PAGINATION, Q_GUILD_CHARACTER_PAGINATION, Q_GUILD_PAGINATION
 
 if TYPE_CHECKING:
     from .guild import FFLogsGuild
@@ -15,7 +15,7 @@ class FFLogsGuildPage(FFLogsPage):
     A page of guilds on FF Logs.
     '''
 
-    PAGINATION_QUERY = Q_GUILD_ATTENDANCE_PAGINATION
+    PAGINATION_QUERY = Q_GUILD_PAGINATION
     PAGE_INDICES = ['guildData', 'guilds']
     DATA_FIELDS = ['id']
 

@@ -72,10 +72,25 @@ granting access to extra information such as private reports provided by the use
 
 To use user mode, you must first specify `https://localhost:4433` as the redirect URL in your API
 client on FF Logs. Then, provide the `mode='user'` kwarg to the client when instantiating it:
+
 ```python
 client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, mode='user')
 ```
 
-This will have the client popup a browser window for the user for login, after which the client has access to the
-user API. Note that the client will generate a self-signed certificate to serve the redirect.
-Your browser will likely produce a warning about this, although it is safe to ignore.
+This will have the client popup a browser window for the user for login, after which the client has
+access to the user API. Note that the client will generate a self-signed certificate to serve
+the redirect. Your browser will likely produce a warning about this, although it is safe to ignore.
+
+If you wish to handle the user authentication flow yourself, you can still use the API client in
+user mode by calling `set_auth_response` on the client **before using it**:
+
+```python
+# Your implementation of the user authentication flow here
+...
+
+client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, mode='user')
+client.set_auth_response(response)
+
+# Start using the client
+...
+```

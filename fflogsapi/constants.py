@@ -17,3 +17,6 @@ EVENT_TYPE_REMOVE_BUFF = 'removebuff'
 EVENT_TYPE_LB_UPDATE = 'limitbreakupdate'
 EVENT_TYPE_APPLY_DEBUFF = 'applydebuff'
 EVENT_ENCOUNTER_END = 'encounterend'
+
+# FF Logs uses millisecond precision in its timestamps
+TIMESTAMP_PRECISION = 1e-3

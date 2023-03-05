@@ -1,8 +1,7 @@
 from typing import TYPE_CHECKING, Any
 
-from ..util.indexing import itindex
-
 from ..util.decorators import fetch_data
+from ..util.indexing import itindex
 from .queries import Q_EXPANSION
 
 if TYPE_CHECKING:

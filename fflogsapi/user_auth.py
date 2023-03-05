@@ -97,7 +97,7 @@ class UserModeAuthMixin:
             .add_extension(
                 x509.SubjectAlternativeName([x509.DNSName(u'localhost')]),
                 critical=False,
-            ).sign(key, hashes.SHA256())
+        ).sign(key, hashes.SHA256())
 
         if not os.path.exists(os.path.dirname(self.KEY_PATH)):
             os.makedirs(self.KEY_PATH)

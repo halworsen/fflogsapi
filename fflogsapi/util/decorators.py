@@ -1,6 +1,3 @@
-from .indexing import itindex
-
-
 def fetch_data(key):
     '''
     Decorator that queries and stores the given `key` in a class's `_data` dictionary.

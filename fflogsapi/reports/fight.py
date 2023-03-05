@@ -2,8 +2,14 @@ from typing import TYPE_CHECKING, Any, Optional
 
 from util.indexing import itindex
 
+from ..characters.character import FFLogsCharacter
+from ..game.dataclasses import FFMap
 from ..util.decorators import fetch_data
 from ..util.filters import construct_filter_string
+from ..world.encounter import FFLogsEncounter
+from .dataclasses import (FFGameZone, FFLogsNPCData, FFLogsPlayerDetails,
+                          FFLogsReportCharacterRanking, FFLogsReportComboRanking,
+                          FFLogsReportRanking,)
 from .queries import Q_FIGHT_DATA
 
 if TYPE_CHECKING:
@@ -16,17 +22,11 @@ class FFLogsFight:
     Representation of a single fight on FFLogs.
     '''
 
-    batch_fields = [
-        'id', 'name', 'encounterID', 'startTime', 'endTime',
-        'kill', 'difficulty', 'fightPercentage', 'bossPercentage',
-        'size', 'standardComposition', 'hasEcho'
-    ]
-
     DATA_INDICES = ['reportData', 'report', 'fights', 0]
 
     def __init__(self, report: 'FFLogsReport', fight_id: int, client: 'FFLogsClient') -> None:
         self.report = report
-        self.fight_id = fight_id
+        self.id = fight_id
         self._client = client
         self._data = {}
 
@@ -36,7 +36,7 @@ class FFLogsFight:
         '''
         result = self._client.q(Q_FIGHT_DATA.format(
             reportCode=self.report.code(),
-            fightID=self.fight_id,
+            fightID=self.id,
             innerQuery=query,
         ), ignore_cache=ignore_cache)
 
@@ -83,6 +83,17 @@ class FFLogsFight:
         '''
         return self._data['standardComposition']
 
+    @fetch_data('inProgress')
+    def in_progress(self) -> bool:
+        '''
+        If the report is being live logged, the fight may be marked as in progress.
+        When the entire fight has been uploaded, the fight will be marked as no longer in progress.
+
+        Returns:
+            Whether or not the fight is still in progress.
+        '''
+        return self._data['inProgress']
+
     @fetch_data('bossPercentage')
     def percentage(self) -> float:
         '''
@@ -102,19 +113,20 @@ class FFLogsFight:
     @fetch_data('difficulty')
     def difficulty(self) -> Optional[int]:
         '''
+        Usually not very descriptive, as difficulty level 100 covers a wide variety of content.
+
         Returns:
-            The difficulty of the fight. Usually not very descriptive,
-            as difficulty level 100 covers a wide variety of content.
+            The difficulty of the fight.
         '''
         return self._data['difficulty']
 
     @fetch_data('encounterID')
-    def encounter_id(self) -> int:
+    def encounter(self) -> FFLogsEncounter:
         '''
         Returns:
-            The encounter ID of the fight
+            The encounter the fight was a part of.
         '''
-        return self._data['encounterID']
+        return FFLogsEncounter(id=self._data['encounterID'], client=self._client)
 
     @fetch_data('friendlyPlayers')
     def friendly_players(self) -> list[int]:
@@ -147,6 +159,27 @@ class FFLogsFight:
         '''
         return self.end_time() - self.start_time()
 
+    @fetch_data('completeRaid')
+    def complete_raid(self) -> bool:
+        '''
+        Whether or not this fight represents a full raid start to finish, i.e. a 'complete raid'.
+
+        Returns:
+            Whether or not this is a complete raid.
+        '''
+        return self._data['completeRaid']
+
+    def bounding_box(self) -> tuple[int, int, int, int]:
+        '''
+        Get the bounding box that encloses all player's positions throughout the fight.
+
+        Returns:
+            The bounding box of player positions as a tuple of the form (minX, minY, maxX, maxY).
+        '''
+        bb = self._query_data('boundingBox{ minX, minY, maxX, maxY }')['boundingBox']
+
+        return (bb['minX'], bb['minY'], bb['maxX'], bb['maxY'])
+
     def _prepare_data_filters(self, filters: dict[str, Any]) -> tuple[str, dict[str, Any]]:
         fight_start, fight_end = self.start_time(), self.end_time()
 
@@ -168,6 +201,8 @@ class FFLogsFight:
         Retrieves the events of the fight.
 
         If start/end time is not specified in filters, the default is the start/end of the fight.
+
+        This data isn't considered frozen by FF Logs and may therefore change without notice.
 
         Args:
             filters: Key-value filters to filter the event log by.
@@ -212,6 +247,8 @@ class FFLogsFight:
 
         If start/end time is not specified in filters, the default is the start/end of the fight.
 
+        This data isn't considered frozen by FF Logs and may therefore change without notice.
+
         Args:
             filters: Key-value filters to filter the graph by.
                      E.g. present/absent buffs, target IDs, etc.
@@ -232,6 +269,8 @@ class FFLogsFight:
 
         If start/end time is not specified in filters, the default is the start/end of the fight.
 
+        This data isn't considered frozen by FF Logs and may therefore change without notice.
+
         Args:
             filters: Key-value filters to filter the table by.
                      E.g. present/absent buffs, target IDs, etc.
@@ -246,12 +285,196 @@ class FFLogsFight:
         result = self.report._query_data(f'table({table_filters})')
         return result['table']['data']
 
-    def rankings(self) -> dict[Any, Any]:
+    def rankings(self, metric: str = 'default') -> Optional[FFLogsReportRanking]:
         '''
         Retrieves ranking data for the fight.
 
+        This data isn't considered frozen by FF Logs and may therefore change without notice.
+
+        Args:
+            metric: The type of metric to retrieve rankings for. The following are supported:
+                    `default`, `bossdps`, `bossrdps`, `dps`, `hps`, `rdps`, `tankhps`
         Returns:
-            A dictionary of player ranking information.
+            A dictionary of player ranking information or None if there is no ranking information
+            for this fight.
         '''
-        result = self.report._query_data(f'rankings(fightIDs: {self.fight_id})')
-        return result['rankings']['data']
+        if 'rankings' in self._data:
+            return self._data['rankings']
+
+        ranks = self.report._query_data(
+            f'rankings(fightIDs: {self.id}, playerMetric: {metric})'
+        )['rankings']['data']
+
+        if not len(ranks):
+            return None
+        ranks = ranks[0]
+
+        jobs = self._client.jobs()
+        character_rankings = []
+        combo_rankings = []
+        for role, data in ranks['roles'].items():
+            for ranking in data['characters']:
+                character = FFLogsCharacter(id=ranking['id'])
+                job = list(filter(lambda j: j.slug == ranking['class'], jobs))[0]
+
+                if 'id_2' in ranking:
+                    # this is a tank/healer combination ranking
+                    job_b = list(filter(lambda j: j.slug == ranking['class_2'], jobs))[0]
+                    combo_rankings.append(FFLogsReportComboRanking(
+                        type=role,
+                        character_a=character,
+                        character_b=FFLogsCharacter(id=ranking['id_2']),
+                        job_a=job,
+                        job_b=job_b,
+                        amount=ranking['amount'],
+                        rank=str(ranking['rank']),
+                        best_rank=str(ranking['best']),
+                        total_parses=ranking['totalParses'],
+                        percentile=ranking['rankPercent'],
+                    ))
+                else:
+                    # this is an individual ranking
+                    character_rankings.append(FFLogsReportCharacterRanking(
+                        character=character,
+                        job=job,
+                        amount=ranking['amount'],
+                        rank=str(ranking['rank']),
+                        best_rank=str(ranking['best']),
+                        total_parses=ranking['totalParses'],
+                        percentile=ranking['rankPercent'],
+                    ))
+
+        self._data['rankings'] = FFLogsReportRanking(
+            patch=ranks['bracketData'],
+            bracket=ranks['bracket'],
+            deaths=ranks['deaths'],
+            damage_taken_not_tanks=ranks['damageTakenExcludingTanks'],
+            character_rankings=character_rankings,
+            combo_rankings=combo_rankings,
+        )
+
+        return self._data['rankings']
+
+    def player_details(self) -> list[FFLogsPlayerDetails]:
+        '''
+        Geta list of player details such as each player's job, name and server for this fight.
+
+        This data isn't considered frozen by FF Logs and may therefore change without notice.
+
+        Returns:
+            The player details for this fight.
+        '''
+        if 'playerDetails' not in self._data:
+            details = self.report._query_data(
+                f'playerDetails(fightIDs: {self.id})'
+            )['playerDetails']['data']['playerDetails']
+            jobs = self._client.jobs()
+
+            self._data['playerDetails'] = []
+            for role, players in details.items():
+                for data in players:
+                    job = list(filter(lambda j: j.slug == data['type'], jobs))[0]
+                    details = FFLogsPlayerDetails(
+                        id=data['id'],
+                        actor=self.report.actor(id=data['id']),
+                        guid=data['guid'],
+                        name=data['name'],
+                        server=data['server'],
+                        job=job,
+                        role=role,
+                    )
+                    self._data['playerDetails'].append(details)
+
+        return self._data['playerDetails']
+
+    def enemy_npcs(self) -> list[FFLogsNPCData]:
+        '''
+        Get a list of all enemy NPCs that appear in this fight.
+
+        Returns:
+            A list of enemy NPCs in the fight or None if there are none.
+        '''
+        npcs = self._query_data(
+            'enemyNPCs{ gameID, groupCount, id, instanceCount }'
+        )['enemyNPCs']
+
+        if not len(npcs):
+            return None
+
+        return [FFLogsNPCData(
+            id=npc['id'],
+            actor=self.report.actor(id=npc['id']),
+            hostile=True,
+            game_id=npc['gameID'],
+            group_count=npc['groupCount'],
+            instance_count=npc['instanceCount'],
+            pet_owner=None,
+        ) for npc in npcs]
+
+    def friendly_npcs(self) -> Optional[list[FFLogsNPCData]]:
+        '''
+        Get a list of all friendly NPCs that appear in this fight.
+
+        Returns:
+            A list of all friendly NPCs in the fight or None if there are none.
+        '''
+        npcs = self._query_data(
+            'friendlyNPCs{ gameID, groupCount, id, instanceCount }'
+        )['friendlyNPCs']
+
+        if not len(npcs):
+            return None
+
+        return [FFLogsNPCData(
+            id=npc['id'],
+            actor=self.report.actor(id=npc['id']),
+            hostile=False,
+            game_id=npc['gameID'],
+            group_count=npc['groupCount'],
+            instance_count=npc['instanceCount'],
+            pet_owner=None,
+        ) for npc in npcs]
+
+    def pets(self) -> list[FFLogsNPCData]:
+        '''
+        Get a list of all friendly pet NPCs that appear in this fight.
+
+        Returns:
+            All friendly pets in the fight.
+        '''
+        npcs = self._query_data(
+            'friendlyPets{ gameID, groupCount, id, instanceCount, petOwner }'
+        )['friendlyPets']
+
+        return [FFLogsNPCData(
+            id=npc['id'],
+            actor=self.report.actor(id=npc['id']),
+            hostile=False,
+            game_id=npc['gameID'],
+            group_count=npc['groupCount'],
+            instance_count=npc['instanceCount'],
+            pet_owner=self.report.actor(id=npc['petOwner']),
+        ) for npc in npcs]
+
+    def game_zone(self) -> FFGameZone:
+        '''
+        The in-game zone in which this fight took place.
+
+        Returns:
+            The game zone this fight takes place in.
+        '''
+        game_zone = self._query_data('gameZone{ id, name }')['gameZone']
+        return FFGameZone(
+            id=game_zone['id'],
+            name=game_zone['name'],
+        )
+
+    def maps(self) -> list[FFMap]:
+        '''
+        Get a list of all the maps involved in this fight.
+
+        Returns:
+            All maps involved in the fight.
+        '''
+        maps = self._query_data('maps{ id }')['maps']
+        return [self._client.map(id=map['id']) for map in maps]

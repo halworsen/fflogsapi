@@ -15,9 +15,9 @@ class FFLogsFight:
     '''
 
     batch_fields = [
-        "id", "name", "encounterID", "startTime", "endTime",
-        "kill", "difficulty", "fightPercentage", "bossPercentage",
-        "size", "standardComposition", "hasEcho"
+        'id', 'name', 'encounterID', 'startTime', 'endTime',
+        'kill', 'difficulty', 'fightPercentage', 'bossPercentage',
+        'size', 'standardComposition', 'hasEcho'
     ]
 
     DATA_INDICES = ['reportData', 'report', 'fights', 0]

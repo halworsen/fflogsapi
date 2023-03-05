@@ -10,7 +10,7 @@ query {{
 '''
 
 # Query to retrieve paginated guilds from the entire site
-Q_GUILD_PAGINATION = """
+Q_GUILD_PAGINATION = '''
 query {{
     guildData {{
         guilds({filters}) {{
@@ -18,7 +18,7 @@ query {{
         }}
     }}
 }}
-"""
+'''
 
 # Top level query for retrieving paginated attendance reports
 Q_GUILD_ATTENDANCE_PAGINATION = '''
@@ -34,7 +34,7 @@ query {{
 '''
 
 # Query to retrieve paginated guild member character data
-Q_GUILD_CHARACTER_PAGINATION = """
+Q_GUILD_CHARACTER_PAGINATION = '''
 query {{
     guildData {{
         guild(id: {guildID}) {{
@@ -44,7 +44,7 @@ query {{
         }}
     }}
 }}
-"""
+'''
 
 # Inner query to retrieve ranking information for a guild
 Q_GUILD_RANKING = '''

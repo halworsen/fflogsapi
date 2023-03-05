@@ -35,7 +35,7 @@ class FightTest(unittest.TestCase):
         The client should be able to fetch fields about the fight
         such as the difficulty, boss name, etc.
         '''
-        self.assertEqual(self.fight.name(), "Hephaistos II")
+        self.assertEqual(self.fight.name(), 'Hephaistos II')
 
         self.assertEqual(self.fight.encounter_id(), 87)
         self.assertEqual(self.fight.difficulty(), FIGHT_DIFFICULTY_SAVAGE)

@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING, Any, Optional
 
+from util.indexing import itindex
+
 from ..util.decorators import fetch_data
 from ..util.filters import construct_filter_string
 from .queries import Q_FIGHT_DATA
@@ -38,7 +40,7 @@ class FFLogsFight:
             innerQuery=query,
         ), ignore_cache=ignore_cache)
 
-        return result
+        return itindex(result, self.DATA_INDICES)
 
     @fetch_data('name')
     def name(self) -> str:
@@ -182,11 +184,11 @@ class FFLogsFight:
         desired_end = filters['endTime']
 
         result = self.report._query_data(f'events({filter_string}) {{ data, nextPageTimestamp }}')
-        fight_events = result['reportData']['report']['events']['data']
+        fight_events = result['events']['data']
 
         # Check if there are more pages to this fight.
         # If so, retrieve all of them and merge the data.
-        next_page = result['reportData']['report']['events']['nextPageTimestamp']
+        next_page = result['events']['nextPageTimestamp']
         while next_page and next_page < desired_end:
             time_range = filters['endTime'] - filters['startTime']
             filters['startTime'] = next_page
@@ -196,9 +198,9 @@ class FFLogsFight:
             result = self.report._query_data(
                 f'events({filter_string}) {{ data, nextPageTimestamp }}'
             )
-            events = result['reportData']['report']['events']['data']
+            events = result['events']['data']
             fight_events += events
-            next_page = result['reportData']['report']['events']['nextPageTimestamp']
+            next_page = result['events']['nextPageTimestamp']
 
         return fight_events
 
@@ -222,7 +224,7 @@ class FFLogsFight:
         graph_filters, _ = self._prepare_data_filters(filters.copy())
 
         result = self.report._query_data(f'graph({graph_filters})')
-        return result['reportData']['report']['graph']['data']
+        return result['graph']['data']
 
     def table(self, filters: dict[str, str] = {}) -> dict[Any, Any]:
         '''
@@ -242,7 +244,7 @@ class FFLogsFight:
         table_filters, _ = self._prepare_data_filters(filters.copy())
 
         result = self.report._query_data(f'table({table_filters})')
-        return result['reportData']['report']['table']['data']
+        return result['table']['data']
 
     def rankings(self) -> dict[Any, Any]:
         '''
@@ -252,4 +254,4 @@ class FFLogsFight:
             A dictionary of player ranking information.
         '''
         result = self.report._query_data(f'rankings(fightIDs: {self.fight_id})')
-        return result['reportData']['report']['rankings']['data']
+        return result['rankings']['data']

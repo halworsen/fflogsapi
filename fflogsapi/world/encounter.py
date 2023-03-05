@@ -31,7 +31,7 @@ class FFLogsEncounter:
             innerQuery=query,
         ), ignore_cache=ignore_cache)
 
-        return result
+        return itindex(result, self.DATA_INDICES)
 
     def id(self) -> int:
         '''
@@ -61,7 +61,7 @@ class FFLogsEncounter:
         '''
         from .zone import FFLogsZone
 
-        zone_id = self._query_data('zone{ id }')
+        zone_id = self._query_data('zone{ id }')['zone']['id']
         return FFLogsZone(id=zone_id, client=self._client)
 
     def character_rankings(self, filters: dict[str, Any] = {}) -> dict:
@@ -79,7 +79,7 @@ class FFLogsEncounter:
             filters = f'({filters})'
 
         result = self._query_data(f'characterRankings{filters}')
-        return itindex(result, self.DATA_INDICES)['characterRankings']
+        return result['characterRankings']
 
     def fight_rankings(self, filters: dict[str, Any] = {}) -> dict:
         '''
@@ -96,4 +96,4 @@ class FFLogsEncounter:
             filters = f'({filters})'
 
         result = self._query_data(f'fightRankings{filters}')
-        return itindex(result, self.DATA_INDICES)['fightRankings']
+        return result['fightRankings']

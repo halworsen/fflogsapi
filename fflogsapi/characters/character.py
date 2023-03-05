@@ -37,7 +37,7 @@ class FFLogsCharacter:
             innerQuery=query,
         ), ignore_cache=ignore_cache)
 
-        return result
+        return itindex(result, self.DATA_INDICES)
 
     @fetch_data('id')
     def id(self) -> int:
@@ -82,7 +82,7 @@ class FFLogsCharacter:
             The character's server.
         '''
         from ..world.server import FFLogsServer
-        server_id = itindex(self._query_data('server{ id }'), self.DATA_INDICES)['server']['id']
+        server_id = self._query_data('server{ id }')['server']['id']
         return FFLogsServer(filters={'id': server_id}, client=self._client)
 
     @fetch_data('guildRank')
@@ -103,7 +103,7 @@ class FFLogsCharacter:
             A list of guilds the character is in.
         '''
         from ..guilds.guild import FFLogsGuild
-        guilds = itindex(self._query_data('guilds{ id }'), self.DATA_INDICES)['guilds']
+        guilds = self._query_data('guilds{ id }')['guilds']
         return [FFLogsGuild(id=guild['id'], client=self._client) for guild in guilds]
 
     def game_data(self, filters: dict = {}) -> dict:
@@ -120,7 +120,7 @@ class FFLogsCharacter:
             filters = f'({filters})'
 
         result = self._query_data(f'gameData{filters}')
-        return itindex(result, self.DATA_INDICES)['gameData']
+        return result['gameData']
 
     @fetch_data('hidden')
     def hidden(self) -> bool:
@@ -146,7 +146,7 @@ class FFLogsCharacter:
             filters = f'({filters})'
 
         result = self._query_data(f'encounterRankings{filters}')
-        return itindex(result, self.DATA_INDICES)['encounterRankings']
+        return result['encounterRankings']
 
     def zone_rankings(self, filters: Dict[str, Any] = {}) -> Dict:
         '''
@@ -162,4 +162,4 @@ class FFLogsCharacter:
             filters = f'({filters})'
 
         result = self._query_data(f'zoneRankings{filters}')
-        return itindex(result, self.DATA_INDICES)['zoneRankings']
+        return result['zoneRankings']

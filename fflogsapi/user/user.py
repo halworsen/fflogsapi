@@ -34,7 +34,7 @@ class FFLogsUser:
             innerQuery=query,
         ), ignore_cache=ignore_cache)
 
-        return result
+        return itindex(result, self.DATA_INDICES)
 
     def id(self) -> int:
         '''
@@ -66,7 +66,7 @@ class FFLogsUser:
         Returns:
             A list of characters claimed by the user.
         '''
-        characters = itindex(self._query_data('characters { id }'), self.DATA_INDICES)['characters']
+        characters = self._query_data('characters { id }')['characters']
         ids = [c['id'] for c in characters]
 
         return [FFLogsCharacter(id=id, client=self._client) for id in ids]
@@ -83,7 +83,7 @@ class FFLogsUser:
             A list of guilds the user belongs to.
         '''
         from ..guilds.guild import FFLogsGuild
-        guilds = itindex(self._query_data('guilds { id }'), self.DATA_INDICES)['guilds']
+        guilds = self._query_data('guilds { id }')['guilds']
         ids = [guild['id'] for guild in guilds]
 
         return [FFLogsGuild(id=id, client=self._client) for id in ids]

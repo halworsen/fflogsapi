@@ -32,3 +32,16 @@ class FFLogsReportAbility:
     game_id: int
     name: str
     type: int
+
+
+@dataclass
+class FFLogsArchivalData:
+    '''
+    Archivation data for a report.
+
+    `accessible` denotes if the current user can access the report. `date` is the archival date, if
+    the report is archived.
+    '''
+    archived: bool
+    accessible: bool
+    date: Optional[int]

@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING, Any
 
+from ..util.indexing import itindex
+
 from ..util.decorators import fetch_data
 from .queries import Q_EXPANSION
 
@@ -30,7 +32,7 @@ class FFLogsExpansion:
             innerQuery=query,
         ), ignore_cache=ignore_cache)
 
-        return result
+        return itindex(result, self.DATA_INDICES)
 
     def id(self) -> int:
         '''
@@ -61,6 +63,6 @@ class FFLogsExpansion:
         from .zone import FFLogsZone
 
         zones = self._query_data('zones{ id }')
-        zone_ids = [e['id'] for e in zones['worldData']['expansion']['zones']]
+        zone_ids = [e['id'] for e in zones['zones']]
 
         return [FFLogsZone(id=id, client=self._client) for id in zone_ids]

@@ -57,10 +57,11 @@ class FFLogsPage:
             innerQuery=Q_PAGE_META.format(dataFields=data_fields),
             **self.additional_formatting,
         ))
+        page_data = itindex(page_data, self.PAGE_INDICES)
 
-        self.n_from = itindex(page_data, self.PAGE_INDICES)['from']
-        self.n_to = itindex(page_data, self.PAGE_INDICES)['to']
-        self.data = itindex(page_data, self.PAGE_INDICES)['data']
+        self.n_from = page_data['from']
+        self.n_to = page_data['to']
+        self.data = page_data['data']
         self.objects = [None] * len(self.data)
 
         self._initialized = True

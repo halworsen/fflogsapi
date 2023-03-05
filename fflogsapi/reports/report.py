@@ -43,7 +43,7 @@ class FFLogsReport:
             innerQuery=query
         ), ignore_cache=ignore_cache)
 
-        return result
+        return itindex(result, self.DATA_INDICES)
 
     def code(self) -> str:
         '''
@@ -57,32 +57,28 @@ class FFLogsReport:
         Returns:
             A list of all actors in the report
         '''
-        if 'masterActors' in self._data:
-            return self._data['masterActors']
+        if 'masterActors' not in self._data:
+            actors = self._query_data(IQ_REPORT_ACTORS)['masterData']['actors']
 
-        actors = itindex(
-            self._query_data(IQ_REPORT_ACTORS),
-            self.DATA_INDICES,
-        )['masterData']['actors']
+            all_actors = []
+            for actor in actors:
+                jobs = self._client.jobs()
+                actor_job = list(filter(lambda j: j.slug == actor['subType'], jobs))
+                actor = FFLogsActor(
+                    id=actor['id'],
+                    name=actor['name'],
+                    type=actor['type'],
+                    sub_type=actor['subType'],
+                    server=actor['server'],
+                    game_id=actor['gameID'],
+                    job=actor_job[0] if len(actor_job) else None,
+                    pet_owner=actor['petOwner'],
+                )
 
-        all_actors = []
-        for actor in actors:
-            jobs = self._client.jobs()
-            actor_job = list(filter(lambda j: j.slug == actor['subType'], jobs))
-            actor = FFLogsActor(
-                id=actor['id'],
-                name=actor['name'],
-                type=actor['type'],
-                sub_type=actor['subType'],
-                server=actor['server'],
-                game_id=actor['gameID'],
-                job=actor_job[0] if len(actor_job) else None,
-                pet_owner=actor['petOwner'],
-            )
+                all_actors.append(actor)
 
-            all_actors.append(actor)
+            self._data['masterActors'] = all_actors
 
-        self._data['masterActors'] = all_actors
         return self._data['masterActors']
 
     def abilities(self) -> list[FFLogsReportAbility]:
@@ -90,36 +86,29 @@ class FFLogsReport:
         Returns:
             A list of all abilities in the report
         '''
-        if 'masterAbilities' in self._data:
-            return self._data['masterAbilities']
+        if 'masterAbilities' not in self._data:
+            abilities = self._query_data(IQ_REPORT_ABILITIES)['masterData']['abilities']
 
-        abilities = itindex(
-            self._query_data(IQ_REPORT_ABILITIES),
-            self.DATA_INDICES,
-        )['masterData']['abilities']
+            all_abilities = []
+            for ability in abilities:
+                ability = FFLogsReportAbility(
+                    game_id=ability['gameID'],
+                    name=ability['name'],
+                    type=ability['type'],
+                )
 
-        all_abilities = []
-        for ability in abilities:
-            ability = FFLogsReportAbility(
-                game_id=ability['gameID'],
-                name=ability['name'],
-                type=ability['type'],
-            )
+                all_abilities.append(ability)
 
-            all_abilities.append(ability)
+            self._data['masterAbilities'] = all_abilities
 
-        self._data['masterAbilities'] = all_abilities
         return self._data['masterAbilities']
 
     def log_version(self) -> int:
         '''
         Returns:
-            The version of the client parser used to parse and upload the log file
+            The version of the parser client used to parse and upload the log file.
         '''
-        version = itindex(
-            self._query_data(IQ_REPORT_LOG_VERSION),
-            self.DATA_INDICES,
-        )['masterData']['logVersion']
+        version = self._query_data(IQ_REPORT_LOG_VERSION)['masterData']['logVersion']
         return version
 
     @fetch_data('title')
@@ -135,7 +124,7 @@ class FFLogsReport:
         Returns:
             The user that owns this report.
         '''
-        owner_id = itindex(self._query_data('owner{ id }'), self.DATA_INDICES)['owner']['id']
+        owner_id = self._query_data('owner{ id }')['owner']['id']
         return FFLogsUser(id=owner_id, client=self._client)
 
     def guild(self) -> Optional['FFLogsGuild']:
@@ -144,7 +133,7 @@ class FFLogsReport:
             The guild this report belongs to, if any.
         '''
         from ..guilds.guild import FFLogsGuild
-        guild = itindex(self._query_data('guild{ id }'), self.DATA_INDICES)['guild']
+        guild = self._query_data('guild{ id }')['guild']
         if guild is None:
             return None
         return FFLogsGuild(id=guild['id'], client=self._client)
@@ -158,7 +147,7 @@ class FFLogsReport:
             The report tag, if any.
         '''
         from ..guilds.dataclasses import FFLogsReportTag
-        tag = itindex(self._query_data('guildTag{ id, name }'), self.DATA_INDICES)['guildTag']
+        tag = self._query_data('guildTag{ id, name }')['guildTag']
         if tag is None:
             return None
         return FFLogsReportTag(id=tag['id'], name=tag['name'], guild=self.guild())
@@ -168,7 +157,7 @@ class FFLogsReport:
         Returns:
             The principal zone for fights in this report.
         '''
-        zone_id = itindex(self._query_data('zone{ id }'), self.DATA_INDICES)['zone']['id']
+        zone_id = self._query_data('zone{ id }')['zone']['id']
         return FFLogsZone(id=zone_id)
 
     def region(self) -> FFLogsRegion:
@@ -176,7 +165,7 @@ class FFLogsReport:
         Returns:
             The region of the report.
         '''
-        id = itindex(self._query_data('region{ id }'), self.DATA_INDICES)['region']['id']
+        id = self._query_data('region{ id }')['region']['id']
         return FFLogsRegion(id=id, client=self._client)
 
     @fetch_data('startTime')
@@ -204,7 +193,7 @@ class FFLogsReport:
             The total amount of fights in the report
         '''
         result = self._query_data('fights { id }')
-        return len(result['reportData']['report']['fights'])
+        return len(result['fights'])
 
     def fight(self, id: int = -1) -> FFLogsFight:
         '''

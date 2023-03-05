@@ -1,11 +1,10 @@
 from typing import TYPE_CHECKING, Any, Optional
 
-from util.indexing import itindex
-
 from ..characters.character import FFLogsCharacter
 from ..game.dataclasses import FFMap
 from ..util.decorators import fetch_data
 from ..util.filters import construct_filter_string
+from ..util.indexing import itindex
 from ..world.encounter import FFLogsEncounter
 from .dataclasses import (FFGameZone, FFLogsNPCData, FFLogsPlayerDetails,
                           FFLogsReportCharacterRanking, FFLogsReportComboRanking,

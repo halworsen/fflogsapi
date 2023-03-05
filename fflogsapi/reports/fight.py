@@ -285,7 +285,12 @@ class FFLogsFight:
         result = self.report._query_data(f'table({table_filters})')
         return result['table']['data']
 
-    def rankings(self, metric: str = 'default') -> Optional[FFLogsReportRanking]:
+    def rankings(
+        self,
+        metric: str = 'default',
+        compare: str = 'Rankings',
+        timeframe: str = 'Today',
+    ) -> Optional[FFLogsReportRanking]:
         '''
         Retrieves ranking data for the fight.
 
@@ -294,6 +299,9 @@ class FFLogsFight:
         Args:
             metric: The type of metric to retrieve rankings for. The following are supported:
                     `default`, `bossdps`, `bossrdps`, `dps`, `hps`, `rdps`, `tankhps`
+            compare: What to compare against. `Rankings` and `Parses` are supported. `Parses` will
+                     compare against all parses in a two week window.
+            timeframe: The time frame to compare against. `Today` and `Historical` are supported.
         Returns:
             A dictionary of player ranking information or None if there is no ranking information
             for this fight.
@@ -302,7 +310,8 @@ class FFLogsFight:
             return self._data['rankings']
 
         ranks = self.report._query_data(
-            f'rankings(fightIDs: {self.id}, playerMetric: {metric})'
+            f'rankings(fightIDs: {self.id}, playerMetric: {metric},\
+              compare: {compare}, timeframe: {timeframe})'
         )['rankings']['data']
 
         if not len(ranks):

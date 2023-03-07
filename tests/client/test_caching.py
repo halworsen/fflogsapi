@@ -14,17 +14,23 @@ class CacheTest(unittest.TestCase):
     WARNING: Running these tests will delete all existing query caches!
     '''
 
+    CACHE_DIR = './querycache'
     CACHE_EXPIRY = 2  # seconds
 
     @classmethod
     def setUpClass(cls) -> None:
         # The cache directory must be empty before starting these tests (if it exists)
-        if os.path.exists(FFLogsClient.CACHE_DIR):
-            for fn in os.listdir(FFLogsClient.CACHE_DIR):
-                os.remove(os.path.join(FFLogsClient.CACHE_DIR, fn))
-            os.rmdir(FFLogsClient.CACHE_DIR)
+        if os.path.exists(cls.CACHE_DIR):
+            for fn in os.listdir(cls.CACHE_DIR):
+                os.remove(os.path.join(cls.CACHE_DIR, fn))
+            os.rmdir(cls.CACHE_DIR)
 
-        cls.client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, cache_expiry=cls.CACHE_EXPIRY)
+        cls.client = FFLogsClient(
+            client_id=CLIENT_ID,
+            client_secret=CLIENT_SECRET,
+            cache_directory=cls.CACHE_DIR,
+            cache_expiry=cls.CACHE_EXPIRY
+        )
 
     @classmethod
     def tearDownClass(cls) -> None:
@@ -48,8 +54,8 @@ class CacheTest(unittest.TestCase):
         The client should be able to save a file containing cached query results
         '''
         self.client.save_cache(silent=False)
-        self.assertTrue(os.path.exists(FFLogsClient.CACHE_DIR))
-        cache_expiry = list(map(lambda f: float(f[:-4]), os.listdir(FFLogsClient.CACHE_DIR)))[0]
+        self.assertTrue(os.path.exists(self.CACHE_DIR))
+        cache_expiry = list(map(lambda f: float(f[:-4]), os.listdir(self.CACHE_DIR)))[0]
         self.assertAlmostEqual(time() + self.CACHE_EXPIRY, cache_expiry, places=1)
 
     def test_extend_cache(self) -> None:
@@ -59,7 +65,7 @@ class CacheTest(unittest.TestCase):
         self.client.extend_cache(2)
         self.client.save_cache()
 
-        expiries = list(map(lambda f: float(f[:-4]), os.listdir(FFLogsClient.CACHE_DIR)))
+        expiries = list(map(lambda f: float(f[:-4]), os.listdir(self.CACHE_DIR)))
         ok = False
         for expiry in expiries:
             if round(time() + self.CACHE_EXPIRY + 2, 1) == round(expiry, 1):
@@ -73,7 +79,7 @@ class CacheTest(unittest.TestCase):
         '''
         self.client.save_cache()
 
-        expiries = list(map(lambda f: float(f[:-4]), os.listdir(FFLogsClient.CACHE_DIR)))
+        expiries = list(map(lambda f: float(f[:-4]), os.listdir(self.CACHE_DIR)))
         # is soonest even a word?
         soonest_expire = min(expiries)
 
@@ -86,7 +92,7 @@ class CacheTest(unittest.TestCase):
         self.assertGreaterEqual(time(), soonest_expire)
 
         self.client.clean_cache()
-        expiries = list(map(lambda f: float(f[:-4]), os.listdir(FFLogsClient.CACHE_DIR)))
+        expiries = list(map(lambda f: float(f[:-4]), os.listdir(self.CACHE_DIR)))
 
         self.assertNotIn(soonest_expire, expiries)
 

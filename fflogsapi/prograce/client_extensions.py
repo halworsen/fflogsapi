@@ -14,6 +14,11 @@ class ProgressRaceMixin:
         Retrieve progress race information from the FF Logs API. This includes information such as
         best fight percentages, pull counts and stream information for different guilds.
 
+        For valid filters see the API documentation:
+        https://www.fflogs.com/v2-api-docs/ff/progressracedata.doc.html
+
+        Args:
+            filters: Filters to use when finding progress races data.
         Returns:
             Progress race data made available by the FF Logs API.
         '''

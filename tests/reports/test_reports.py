@@ -1,5 +1,6 @@
 import unittest
 
+from fflogsapi.characters.character import FFLogsCharacter
 from fflogsapi.client import FFLogsClient
 from fflogsapi.guilds.dataclasses import FFLogsReportTag
 from fflogsapi.reports.fight import FFLogsFight
@@ -13,7 +14,7 @@ from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET
 
 class ReportTest(unittest.TestCase):
     '''
-    Test cases for FFLogs reports.
+    Test cases for FF Logs reports.
 
     This test case makes assumptions on the availability of a specific report.
     If the tests break, it may be because visibility settings
@@ -56,10 +57,22 @@ class ReportTest(unittest.TestCase):
         self.assertGreater(len(actors), 0)
         self.assertIn('Milotiq Umida', [actor.name for actor in actors])
 
+        specific_actor = self.report.actor(id=actors[0].id)
+        self.assertEqual(specific_actor.id, actors[0].id)
+
         abilities = self.report.abilities()
         self.assertGreater(len(abilities), 0)
         ability_ids = [ability.game_id for ability in abilities]
         self.assertIn(0, ability_ids)
+
+    def test_archivation_data(self) -> None:
+        '''
+        The client should be able to get archivation data from a report.
+        '''
+        archivation = self.report.archivation_data()
+        self.assertEqual(archivation.archived, False)
+        self.assertEqual(archivation.accessible, True)
+        self.assertIsNone(archivation.date)
 
     def test_zone(self) -> None:
         '''
@@ -78,15 +91,22 @@ class ReportTest(unittest.TestCase):
         self.assertEqual(self.report.end_time(), 1662781027781)
         self.assertEqual(self.report.duration(), 1662781027781 - 1662771478876)
         self.assertEqual(self.report.segments(), 13)
-        # exported segments, revision, visibility is not implemented
+        self.assertEqual(self.report.exported_segments(), 13)
+        self.assertEqual(self.report.revision(), 12)
+        self.assertEqual(self.report.visibility(), 'public')
 
-    def test_fight(self) -> None:
+    def test_fights(self) -> None:
         '''
         The client should be able to access individual fights through a report.
         '''
-        self.assertIsInstance(self.report.fight(), FFLogsFight)
+        last_fight = self.report.fight()
+        self.assertIsInstance(last_fight, FFLogsFight)
+
         for fight in self.report.fights():
             self.assertIsInstance(fight, FFLogsFight)
+
+        for fight in self.report:
+            self.assertIsInstance(last_fight, FFLogsFight)
 
     def test_nonexistent_fight(self) -> None:
         '''
@@ -137,6 +157,15 @@ class ReportTest(unittest.TestCase):
         self.assertIsInstance(region, FFLogsRegion)
         self.assertEqual(region.id(), 1)
 
+    def test_ranked_characters(self) -> None:
+        '''
+        The client should be able to get a list of all characters that ranked in the report.
+        '''
+        characters = self.report.ranked_characters()
+        self.assertEqual(len(characters), 16)
+        for character in characters:
+            self.assertIsInstance(character, FFLogsCharacter)
+
 
 class ReportPageTest(unittest.TestCase):
     '''
@@ -161,7 +190,7 @@ class ReportPageTest(unittest.TestCase):
         '''
         The client should be able to handle pagination of guild reports
         '''
-        report_pages = self.client.report_pages({'guildID': self.GUILD_ID})
+        report_pages = self.client.reports({'guildID': self.GUILD_ID})
 
         page_one = report_pages.__next__()
         self.assertIsInstance(page_one, FFLogsReportPage)
@@ -173,7 +202,7 @@ class ReportPageTest(unittest.TestCase):
         '''
         The client should be able to handle pagination of user reports
         '''
-        report_pages = self.client.report_pages({'userID': self.USER_ID})
+        report_pages = self.client.reports({'userID': self.USER_ID})
 
         page_one = report_pages.__next__()
         self.assertIsInstance(page_one, FFLogsReportPage)

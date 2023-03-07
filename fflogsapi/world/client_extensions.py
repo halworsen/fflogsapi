@@ -15,7 +15,7 @@ class WorldMixin:
 
     def get_encounter(self, id: int) -> FFLogsEncounter:
         '''
-        Retrieves the given encounter data from FFLogs.
+        Retrieves the given encounter data from FF Logs.
 
         Args:
             id: The encounter ID.
@@ -26,7 +26,7 @@ class WorldMixin:
 
     def get_expansion(self, id: int) -> FFLogsExpansion:
         '''
-        Retrieves the given expansion data from FFLogs.
+        Retrieves the given expansion data from FF Logs.
 
         Args:
             id: The expansion ID.
@@ -37,7 +37,7 @@ class WorldMixin:
 
     def get_all_expansions(self) -> list[FFLogsExpansion]:
         '''
-        Retrieves a list of all expansions supported by FFLogs.
+        Retrieves a list of all expansions supported by FF Logs.
 
         Returns:
             A list of FFLogsExpansions representing each expansion.
@@ -50,7 +50,7 @@ class WorldMixin:
 
     def get_region(self, id: int) -> FFLogsRegion:
         '''
-        Retrieves the given region from FFLogs.
+        Retrieves the given region from FF Logs.
 
         Args:
             id: The region ID.
@@ -61,7 +61,7 @@ class WorldMixin:
 
     def get_all_regions(self) -> list[FFLogsRegion]:
         '''
-        Retrieves a list of all regions supported by FFLogs.
+        Retrieves a list of all regions supported by FF Logs.
 
         Returns:
             A list of FFLogsRegions representing each region.
@@ -74,11 +74,13 @@ class WorldMixin:
 
     def get_server(self, filters: dict = {}, id: Optional[int] = -1) -> FFLogsServer:
         '''
-        Retrieves server information from FFLogs given server filters.
+        Retrieves server information from FF Logs given server filters.
+
+        For valid filters see the API documentation:
+        https://www.fflogs.com/v2-api-docs/warcraft/worlddata.doc.html
 
         Args:
             filters: Optional filters to find the server by.
-                     Valid filter fields are: id, region, slug.
             id: The ID of the server to retrieve.
         Returns:
             A FFLogsServer object representing the server.
@@ -87,7 +89,7 @@ class WorldMixin:
 
     def get_subregion(self, id: int) -> FFLogsSubregion:
         '''
-        Retrieves the given subregion from FFLogs.
+        Retrieves the given subregion from FF Logs.
 
         Args:
             id: The subregion ID.
@@ -98,7 +100,7 @@ class WorldMixin:
 
     def get_zone(self, id: int) -> FFLogsZone:
         '''
-        Retrieves the given zone from FFLogs.
+        Retrieves the given zone from FF Logs.
 
         Args:
             id: The zone ID.
@@ -109,7 +111,7 @@ class WorldMixin:
 
     def get_all_zones(self, expansion_id: int) -> list[FFLogsZone]:
         '''
-        Retrieves a list of all zones belonging to a given expansion that are supported by FFLogs.
+        Retrieves a list of all zones belonging to a given expansion that are supported by FF Logs.
 
         Returns:
             A list of FFLogsZones representing each zone.

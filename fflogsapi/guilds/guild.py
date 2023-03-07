@@ -41,7 +41,7 @@ class FFLogsGuild:
             innerQuery=query,
         ), ignore_cache=ignore_cache)
 
-        return result
+        return itindex(result, self.DATA_INDICES)
 
     @fetch_data('id')
     def id(self) -> int:
@@ -127,7 +127,7 @@ class FFLogsGuild:
         Returns:
             The server the guild belogns to
         '''
-        id = itindex(self._query_data(query='server{ id }'), self.DATA_INDICES)['server']['id']
+        id = self._query_data(query='server{ id }')['server']['id']
         return FFLogsServer(id=id, client=self._client)
 
     def tags(self) -> list[FFLogsReportTag]:
@@ -137,7 +137,7 @@ class FFLogsGuild:
         Returns:
             The guild's tags.
         '''
-        tags = itindex(self._query_data(query='tags{ id, name }'), self.DATA_INDICES)['tags']
+        tags = self._query_data(query='tags{ id, name }')['tags']
         return [FFLogsReportTag(id=tag['id'], name=tag['name'], guild=self) for tag in tags]
 
     def grand_company(self) -> FFGrandCompany:
@@ -147,16 +147,15 @@ class FFLogsGuild:
         Returns:
             The grand company the guild belongs to.
         '''
-        grand_company = itindex(
-            self._query_data(query='faction{ id, name }'),
-            self.DATA_INDICES,
-        )['faction']
+        grand_company = self._query_data(query='faction{ id, name }')['faction']
         return FFGrandCompany(id=grand_company['id'], name=grand_company['name'])
 
     def attendance(self, filters: dict = {}) -> FFLogsGuildAttendancePaginationIterator:
         '''
-        Get a pagination of attandance reports. Filterable by zone ID (`zoneID`)
-        and report tag ID (`guildTagID`).
+        Get a pagination of attandance reports.
+
+        For valid filters see the API documentation:
+        https://www.fflogs.com/v2-api-docs/ff/guild.doc.html
 
         Args:
             filters: Zone and tag ID filters to filter attendance reports by.
@@ -201,11 +200,11 @@ class FFLogsGuild:
         elif isinstance(zone, FFLogsZone):
             zone_id = zone.id()
 
-        data = itindex(self._query_data(Q_GUILD_RANKING.format(
+        data = self._query_data(Q_GUILD_RANKING.format(
             zoneID=zone_id,
             size=size,
             difficulty=difficulty,
-        )), self.DATA_INDICES)['zoneRanking']
+        ))['zoneRanking']
 
         for key in data.keys():
             if not data[key]:

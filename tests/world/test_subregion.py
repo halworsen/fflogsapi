@@ -10,7 +10,7 @@ from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET
 
 class SubregionTest(unittest.TestCase):
     '''
-    Test cases for FFLogs subregion information.
+    Test cases for FF Logs subregion information.
     '''
 
     SUBREGION_ID = 1

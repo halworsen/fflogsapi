@@ -10,7 +10,7 @@ from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET
 
 class EncounterTest(unittest.TestCase):
     '''
-    Test cases for FFLogs encounter information.
+    Test cases for FF Logs encounter information.
     '''
 
     ENCOUNTER_ID = 87
@@ -65,7 +65,9 @@ class EncounterTest(unittest.TestCase):
         '''
         The client should be able to provide a zone in which an encounter takes place.
         '''
+        zone = self.encounter.zone()
         self.assertIsInstance(self.encounter.zone(), FFLogsZone)
+        self.assertEqual(zone.id(), 49)
 
 
 if __name__ == '__main__':

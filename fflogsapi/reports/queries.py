@@ -1,5 +1,5 @@
 # Top level query for retrieving paginated reports
-Q_REPORT_PAGINATION = """
+Q_REPORT_PAGINATION = '''
 query {{
     reportData {{
         reports({filters}) {{
@@ -7,10 +7,10 @@ query {{
         }}
     }}
 }}
-"""
+'''
 
 # Top level query for retrieving a specific report
-Q_REPORT_DATA = """
+Q_REPORT_DATA = '''
 query {{
     reportData {{
         report(code: "{reportCode}") {{
@@ -18,10 +18,10 @@ query {{
         }}
     }}
 }}
-"""
+'''
 
 # Query for retrieving a specific fight from a specific report (subquery of Q_REPORTDATA)
-Q_FIGHT_DATA = """
+Q_FIGHT_DATA = '''
 query {{
     reportData {{
         report(code: "{reportCode}") {{
@@ -31,7 +31,7 @@ query {{
         }}
     }}
 }}
-"""
+'''
 
 IQ_REPORT_LOG_VERSION = '''
 masterData {

@@ -1,2 +1,12 @@
 ignore:
-  - "fflogsapi/user_auth.py" # explained in tests/user/test_user.py
+  - 'fflogsapi/user_auth.py' # explained in tests/user/test_user.py
+
+coverage:
+  status:
+    project:
+      source:
+        paths: 'fflogsapi/'
+        target: 95%
+    patch:
+      default:
+        target: 90%

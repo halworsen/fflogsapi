@@ -10,7 +10,7 @@ from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET
 
 class ZoneTest(unittest.TestCase):
     '''
-    Test cases for FFLogs zone information.
+    Test cases for FF Logs zone information.
     '''
 
     ZONE_ID = 49

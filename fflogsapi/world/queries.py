@@ -1,5 +1,5 @@
 # Retrieve information about a specific encounter
-Q_ENCOUNTER = """
+Q_ENCOUNTER = '''
 query {{
     worldData {{
         encounter(id: {encounterID}) {{
@@ -7,9 +7,9 @@ query {{
         }}
     }}
 }}
-"""
+'''
 # Retrieve information about a specific expansion
-Q_EXPANSION = """
+Q_EXPANSION = '''
 query {{
     worldData {{
         expansion(id: {expansionID}) {{
@@ -17,10 +17,10 @@ query {{
         }}
     }}
 }}
-"""
+'''
 
 # Retrieve information about all supported expansions
-Q_EXPANSION_LIST = """
+Q_EXPANSION_LIST = '''
 query {{
     worldData {{
         expansions {{
@@ -28,10 +28,10 @@ query {{
         }}
     }}
 }}
-"""
+'''
 
 # Retrieve information about a specific region
-Q_REGION = """
+Q_REGION = '''
 query {{
     worldData {{
         region(id: {regionID}) {{
@@ -39,10 +39,10 @@ query {{
         }}
     }}
 }}
-"""
+'''
 
 # Retrieve information about all supported regions
-Q_REGION_LIST = """
+Q_REGION_LIST = '''
 query {{
     worldData {{
         regions {{
@@ -50,10 +50,10 @@ query {{
         }}
     }}
 }}
-"""
+'''
 
 # Retrieve a pagination of servers belonging to a region
-Q_REGION_SERVER_PAGINATION = """
+Q_REGION_SERVER_PAGINATION = '''
 query {{
     worldData {{
         region(id: {regionID}) {{
@@ -63,10 +63,10 @@ query {{
         }}
     }}
 }}
-"""
+'''
 
 # Retrieve a pagination of servers belonging to a subregion
-Q_SUBREGION_SERVER_PAGINATION = """
+Q_SUBREGION_SERVER_PAGINATION = '''
 query {{
     worldData {{
         subregion(id: {subregionID}) {{
@@ -76,10 +76,10 @@ query {{
         }}
     }}
 }}
-"""
+'''
 
 # Retrieve information about a server, either by ID or slug+region
-Q_SERVER = """
+Q_SERVER = '''
 query {{
     worldData {{
         server({filters}) {{
@@ -87,10 +87,10 @@ query {{
         }}
     }}
 }}
-"""
+'''
 
 # Retrieve a pagination of characters belonging to a server
-Q_SERVER_CHARACTER_PAGINATION = """
+Q_SERVER_CHARACTER_PAGINATION = '''
 query {{
     worldData {{
         server(id: {serverID}) {{
@@ -100,10 +100,10 @@ query {{
         }}
     }}
 }}
-"""
+'''
 
 # Retrieve information about a given subregion
-Q_SUBREGION = """
+Q_SUBREGION = '''
 query {{
     worldData {{
         subregion(id: {subregionID}) {{
@@ -111,10 +111,10 @@ query {{
         }}
     }}
 }}
-"""
+'''
 
 # Retrieve information about a given zone
-Q_ZONE = """
+Q_ZONE = '''
 query {{
     worldData {{
         zone(id: {zoneID}) {{
@@ -122,10 +122,10 @@ query {{
         }}
     }}
 }}
-"""
+'''
 
 # Retrieve information about all zones, filterable by expansion ID
-Q_ZONE_LIST = """
+Q_ZONE_LIST = '''
 query {{
     worldData {{
         zones({filters}) {{
@@ -133,4 +133,4 @@ query {{
         }}
     }}
 }}
-"""
+'''

@@ -10,7 +10,7 @@ from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET
 
 class RegionTest(unittest.TestCase):
     '''
-    Test cases for FFLogs region information.
+    Test cases for FF Logs region information.
     '''
 
     REGION_ID = 1

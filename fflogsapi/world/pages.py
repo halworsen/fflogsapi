@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class FFLogsServerCharacterPage(FFLogsCharacterPage):
     '''
-    Represents a page of a server's characters on FFLogs.
+    Represents a page of a server's characters on FF Logs.
     '''
 
     PAGINATION_QUERY = Q_SERVER_CHARACTER_PAGINATION
@@ -28,7 +28,7 @@ class FFLogsServerCharacterPaginationIterator(FFLogsPaginationIterator):
 
 class FFLogsRegionServerPage(FFLogsPage):
     '''
-    Represents a page of a region's servers on FFLogs.
+    Represents a page of a region's servers on FF Logs.
     '''
 
     PAGINATION_QUERY = Q_REGION_SERVER_PAGINATION
@@ -53,7 +53,7 @@ class FFLogsRegionServerPaginationIterator(FFLogsPaginationIterator):
 
 class FFLogsSubregionServerPage(FFLogsRegionServerPage):
     '''
-    Represents a page of a subregion's servers on FFLogs.
+    Represents a page of a subregion's servers on FF Logs.
     '''
 
     PAGINATION_QUERY = Q_SUBREGION_SERVER_PAGINATION

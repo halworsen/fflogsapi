@@ -38,7 +38,7 @@ class FFLogsServer:
             innerQuery=query,
         ), ignore_cache=ignore_cache)
 
-        return result
+        return itindex(result, self.DATA_INDICES)
 
     @fetch_data('id')
     def id(self) -> int:
@@ -92,7 +92,7 @@ class FFLogsServer:
         '''
         from .region import FFLogsRegion
 
-        region = itindex(self._query_data('region{ id }'), self.DATA_INDICES)['region']['id']
+        region = self._query_data('region{ id }')['region']['id']
         if 'region' not in self._data:
             self._data['region'] = FFLogsRegion(id=region, client=self._client)
 
@@ -107,7 +107,7 @@ class FFLogsServer:
         '''
         from .region import FFLogsSubregion
 
-        subregion = itindex(self._query_data('subregion{ id }'), self.DATA_INDICES)[
+        subregion = self._query_data('subregion{ id }')[
             'subregion']['id']
         if 'subregion' not in self._data:
             self._data['subregion'] = FFLogsSubregion(id=subregion, client=self._client)

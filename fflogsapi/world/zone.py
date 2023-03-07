@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 class FFLogsZone:
     '''
-    Representation of a zone on FFLogs.
+    Representation of a zone on FF Logs.
     '''
 
     DATA_INDICES = ['worldData', 'zone']
@@ -32,7 +32,7 @@ class FFLogsZone:
             innerQuery=query,
         ), ignore_cache=ignore_cache)
 
-        return result
+        return itindex(result, self.DATA_INDICES)
 
     def id(self) -> int:
         '''
@@ -73,7 +73,7 @@ class FFLogsZone:
         from .encounter import FFLogsEncounter
 
         encounters = self._query_data('encounters{ id }')
-        encounter_ids = [e['id'] for e in encounters['worldData']['zone']['encounters']]
+        encounter_ids = [e['id'] for e in encounters['encounters']]
 
         return [FFLogsEncounter(id=id, client=self._client) for id in encounter_ids]
 
@@ -85,7 +85,7 @@ class FFLogsZone:
             The zone's bracket information.
         '''
         bracket_info = self._query_data('brackets{ type, min, max, bucket }')
-        return bracket_info['worldData']['zone']['brackets']
+        return bracket_info['brackets']
 
     def partitions(self) -> dict:
         '''
@@ -95,7 +95,7 @@ class FFLogsZone:
             The zone's partition information.
         '''
         partition_info = self._query_data('partitions{ id, name, compactName, default }')
-        return partition_info['worldData']['zone']['partitions']
+        return partition_info['partitions']
 
     def difficulties(self) -> dict:
         '''
@@ -105,7 +105,7 @@ class FFLogsZone:
             The zone's difficulty information.
         '''
         difficulty_info = self._query_data('difficulties{ id, name, sizes }')
-        return difficulty_info['worldData']['zone']['difficulties']
+        return difficulty_info['difficulties']
 
     def expansion(self) -> 'FFLogsExpansion':
         '''
@@ -116,6 +116,5 @@ class FFLogsZone:
         '''
         from .expansion import FFLogsExpansion
 
-        result = self._query_data('expansion{ id }')
-        expac_id = itindex(result, self.DATA_INDICES)['expansion']['id']
+        expac_id = self._query_data('expansion{ id }')['expansion']['id']
         return FFLogsExpansion(id=expac_id, client=self._client)

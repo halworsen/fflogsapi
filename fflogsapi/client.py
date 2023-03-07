@@ -58,7 +58,7 @@ class FFLogsClient(
     ProgressRaceMixin,
 ):
     '''
-    A client capable of communicating with the FFLogs V2 GraphQL API.
+    A client capable of communicating with the FF Logs V2 GraphQL API.
 
     Capabilities of the client are defined on a per-module basis. Generally, each data structure in
     the API's schema will have its own module. See client_extensions.py in each module for
@@ -77,8 +77,6 @@ class FFLogsClient(
 
     OAUTH_TOKEN_URL = 'https://www.fflogs.com/oauth/token'
 
-    CACHE_DIR = './querycache'
-
     Q_RATE_LIMIT = 'query{{rateLimitData{innerQuery}}}'
 
     def __init__(
@@ -87,6 +85,7 @@ class FFLogsClient(
         client_secret: str,
         mode: str = 'client',
         enable_caching: bool = True,
+        cache_directory: str = './fflogs-querycache',
         cache_expiry: int = 86400,
         cache_override: str = '',
         ignore_cache_expiry: bool = False,
@@ -105,6 +104,7 @@ class FFLogsClient(
                   while user mode allows access to private information. User mode requires login.
             enable_caching: If enabled, the client will cache the result of queries
                             for up to a time specified by the cache_expiry argument.
+            cache_directory: The directory to read and save query cache files in.
             cache_expiry: How long to keep query results in cache, in seconds. Default is 1 day.
             cache_override: If set, force the client to load cached queries from the given file path
             ignore_cache_expiry: If set to True, the client will load the most up-to-date cache,
@@ -127,11 +127,12 @@ class FFLogsClient(
         self._query_cache = {}
         self.cache_expiry = cache_expiry
         self.cache_queries = enable_caching
+        self.cache_dir = cache_directory
         self.ignore_cache_expiry = ignore_cache_expiry
 
         if enable_caching:
-            if not os.path.exists(self.CACHE_DIR):
-                os.makedirs(self.CACHE_DIR)
+            if not os.path.exists(self.cache_dir):
+                os.makedirs(self.cache_dir)
 
             cache_path = ''
             if cache_override:
@@ -140,11 +141,11 @@ class FFLogsClient(
                 # pluck the freshest pickled cache and use that
                 cache_files = list(filter(
                     lambda f: f.endswith('.pkl') and f[:-4].replace('.', '').isdigit(),
-                    os.listdir(self.CACHE_DIR)
+                    os.listdir(self.cache_dir)
                 ))
                 if len(cache_files):
                     max_expiry_cache = max(cache_files, key=lambda fn: float(fn[:-4]))
-                    cache_path = os.path.join(self.CACHE_DIR, max_expiry_cache)
+                    cache_path = os.path.join(self.cache_dir, max_expiry_cache)
 
             if cache_path:
                 with open(cache_path, 'rb') as f:
@@ -175,8 +176,9 @@ class FFLogsClient(
         actually executing the query.
 
         Args:
-            query: The GraphQL query to execute
-            ignore_cache: Whether or not to ignore cached results, forcing a re-fetch of the data.
+            query: The GraphQL query to execute.
+            ignore_cache: Whether or not to ignore cached results, forcing a query to be executed
+                          against the API.
         '''
         if self.cache_queries and not ignore_cache and query in self._query_cache:
             cached_result = self._query_cache[query]
@@ -200,21 +202,21 @@ class FFLogsClient(
         '''
         Stores all cached queries in pickled format.
 
-        The query cache file is stored in the directory specified by `CACHE_DIR`. The file name
-        is the the unix timestamp of the query with the largest expiry time. This means that
-        there is no guarantee that all queries in the cache are usable, but there is at least some
+        The query cache file is stored in the cache directory. The file name is the the
+        unix timestamp of the query with the largest expiry time. This means that there is
+        no guarantee that *all* results in the cache are usable, but there is at least *some*
         useful data in the cache.
 
         Args:
             silent: If False, print the path of the cache file.
         '''
-        if not os.path.exists(self.CACHE_DIR):
-            os.makedirs(self.CACHE_DIR)
+        if not os.path.exists(self.cache_dir):
+            os.makedirs(self.cache_dir)
 
         # annotate the cache file with the largest expiry time
         # that way cache files with a timestamp larger than the current time are fully expired
         max_expiry = max(self._query_cache.values(), key=lambda q: q[0])
-        cache_file_path = os.path.join(self.CACHE_DIR, f'{max_expiry[0]}.pkl')
+        cache_file_path = os.path.join(self.cache_dir, f'{max_expiry[0]}.pkl')
         with open(cache_file_path, 'wb+') as f:
             pickle.dump(self._query_cache, f)
 
@@ -241,13 +243,13 @@ class FFLogsClient(
         '''
         cache_files = list(filter(
             lambda f: f.endswith('.pkl') and f[:-4].replace('.', '').isdigit(),
-            os.listdir(self.CACHE_DIR)
+            os.listdir(self.cache_dir)
         ))
         if len(cache_files):
             for file in cache_files:
                 expiry = float(file[:-4])
                 if time() >= expiry:
-                    os.remove(os.path.join(self.CACHE_DIR, file))
+                    os.remove(os.path.join(self.cache_dir, file))
 
     def rate_limit_allowance(self) -> int:
         '''

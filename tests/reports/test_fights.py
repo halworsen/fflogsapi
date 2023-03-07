@@ -2,14 +2,17 @@ import unittest
 
 from fflogsapi.client import FFLogsClient
 from fflogsapi.constants import FIGHT_DIFFICULTY_SAVAGE, PARTY_SIZE_FULL_PARTY
+from fflogsapi.reports.dataclasses import (FFLogsActor, FFLogsReportCharacterRanking,
+                                           FFLogsReportComboRanking, FFLogsReportRanking,)
 from fflogsapi.util.gql_enums import GQLEnum
+from fflogsapi.world.encounter import FFLogsEncounter
 
 from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET
 
 
 class FightTest(unittest.TestCase):
     '''
-    Test cases for FFLogs fights.
+    Test cases for FF Logs fights.
 
     This test case makes assumptions on the availability of a specific report.
     If the tests break, it may be because visibility settings
@@ -35,23 +38,28 @@ class FightTest(unittest.TestCase):
         The client should be able to fetch fields about the fight
         such as the difficulty, boss name, etc.
         '''
-        self.assertEqual(self.fight.name(), "Hephaistos II")
-
-        self.assertEqual(self.fight.encounter_id(), 87)
+        self.assertEqual(self.fight.name(), 'Hephaistos II')
+        self.assertIsInstance(self.fight.encounter(), FFLogsEncounter)
+        self.assertEqual(self.fight.encounter().id(), 87)
         self.assertEqual(self.fight.difficulty(), FIGHT_DIFFICULTY_SAVAGE)
         self.assertEqual(self.fight.size(), PARTY_SIZE_FULL_PARTY)
         self.assertEqual(self.fight.fight_percentage(), 55.93)
         self.assertEqual(self.fight.percentage(), 55.93)
         self.assertEqual(self.fight.start_time(), 8224400)
         self.assertEqual(self.fight.end_time(), 8500006)
-
+        self.assertEqual(self.fight.in_progress(), False)
         self.assertEqual(self.fight.is_kill(), False)
         self.assertEqual(self.fight.has_echo(), False)
         self.assertEqual(self.fight.standard_comp(), True)
 
+        self.assertTupleEqual(
+            self.fight.bounding_box(),
+            (8000, 7700, 12000, 11934),
+        )
+
         self.assertListEqual(
-            self.fight.friendly_players(),
-            [126, 125, 124, 91, 123, 38, 130, 129, 160],
+            sorted(self.fight.friendly_players()),
+            sorted([126, 125, 124, 91, 123, 38, 130, 129, 160]),
         )
 
     def test_events(self) -> None:
@@ -125,13 +133,32 @@ class FightTest(unittest.TestCase):
         '''
         The client should be able to fetch ranking information from a fight
         '''
-        rankings = self.fight.rankings()
-        # a wipe should not have any ranking information
-        self.assertEqual(len(rankings), 0)
+        # the common/reusable fight is a wipe, and should not have rankings
+        self.assertIsNone(self.fight.rankings())
 
-        rankings = self.report.fight(id=5).rankings()
-        self.assertGreater(len(rankings), 0)
-        self.assertEqual(rankings[0]['bracketData'], 6.2)
+        # get rankings from an actual kill
+        rankings = self.report.fight(id=17).rankings(metric='rdps')
+        self.assertIsInstance(rankings, FFLogsReportRanking)
+
+        self.assertEqual(rankings.patch, 6.2)
+        self.assertEqual(rankings.deaths, 1)
+
+        self.assertGreater(len(rankings.character_rankings), 0)
+        self.assertGreater(len(rankings.combo_rankings), 0)
+        self.assertIsInstance(rankings.character_rankings[0], FFLogsReportCharacterRanking)
+        self.assertIsInstance(rankings.combo_rankings[0], FFLogsReportComboRanking)
+
+        gunbreaker = list(filter(
+            lambda r: r.job.name == 'Gunbreaker',
+            rankings.character_rankings
+        ))[0]
+        self.assertAlmostEqual(gunbreaker.amount, 6491.9, places=1)
+
+        healers = list(filter(
+            lambda r: r.type == 'healers',
+            rankings.combo_rankings
+        ))[0]
+        self.assertAlmostEqual(healers.amount, 9793.7, places=1)
 
     def test_multiple_event_pages(self) -> None:
         '''
@@ -146,6 +173,79 @@ class FightTest(unittest.TestCase):
         self.assertIsInstance(events, list)
         self.assertIsInstance(events[0], dict)
         self.assertEqual(events[0]['type'], 'cast')
+
+    def test_player_details(self) -> None:
+        '''
+        The client should be able to fetch player details for a fight
+        '''
+        details = self.fight.player_details()
+        self.assertGreater(len(details), 0)
+
+        surana = list(filter(
+            lambda d: d.id == 160,
+            details,
+        ))[0]
+        self.assertEqual(surana.name, 'Surana Crescence')
+        self.assertIsInstance(surana.actor, FFLogsActor)
+        self.assertEqual(surana.job.name, 'Dancer')
+        self.assertEqual(surana.server, 'Gilgamesh')
+
+    def test_npcs(self) -> None:
+        '''
+        The client should be able to get both enemy and friendly NPCs from a fight.
+        '''
+        enemies = self.fight.enemy_npcs()
+        specific_enemy = list(filter(
+            lambda e: e.id == 41,
+            enemies,
+        ))[0]
+
+        self.assertEqual(specific_enemy.actor.name, 'Hephaistos')
+        self.assertEqual(specific_enemy.hostile, True)
+
+        friends = self.fight.friendly_npcs()
+        # :(
+        self.assertIsNone(friends)
+
+        dsu_report = self.client.get_report(code='Tpx4NKYMQz1rDVbX')
+        fight = dsu_report.fight(id=7)
+        friends = fight.friendly_npcs()
+        haurchefant = list(filter(
+            lambda e: e.id == 21,
+            friends,
+        ))[0]
+        self.assertEqual(haurchefant.instance_count, 3)
+        self.assertEqual(haurchefant.actor.name, 'Haurchefant')
+
+    def test_pets(self) -> None:
+        '''
+        The client should be able to get a list of friendly pets from a fight.
+        '''
+        pets = self.fight.pets()
+        bunshin = list(filter(
+            lambda p: p.id == 133,
+            pets,
+        ))[0]
+
+        self.assertEqual(bunshin.instance_count, 3)
+        self.assertEqual(bunshin.pet_owner.name, 'Riksa Ui')
+
+    def test_game_zone(self) -> None:
+        '''
+        The client should be able to get the game zone a fight took place in.
+        '''
+        zone = self.fight.game_zone()
+        self.assertEqual(zone.id, 1088)
+        self.assertEqual(zone.name, 'Stygian Insenescence Cells')
+
+    def test_maps(self) -> None:
+        '''
+        The client should be able to get the maps a fight took place in.
+        '''
+        maps = self.fight.maps()
+        self.assertEqual(len(maps), 1)
+        self.assertEqual(maps[0].id, 808)
+        self.assertEqual(maps[0].name, 'Stygian Insenescence Cells')
 
 
 if __name__ == '__main__':

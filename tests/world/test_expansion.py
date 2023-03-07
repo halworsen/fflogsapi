@@ -9,7 +9,7 @@ from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET
 
 class ExpansionTest(unittest.TestCase):
     '''
-    Test cases for FFLogs expansion information.
+    Test cases for FF Logs expansion information.
     '''
 
     EXPAC_ID = 3  # shadowbringers

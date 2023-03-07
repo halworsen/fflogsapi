@@ -1,6 +1,3 @@
-from .indexing import itindex
-
-
 def fetch_data(key):
     '''
     Decorator that queries and stores the given `key` in a class's `_data` dictionary.
@@ -17,7 +14,7 @@ def fetch_data(key):
             self = args[0]
             if key not in self._data:
                 result = self._query_data(key)
-                self._data[key] = itindex(result, [*self.DATA_INDICES, key])
+                self._data[key] = result[key]
             return func(*args, **kwargs)
         return ensured
     return decorator

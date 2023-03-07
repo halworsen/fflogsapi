@@ -10,7 +10,7 @@ from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET
 
 class ServerTest(unittest.TestCase):
     '''
-    Test cases for FFLogs server information.
+    Test cases for FF Logs server information.
     '''
 
     @classmethod

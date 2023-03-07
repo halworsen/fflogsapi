@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 class FFLogsRegion:
     '''
-    Representation of a region on FFLogs. These correspond to geographical server regions.
+    Representation of a region on FF Logs. These correspond to geographical server regions.
     '''
 
     DATA_INDICES = ['worldData', 'region']
@@ -33,7 +33,7 @@ class FFLogsRegion:
             innerQuery=query,
         ), ignore_cache=ignore_cache)
 
-        return result
+        return itindex(result, self.DATA_INDICES)
 
     def id(self) -> int:
         '''
@@ -94,7 +94,7 @@ class FFLogsRegion:
         Returns:
             A list of subregions.
         '''
-        subregions = itindex(self._query_data('subregions{ id }'), self.DATA_INDICES)['subregions']
+        subregions = self._query_data('subregions{ id }')['subregions']
         subregions = [d['id'] for d in subregions]
         if 'subregions' not in self._data:
             self._data['subregions'] = [FFLogsSubregion(
@@ -105,7 +105,7 @@ class FFLogsRegion:
 
 class FFLogsSubregion:
     '''
-    Representation of a subregion on FFLogs. These correspond to data centers.
+    Representation of a subregion on FF Logs. These correspond to data centers.
     '''
 
     DATA_INDICES = ['worldData', 'subregion']
@@ -125,7 +125,7 @@ class FFLogsSubregion:
             innerQuery=query,
         ), ignore_cache=ignore_cache)
 
-        return result
+        return itindex(result, self.DATA_INDICES)
 
     def id(self) -> int:
         '''
@@ -154,7 +154,7 @@ class FFLogsSubregion:
         Returns:
             The subregion's parent region.
         '''
-        region = itindex(self._query_data('region{ id }'), self.DATA_INDICES)['region']['id']
+        region = self._query_data('region{ id }')['region']['id']
         if 'region' not in self._data:
             self._data['region'] = FFLogsRegion(id=region, client=self._client)
 

@@ -1,5 +1,7 @@
 import unittest
 
+from fflogsapi.characters.character import FFLogsCharacter
+
 from fflogsapi.client import FFLogsClient
 from fflogsapi.guilds.dataclasses import FFLogsReportTag
 from fflogsapi.reports.fight import FFLogsFight
@@ -94,7 +96,7 @@ class ReportTest(unittest.TestCase):
         self.assertEqual(self.report.revision(), 12)
         self.assertEqual(self.report.visibility(), 'public')
 
-    def test_fight(self) -> None:
+    def test_fights(self) -> None:
         '''
         The client should be able to access individual fights through a report.
         '''
@@ -103,6 +105,9 @@ class ReportTest(unittest.TestCase):
 
         for fight in self.report.fights():
             self.assertIsInstance(fight, FFLogsFight)
+        
+        for fight in self.report:
+            self.assertIsInstance(last_fight, FFLogsFight)
 
     def test_nonexistent_fight(self) -> None:
         '''
@@ -152,6 +157,15 @@ class ReportTest(unittest.TestCase):
         region = self.report.region()
         self.assertIsInstance(region, FFLogsRegion)
         self.assertEqual(region.id(), 1)
+
+    def test_ranked_characters(self) -> None:
+        '''
+        The client should be able to get a list of all characters that ranked in the report.
+        '''
+        characters = self.report.ranked_characters()
+        self.assertEqual(len(characters), 16)
+        for character in characters:
+            self.assertIsInstance(character, FFLogsCharacter)
 
 
 class ReportPageTest(unittest.TestCase):

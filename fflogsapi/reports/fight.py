@@ -305,61 +305,60 @@ class FFLogsFight:
             A dictionary of player ranking information or None if there is no ranking information
             for this fight.
         '''
-        if 'rankings' in self._data:
-            return self._data['rankings']
+        if 'rankings' not in self._data:
+            ranks = self.report._query_data(
+                f'rankings(fightIDs: {self.id}, playerMetric: {metric},\
+                compare: {compare}, timeframe: {timeframe})'
+            )['rankings']['data']
 
-        ranks = self.report._query_data(
-            f'rankings(fightIDs: {self.id}, playerMetric: {metric},\
-              compare: {compare}, timeframe: {timeframe})'
-        )['rankings']['data']
+            if not len(ranks):
+                self._data['rankings'] = None
+                return None
+            ranks = ranks[0]
 
-        if not len(ranks):
-            return None
-        ranks = ranks[0]
+            jobs = self._client.jobs()
+            character_rankings = []
+            combo_rankings = []
+            for role, data in ranks['roles'].items():
+                for ranking in data['characters']:
+                    character = FFLogsCharacter(id=ranking['id'])
+                    job = list(filter(lambda j: j.slug == ranking['class'], jobs))[0]
 
-        jobs = self._client.jobs()
-        character_rankings = []
-        combo_rankings = []
-        for role, data in ranks['roles'].items():
-            for ranking in data['characters']:
-                character = FFLogsCharacter(id=ranking['id'])
-                job = list(filter(lambda j: j.slug == ranking['class'], jobs))[0]
+                    if 'id_2' in ranking:
+                        # this is a tank/healer combination ranking
+                        job_b = list(filter(lambda j: j.slug == ranking['class_2'], jobs))[0]
+                        combo_rankings.append(FFLogsReportComboRanking(
+                            type=role,
+                            character_a=character,
+                            character_b=FFLogsCharacter(id=ranking['id_2']),
+                            job_a=job,
+                            job_b=job_b,
+                            amount=ranking['amount'],
+                            rank=str(ranking['rank']),
+                            best_rank=str(ranking['best']),
+                            total_parses=ranking['totalParses'],
+                            percentile=ranking['rankPercent'],
+                        ))
+                    else:
+                        # this is an individual ranking
+                        character_rankings.append(FFLogsReportCharacterRanking(
+                            character=character,
+                            job=job,
+                            amount=ranking['amount'],
+                            rank=str(ranking['rank']),
+                            best_rank=str(ranking['best']),
+                            total_parses=ranking['totalParses'],
+                            percentile=ranking['rankPercent'],
+                        ))
 
-                if 'id_2' in ranking:
-                    # this is a tank/healer combination ranking
-                    job_b = list(filter(lambda j: j.slug == ranking['class_2'], jobs))[0]
-                    combo_rankings.append(FFLogsReportComboRanking(
-                        type=role,
-                        character_a=character,
-                        character_b=FFLogsCharacter(id=ranking['id_2']),
-                        job_a=job,
-                        job_b=job_b,
-                        amount=ranking['amount'],
-                        rank=str(ranking['rank']),
-                        best_rank=str(ranking['best']),
-                        total_parses=ranking['totalParses'],
-                        percentile=ranking['rankPercent'],
-                    ))
-                else:
-                    # this is an individual ranking
-                    character_rankings.append(FFLogsReportCharacterRanking(
-                        character=character,
-                        job=job,
-                        amount=ranking['amount'],
-                        rank=str(ranking['rank']),
-                        best_rank=str(ranking['best']),
-                        total_parses=ranking['totalParses'],
-                        percentile=ranking['rankPercent'],
-                    ))
-
-        self._data['rankings'] = FFLogsReportRanking(
-            patch=ranks['bracketData'],
-            bracket=ranks['bracket'],
-            deaths=ranks['deaths'],
-            damage_taken_not_tanks=ranks['damageTakenExcludingTanks'],
-            character_rankings=character_rankings,
-            combo_rankings=combo_rankings,
-        )
+            self._data['rankings'] = FFLogsReportRanking(
+                patch=ranks['bracketData'],
+                bracket=ranks['bracket'],
+                deaths=ranks['deaths'],
+                damage_taken_not_tanks=ranks['damageTakenExcludingTanks'],
+                character_rankings=character_rankings,
+                combo_rankings=combo_rankings,
+            )
 
         return self._data['rankings']
 

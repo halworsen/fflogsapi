@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 class FFLogsEncounter:
     '''
-    Representation of an encounter on FFLogs.
+    Representation of an encounter on FF Logs.
     '''
 
     DATA_INDICES = ['worldData', 'encounter']
@@ -69,8 +69,11 @@ class FFLogsEncounter:
         Get character/player ranking information for the encounter.
         Character ranking pagination for encounters must be handled by hand.
 
+        For a full list of valid filters see the API documentation:
+        https://www.fflogs.com/v2-api-docs/warcraft/encounter.doc.html
+
         Args:
-            filters: Key-value filters to filter the rankings by. E.g. job name, server, etc.
+            filters: Filters to use when retrieving character rankings for the encounter.
         Returns:
             The encounter's filtered character ranking data.
         '''
@@ -86,8 +89,11 @@ class FFLogsEncounter:
         Get fight rankings for the encounter.
         Fight ranking pagination for encounters must be handled by hand.
 
+        For a full list of valid filters see the API documentation:
+        https://www.fflogs.com/v2-api-docs/warcraft/encounter.doc.html
+
         Args:
-            filters: Key-value filters to filter the rankings by. E.g. job name, server, etc.
+            filters: Filters to use when retrieving fight rankings for the encounter.
         Returns:
             The encounter's filtered fight ranking data.
         '''

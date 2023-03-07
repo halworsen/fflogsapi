@@ -11,7 +11,7 @@ from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET
 
 class CharacterTest(unittest.TestCase):
     '''
-    Test cases for FFLogs characters.
+    Test cases for FF Logs characters.
 
     This test case makes assumptions on the availability of a specific character.
     If the tests break, it may be because visibility settings

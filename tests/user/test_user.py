@@ -7,7 +7,7 @@ from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET
 
 class CharacterTest(unittest.TestCase):
     '''
-    Test cases for FFLogs characters.
+    Test cases for FF Logs characters.
 
     This test is severely limited by the fact that it's a large hassle to perform
     user mode tests as they require an actual FF Logs login. Technically, we could use selenium

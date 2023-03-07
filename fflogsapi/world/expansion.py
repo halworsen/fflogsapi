@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class FFLogsExpansion:
     '''
-    Representation of an expansion on FFLogs.
+    Representation of an expansion on FF Logs.
     '''
 
     DATA_INDICES = ['worldData', 'expansion']

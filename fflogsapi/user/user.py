@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 class FFLogsUser:
     '''
-    FFLogs user information object.
+    FF Logs user information object.
     '''
 
     DATA_INDICES = ['userData', 'user']

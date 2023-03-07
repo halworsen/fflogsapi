@@ -5,7 +5,7 @@ from .report import FFLogsReport
 
 class FFLogsReportPage(FFLogsPage):
     '''
-    Representation of a page of reports on FFLogs.
+    Representation of a page of reports on FF Logs.
     '''
 
     PAGINATION_QUERY = Q_REPORT_PAGINATION

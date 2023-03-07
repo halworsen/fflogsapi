@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 class FFLogsRegion:
     '''
-    Representation of a region on FFLogs. These correspond to geographical server regions.
+    Representation of a region on FF Logs. These correspond to geographical server regions.
     '''
 
     DATA_INDICES = ['worldData', 'region']
@@ -105,7 +105,7 @@ class FFLogsRegion:
 
 class FFLogsSubregion:
     '''
-    Representation of a subregion on FFLogs. These correspond to data centers.
+    Representation of a subregion on FF Logs. These correspond to data centers.
     '''
 
     DATA_INDICES = ['worldData', 'subregion']

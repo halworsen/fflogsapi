@@ -12,7 +12,7 @@ from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET
 
 class FightTest(unittest.TestCase):
     '''
-    Test cases for FFLogs fights.
+    Test cases for FF Logs fights.
 
     This test case makes assumptions on the availability of a specific report.
     If the tests break, it may be because visibility settings

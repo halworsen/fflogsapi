@@ -7,12 +7,15 @@ class ReportsMixin:
     Client extensions to support report data exposed by the FF Logs API.
     '''
 
-    def report_pages(self, filters: dict = {}) -> FFLogsReportPaginationIterator:
+    def reports(self, filters: dict = {}) -> FFLogsReportPaginationIterator:
         '''
-        Iterate over pages of FFLogs reports.
+        Iterate over pages of FF Logs reports.
+
+        For valid filters see the API documentation:
+        https://www.fflogs.com/v2-api-docs/warcraft/reportdata.doc.html
 
         Args:
-            filters: A dictionary containing filters to use when retrieving reports.
+            filters: Filters to use when finding reports.
         Returns:
             An iterator over the pages of reports that match the given filters.
         '''
@@ -20,7 +23,7 @@ class ReportsMixin:
 
     def get_report(self, code: str) -> FFLogsReport:
         '''
-        Retrieves the given report data from FFLogs.
+        Retrieves the given report data from FF Logs.
 
         Args:
             code: The report code.

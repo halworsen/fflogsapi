@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
 class FFLogsReport:
     '''
-    Representation of a report on FFLogs.
+    Representation of a report on FF Logs.
     '''
 
     DATA_INDICES = ['reportData', 'report']

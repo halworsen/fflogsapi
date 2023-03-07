@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 class FFLogsZone:
     '''
-    Representation of a zone on FFLogs.
+    Representation of a zone on FF Logs.
     '''
 
     DATA_INDICES = ['worldData', 'zone']

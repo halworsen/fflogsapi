@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
 class FFLogsFight:
     '''
-    Representation of a single fight on FFLogs.
+    Representation of a single fight on FF Logs.
     '''
 
     DATA_INDICES = ['reportData', 'report', 'fights', 0]
@@ -203,9 +203,11 @@ class FFLogsFight:
 
         This data isn't considered frozen by FF Logs and may therefore change without notice.
 
+        For a full list of valid filters see the API documentation:
+        https://www.fflogs.com/v2-api-docs/warcraft/report.doc.html
+
         Args:
-            filters: Key-value filters to filter the event log by.
-                     E.g. present/absent buffs, target IDs, etc.
+            filters: Filters to use when retrieving event log data.
         Returns:
             A dictionary of all events in the fight or None if the fight has zero duration
         '''
@@ -248,9 +250,11 @@ class FFLogsFight:
 
         This data isn't considered frozen by FF Logs and may therefore change without notice.
 
+        For a full list of valid filters see the API documentation:
+        https://www.fflogs.com/v2-api-docs/warcraft/report.doc.html
+
         Args:
-            filters: Key-value filters to filter the graph by.
-                     E.g. present/absent buffs, target IDs, etc.
+            filters: Filters to use when retrieving graph data.
         Returns:
             A dictionary of graph information for the fight or None if the fight has zero duration
         '''
@@ -270,9 +274,11 @@ class FFLogsFight:
 
         This data isn't considered frozen by FF Logs and may therefore change without notice.
 
+        For a full list of valid filters see the API documentation:
+        https://www.fflogs.com/v2-api-docs/warcraft/report.doc.html
+
         Args:
-            filters: Key-value filters to filter the table by.
-                     E.g. present/absent buffs, target IDs, etc.
+            filters: Filters to use when retrieving table data.
         Returns:
             A dictionary of table information for the fight or None if the fight has zero duration
         '''

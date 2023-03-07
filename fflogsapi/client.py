@@ -58,7 +58,7 @@ class FFLogsClient(
     ProgressRaceMixin,
 ):
     '''
-    A client capable of communicating with the FFLogs V2 GraphQL API.
+    A client capable of communicating with the FF Logs V2 GraphQL API.
 
     Capabilities of the client are defined on a per-module basis. Generally, each data structure in
     the API's schema will have its own module. See client_extensions.py in each module for

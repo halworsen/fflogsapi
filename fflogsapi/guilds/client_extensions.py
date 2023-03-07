@@ -13,8 +13,11 @@ class GuildsMixin:
         '''
         Iterate over pages of guilds on FF Logs.
 
+        For valid filters see the API documentation:
+        https://www.fflogs.com/v2-api-docs/ff/guilddata.doc.html
+
         Args:
-            filters: Filters to find guilds by. `name`, `serverSlug` and `serverRegion` supported.
+            filters: Filters to find guilds by.
         Returns:
             An iterator over the pages of guilds that match the given filters.
         '''
@@ -24,8 +27,11 @@ class GuildsMixin:
         '''
         Retrieves the given guild data from FFLogs.
 
+        For valid filters see the API documentation:
+        https://www.fflogs.com/v2-api-docs/ff/guilddata.doc.html
+
         Args:
-            filters: Filters to find the guild by. Namely, `name`, `serverSlug` and `serverRegion`.
+            filters: Filters to find the guild by.
             id: The guild ID.
         Returns:
             A FFLogsGuild object representing the guild.

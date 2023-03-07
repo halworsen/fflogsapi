@@ -1,7 +1,6 @@
 import unittest
 
 from fflogsapi.characters.character import FFLogsCharacter
-
 from fflogsapi.client import FFLogsClient
 from fflogsapi.guilds.dataclasses import FFLogsReportTag
 from fflogsapi.reports.fight import FFLogsFight
@@ -15,7 +14,7 @@ from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET
 
 class ReportTest(unittest.TestCase):
     '''
-    Test cases for FFLogs reports.
+    Test cases for FF Logs reports.
 
     This test case makes assumptions on the availability of a specific report.
     If the tests break, it may be because visibility settings
@@ -105,7 +104,7 @@ class ReportTest(unittest.TestCase):
 
         for fight in self.report.fights():
             self.assertIsInstance(fight, FFLogsFight)
-        
+
         for fight in self.report:
             self.assertIsInstance(last_fight, FFLogsFight)
 
@@ -191,7 +190,7 @@ class ReportPageTest(unittest.TestCase):
         '''
         The client should be able to handle pagination of guild reports
         '''
-        report_pages = self.client.report_pages({'guildID': self.GUILD_ID})
+        report_pages = self.client.reports({'guildID': self.GUILD_ID})
 
         page_one = report_pages.__next__()
         self.assertIsInstance(page_one, FFLogsReportPage)
@@ -203,7 +202,7 @@ class ReportPageTest(unittest.TestCase):
         '''
         The client should be able to handle pagination of user reports
         '''
-        report_pages = self.client.report_pages({'userID': self.USER_ID})
+        report_pages = self.client.reports({'userID': self.USER_ID})
 
         page_one = report_pages.__next__()
         self.assertIsInstance(page_one, FFLogsReportPage)

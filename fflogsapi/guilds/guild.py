@@ -152,8 +152,10 @@ class FFLogsGuild:
 
     def attendance(self, filters: dict = {}) -> FFLogsGuildAttendancePaginationIterator:
         '''
-        Get a pagination of attandance reports. Filterable by zone ID (`zoneID`)
-        and report tag ID (`guildTagID`).
+        Get a pagination of attandance reports.
+
+        For valid filters see the API documentation:
+        https://www.fflogs.com/v2-api-docs/ff/guild.doc.html
 
         Args:
             filters: Zone and tag ID filters to filter attendance reports by.

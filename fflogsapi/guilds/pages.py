@@ -67,7 +67,7 @@ class FFLogsGuildAttendancePaginationIterator(FFLogsPaginationIterator):
 
 class FFLogsCharacterPage(FFLogsPage):
     '''
-    Represents a page of a guild's characters on FFLogs.
+    Represents a page of a guild's characters on FF Logs.
     '''
 
     PAGINATION_QUERY = Q_GUILD_CHARACTER_PAGINATION

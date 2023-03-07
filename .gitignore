@@ -8,6 +8,7 @@ dist/
 coverage.xml
 
 querycache/
+fflogs-querycache/
 *.pkl
 test.py
 

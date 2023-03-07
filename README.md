@@ -1,6 +1,6 @@
 # fflogsapi
 
-fflogsapi is a lazy Python 3 client for [fflogs](https://www.fflogs.com/)' v2 API with query caching functionality.
+fflogsapi is a lazy Python 3 client for [FF Logs](https://www.fflogs.com/)' v2 API with query caching functionality.
 
 [![Tests](https://github.com/halworsen/fflogsapi/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/halworsen/fflogsapi/actions/workflows/test.yml)
 [![Linting](https://github.com/halworsen/fflogsapi/actions/workflows/lint.yml/badge.svg?branch=master)](https://github.com/halworsen/fflogsapi/actions/workflows/lint.yml)
@@ -52,7 +52,7 @@ from config import CLIENT_ID, CLIENT_SECRET
 from fflogsapi.client import FFLogsClient
 
 client = FFLogsClient(CLIENT_ID, CLIENT_SECRET)
-for page in client.report_pages(filters={ 'guildID': 80551 }):
+for page in client.reports(filters={ 'guildID': 80551 }):
     print(f'Reports in page: {page.count()}')
     for report in page:
         print(report.title(), f'Duration: {report.duration()}')

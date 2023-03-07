@@ -2,6 +2,16 @@
 
 Backwards compatibility is not guaranteed in versions <1.0.0.
 
+## v1.0.0
+
+* Extended support for report/fight data to cover the vast majority of interesting API endpoints
+* Added `compare` and `timeframe` filtering for fight rankings
+* Add ability to specify the directory in which query caches should be stored
+  * The new default directory for cached queries is `./fflogs-querycache`
+* Added more event type constants
+* Added `constants.TIMESTAMP_PRECISION`, which can be used to convert timestamps to seconds
+* Improved docstrings, including references to the API documentation where relevant
+
 ## v0.6.0
 
 * Add support for game data

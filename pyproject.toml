@@ -1,6 +1,6 @@
 [project]
 name = 'fflogsapi'
-version = '0.6.0'
+version = '1.0.0'
 description = 'Python client for the FF Logs v2 API'
 readme = 'README.md'
 authors = [

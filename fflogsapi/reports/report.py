@@ -316,6 +316,8 @@ class FFLogsReport:
         '''
         if 'rankedCharacters' not in self._data:
             characters = self._query_data('rankedCharacters{ id }')['rankedCharacters']
-            self._data['rankedCharacters'] = [FFLogsCharacter(id=id) for id in characters]
+            self._data['rankedCharacters'] = [
+                FFLogsCharacter(id=id, client=self._client) for id in characters
+            ]
 
         return self._data['rankedCharacters']

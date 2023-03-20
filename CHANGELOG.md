@@ -2,6 +2,10 @@
 
 Backwards compatibility is not guaranteed in versions <1.0.0.
 
+## v1.0.1
+
+* Fix missing client for characters retrieved through fight rankings.
+
 ## v1.0.0
 
 * Extended support for report/fight data to cover the vast majority of interesting API endpoints

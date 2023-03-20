@@ -327,7 +327,7 @@ class FFLogsFight:
             combo_rankings = []
             for role, data in ranks['roles'].items():
                 for ranking in data['characters']:
-                    character = FFLogsCharacter(id=ranking['id'])
+                    character = FFLogsCharacter(id=ranking['id'], client=self._client)
                     job = list(filter(lambda j: j.slug == ranking['class'], jobs))[0]
 
                     if 'id_2' in ranking:
@@ -336,7 +336,7 @@ class FFLogsFight:
                         combo_rankings.append(FFLogsReportComboRanking(
                             type=role,
                             character_a=character,
-                            character_b=FFLogsCharacter(id=ranking['id_2']),
+                            character_b=FFLogsCharacter(id=ranking['id_2'], client=self._client),
                             job_a=job,
                             job_b=job_b,
                             amount=ranking['amount'],

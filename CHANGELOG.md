@@ -4,7 +4,7 @@ Backwards compatibility is not guaranteed in versions <1.0.0.
 
 ## v1.0.1
 
-* Fix missing client for characters retrieved through fight rankings.
+* Fix missing client for characters retrieved through fight rankings
 
 ## v1.0.0
 

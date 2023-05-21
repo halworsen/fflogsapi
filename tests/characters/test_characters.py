@@ -1,7 +1,7 @@
 import unittest
 
 from fflogsapi.characters.dataclasses import (FFLogsAllStarsRanking, FFLogsEncounterRankings,
-                                    FFLogsZoneEncounterRanking, FFLogsZoneRanking,)
+                                              FFLogsZoneEncounterRanking, FFLogsZoneRanking,)
 from fflogsapi.client import FFLogsClient
 from fflogsapi.constants import FIGHT_DIFFICULTY_SAVAGE
 from fflogsapi.guilds.guild import FFLogsGuild

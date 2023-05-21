@@ -13,6 +13,7 @@ from .queries import Q_CHARACTER_DATA
 
 if TYPE_CHECKING:
     from ..client import FFLogsClient
+    from ..guilds.guild import FFLogsGuild
     from ..world.server import FFLogsServer
 
 
@@ -170,8 +171,8 @@ class FFLogsCharacter:
             )
             return result
 
-        from ..reports.report import FFLogsReport
         from ..guilds.guild import FFLogsGuild
+        from ..reports.report import FFLogsReport
         jobs = self._client.jobs()
         ranks = []
         for rank in result['ranks']:

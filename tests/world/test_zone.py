@@ -1,9 +1,8 @@
 import unittest
 
-from fflogsapi.world.dataclasses import FFLogsPartition
-
 from fflogsapi.client import FFLogsClient
 from fflogsapi.constants import FIGHT_DIFFICULTY_RAID, FIGHT_DIFFICULTY_SAVAGE
+from fflogsapi.world.dataclasses import FFLogsPartition
 from fflogsapi.world.expansion import FFLogsExpansion
 from fflogsapi.world.zone import FFLogsZone
 

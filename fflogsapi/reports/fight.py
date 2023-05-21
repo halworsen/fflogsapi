@@ -108,7 +108,7 @@ class FFLogsFight:
             The minimum percentage of the entire fight that was reached
         '''
         return self._data['fightPercentage']
-    
+
     @fetch_data('lastPhase')
     def last_phase(self) -> int:
         '''
@@ -117,14 +117,14 @@ class FFLogsFight:
         '''
         return self._data['lastPhase']
 
-    @fetch_data('lastPhaseAsAbsoltueIndex')
+    @fetch_data('lastPhaseAsAbsoluteIndex')
     def last_phase_absolute(self) -> int:
         '''
         Returns:
             The last phase the fight was in when it ended,
             counting from 0 and including intermissions
         '''
-        return self._data['lastPhaseAsAbsoltueIndex']
+        return self._data['lastPhaseAsAbsoluteIndex']
 
     @fetch_data('lastPhaseIsIntermission')
     def last_phase_intermission(self) -> bool:

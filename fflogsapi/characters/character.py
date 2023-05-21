@@ -1,13 +1,18 @@
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from warnings import warn
 
+from ..game.dataclasses import FFJob
 from ..util.decorators import fetch_data
 from ..util.filters import construct_filter_string
 from ..util.indexing import itindex
+from ..world.encounter import FFLogsEncounter
+from ..world.zone import FFLogsZone
+from .dataclasses import (FFLogsAllStarsRanking, FFLogsEncounterRankings, FFLogsFightRank,
+                          FFLogsZoneEncounterRanking, FFLogsZoneRanking,)
 from .queries import Q_CHARACTER_DATA
 
 if TYPE_CHECKING:
     from ..client import FFLogsClient
-    from ..guilds.guild import FFLogsGuild
     from ..world.server import FFLogsServer
 
 
@@ -133,15 +138,21 @@ class FFLogsCharacter:
         '''
         return self._data['hidden']
 
-    def encounter_rankings(self, filters: Dict[str, Any] = {}) -> Dict:
+    def encounter_rankings(
+            self,
+            filters: dict[str, Any] = {},
+            use_dataclass: bool = False,
+    ) -> Union[dict, FFLogsEncounterRankings]:
         '''
-        Get this character's rankings for different encounters. `encounterID` is mandatory.
+        Get this character's rankings for a specific encounter. `encounterID` is mandatory.
 
         For valid filter fields, see the API documentation:
         https://www.fflogs.com/v2-api-docs/ff/character.doc.html
 
         Args:
             filters: Key-value filters to filter the rankings by. E.g. job name, encounter ID, etc.
+            use_dataclass: Return a dataclass instead of a dict. This will become the new standard
+                             behavior in the future.
         Returns:
             The character's filtered ranking data.
         '''
@@ -149,18 +160,103 @@ class FFLogsCharacter:
         if filters:
             filters = f'({filters})'
 
-        result = self._query_data(f'encounterRankings{filters}')
-        return result['encounterRankings']
+        result = self._query_data(f'encounterRankings{filters}')['encounterRankings']
+        if not use_dataclass:
+            warn(
+                'dict returns from FFLogsCharacter.encounter_rankings is being deprecated. '
+                'pass use_dataclass=True to get the new dataclass return instead.',
+                category=DeprecationWarning,
+                stacklevel=2,
+            )
+            return result
 
-    def zone_rankings(self, filters: Dict[str, Any] = {}) -> Dict:
+        from ..reports.report import FFLogsReport
+        from ..guilds.guild import FFLogsGuild
+        jobs = self._client.jobs()
+        ranks = []
+        for rank in result['ranks']:
+            report = FFLogsReport(code=rank['report']['code'], client=self._client)
+            fight = report.fight(id=rank['report']['fightID'])
+
+            guild = None
+            if rank['guild']['id']:
+                guild = FFLogsGuild(id=rank['guild']['id'], client=self._client)
+
+            job = list(filter(lambda j: j.slug == rank['spec'], jobs))[0]
+            best_job = list(filter(lambda j: j.slug == rank['bestSpec'], jobs))[0]
+
+            ranks.append(FFLogsFightRank(
+                locked_in=rank['lockedIn'],
+                bracket_data=str(rank['bracketData']),
+                fight=fight,
+                guild=guild,
+                job=job,
+                best_job=best_job,
+                rank_percent=rank['rankPercent'],
+                rank_total_parses=rank['rankTotalParses'],
+                historical_percent=rank['historicalPercent'],
+                historical_total_parses=rank['historicalTotalParses'],
+                today_percent=rank['todayPercent'],
+                today_total_parses=rank['todayTotalParses'],
+                adps=rank['aDPS'],
+                rdps=rank['rDPS'],
+                ndps=rank['nDPS'],
+                pdps=rank['pDPS'],
+            ))
+
+        return FFLogsEncounterRankings(
+            zone=FFLogsZone(id=result['zone'], client=self._client),
+            difficulty=result['difficulty'],
+            metric=result['metric'],
+            best_amount=result['bestAmount'],
+            median_performance=result['medianPerformance'],
+            average_performance=result['averagePerformance'],
+            kills=result['totalKills'],
+            fastest_kill=result['fastestKill'],
+            ranks=ranks,
+        )
+
+    def _make_all_stars_ranking(
+            self,
+            data: dict,
+            zone: FFLogsZone = None,
+            job: Optional[FFJob] = None,
+    ) -> FFLogsAllStarsRanking:
         '''
-        Get this character's rankings for different zones (bosses).
+        Turn JSON data into an all-stars ranking dataclass
+        '''
+        jobs = self._client.jobs()
+        if not job and 'spec' in data:
+            job = list(filter(lambda j: j.slug == data['spec'], jobs))[0]
+
+        partitions = zone.partitions(use_dataclass=True)
+        return FFLogsAllStarsRanking(
+            job=job,
+            partition=next(filter(lambda p: p.id == data['partition'], partitions)),
+            points=data['points'],
+            possible_points=data['possiblePoints'],
+            rank=data['rank'],
+            region_rank=data['regionRank'],
+            server_rank=data['serverRank'],
+            rank_percent=data['rankPercent'],
+            total=data['total']
+        )
+
+    def zone_rankings(
+            self,
+            filters: dict[str, Any] = {},
+            use_dataclass: bool = False,
+    ) -> Union[dict, FFLogsZoneRanking]:
+        '''
+        Get this character's rankings for a zone (boss).
 
         For valid filter fields, see the API documentation:
         https://www.fflogs.com/v2-api-docs/ff/character.doc.html
 
         Args:
             filters: Key-value filters to filter the rankings by. E.g. job name, zone ID, etc.
+            use_dataclass: Return a dataclass instead of a dict. This will become the new standard
+                             behavior in the future.
         Returns:
             The character's filtered ranking data.
         '''
@@ -168,5 +264,45 @@ class FFLogsCharacter:
         if filters:
             filters = f'({filters})'
 
-        result = self._query_data(f'zoneRankings{filters}')
-        return result['zoneRankings']
+        result = self._query_data(f'zoneRankings{filters}')['zoneRankings']
+        if not use_dataclass:
+            warn(
+                'dict returns from FFLogsCharacter.zone_rankings is being deprecated. '
+                'pass use_dataclass=True to get the new dataclass return instead.',
+                category=DeprecationWarning,
+                stacklevel=2,
+            )
+            return result
+
+        zone = FFLogsZone(id=result['zone'], client=self._client)
+        jobs = self._client.jobs()
+        encounters = []
+        for rank in result['rankings']:
+            encounter = FFLogsEncounter(id=rank['encounter']['id'], client=self._client)
+            job = list(filter(lambda j: j.slug == rank['spec'], jobs))[0]
+            best_job = list(filter(lambda j: j.slug == rank['bestSpec'], jobs))[0]
+
+            encounters.append(FFLogsZoneEncounterRanking(
+                locked_in=rank['lockedIn'],
+                encounter=encounter,
+                rank_percent=rank['rankPercent'],
+                median_percent=rank['medianPercent'],
+                best_amount=rank['bestAmount'],
+                fastest_kill=rank['fastestKill'],
+                kills=rank['totalKills'],
+                job=job,
+                best_job=best_job,
+                all_stars=self._make_all_stars_ranking(rank['allStars'], zone=zone, job=job),
+            ))
+
+        return FFLogsZoneRanking(
+            zone=zone,
+            encounter_ranks=encounters,
+            metric=result['metric'],
+            difficulty=result['difficulty'],
+            best_performance_avg=result['bestPerformanceAverage'],
+            median_performance_avg=result['medianPerformanceAverage'],
+            all_stars=[
+                self._make_all_stars_ranking(alls, zone=zone) for alls in result['allStars']
+            ],
+        )

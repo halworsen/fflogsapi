@@ -1,5 +1,7 @@
 import unittest
 
+from fflogsapi.characters.dataclasses import (FFLogsAllStarsRanking, FFLogsEncounterRankings,
+                                    FFLogsZoneEncounterRanking, FFLogsZoneRanking,)
 from fflogsapi.client import FFLogsClient
 from fflogsapi.constants import FIGHT_DIFFICULTY_SAVAGE
 from fflogsapi.guilds.guild import FFLogsGuild
@@ -63,9 +65,9 @@ class CharacterTest(unittest.TestCase):
             'encounterID': 87,
             'specName': 'Reaper',
             'difficulty': FIGHT_DIFFICULTY_SAVAGE,
-        })
-        self.assertIsInstance(rankings, dict)
-        self.assertEqual(rankings['difficulty'], FIGHT_DIFFICULTY_SAVAGE)
+        }, use_dataclass=True)
+        self.assertIsInstance(rankings, FFLogsEncounterRankings)
+        self.assertEqual(rankings.difficulty, FIGHT_DIFFICULTY_SAVAGE)
 
     def test_zone_rankings(self) -> None:
         '''
@@ -75,9 +77,11 @@ class CharacterTest(unittest.TestCase):
             'zoneID': 49,
             'specName': 'Reaper',
             'metric': GQLEnum('rdps'),
-        })
-        self.assertIsInstance(rankings, dict)
-        self.assertEqual(rankings['difficulty'], FIGHT_DIFFICULTY_SAVAGE)
+        }, use_dataclass=True)
+        self.assertIsInstance(rankings, FFLogsZoneRanking)
+        self.assertEqual(rankings.difficulty, FIGHT_DIFFICULTY_SAVAGE)
+        self.assertIsInstance(rankings.encounter_ranks[0], FFLogsZoneEncounterRanking)
+        self.assertIsInstance(rankings.all_stars[0], FFLogsAllStarsRanking)
 
     def test_guilds(self) -> None:
         '''

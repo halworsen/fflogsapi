@@ -1,5 +1,7 @@
 import unittest
 
+from fflogsapi.world.dataclasses import FFLogsPartition
+
 from fflogsapi.client import FFLogsClient
 from fflogsapi.constants import FIGHT_DIFFICULTY_RAID, FIGHT_DIFFICULTY_SAVAGE
 from fflogsapi.world.expansion import FFLogsExpansion
@@ -88,11 +90,11 @@ class ZoneTest(unittest.TestCase):
         '''
         The client should be able to get information about partitions supported by a zone.
         '''
-        partitions = self.zone.partitions()
+        partitions = self.zone.partitions(use_dataclass=True)
         self.assertIsNotNone(partitions)
-        self.assertIsInstance(partitions[0], dict)
-        self.assertIsInstance(partitions[0]['id'], int)
-        self.assertIsInstance(partitions[0]['name'], str)
+        self.assertIsInstance(partitions[0], FFLogsPartition)
+        self.assertIsInstance(partitions[0].id, int)
+        self.assertIsInstance(partitions[0].name, str)
 
 
 if __name__ == '__main__':

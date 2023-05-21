@@ -270,5 +270,6 @@ class FightTest(unittest.TestCase):
 
             self.assertTupleEqual(answer, key)
 
+
 if __name__ == '__main__':
     unittest.main()

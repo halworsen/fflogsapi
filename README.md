@@ -22,7 +22,25 @@ fflogsapi is a lazy Python 3 client for [FF Logs](https://www.fflogs.com/)' v2 A
   * Iterate over things that are intuitively iterable
   * Dataclasses for many objects exposed by the API
 
+## Installation
+
+fflogsapi is available as a [PyPI package](https://pypi.org/project/fflogsapi/) and
+can be installed with pip:
+
+```shell
+pip install fflogsapi
+```
+
+If you want to contribute, you can install fflogsapi with the following to
+additionally install development and test tools:
+
+```shell
+pip install fflogsapi[dev,test]
+```
+
 ## Example usage
+
+Calculating damage done under pots:
 
 ```python
 from config import CLIENT_ID, CLIENT_SECRET
@@ -46,6 +64,8 @@ client.close()
 client.save_cache()
 ```
 
+Listing reports and durations for a specific guild:
+
 ```python
 from config import CLIENT_ID, CLIENT_SECRET
 
@@ -56,6 +76,42 @@ for page in client.reports(filters={ 'guildID': 80551 }):
     print(f'Reports in page: {page.count()}')
     for report in page:
         print(report.title(), f'Duration: {report.duration()}')
+
+client.close()
+client.save_cache()
+```
+
+Listing a character's RDPS & All stars rank for Abyssos Savage in 6.28:
+
+```python
+from config import CLIENT_ID, CLIENT_SECRET
+
+from fflogsapi.client import FFLogsClient
+from fflogsapi.constants import FIGHT_DIFFICULTY_SAVAGE
+from fflogsapi.util.gql_enums import GQLEnum
+
+client = FFLogsClient(CLIENT_ID, CLIENT_SECRET)
+character = fapi.get_character(id=19181640)
+
+abyssos = fapi.get_zone(id=49)
+partition_628 = next(filter(
+    lambda p: '6.28' in p.name,
+    abyssos.partitions(use_dataclass=True)
+))
+
+rankings = character.zone_rankings(filters={
+    'specName': 'Reaper',
+    'metric': GQLEnum('rdps'),
+    'zoneID': abyssos.id,
+    'difficulty': FIGHT_DIFFICULTY_SAVAGE,
+    'partition': partition_628.id,
+}, use_dataclasses=True)
+
+print('6.28 All Star points: '
+      f'{rankings.all_stars[0].points} (rank {rankings.all_stars[0].rank})')
+
+for rank in rankings.encounter_ranks:
+    print(f'{rank.encounter.name()}: {rank.best_amount}rdps (rank {rank.all_stars.rank})')
 
 client.close()
 client.save_cache()

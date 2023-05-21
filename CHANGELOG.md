@@ -2,6 +2,15 @@
 
 Backwards compatibility is not guaranteed in versions <1.0.0.
 
+## v1.1.0
+
+* Add dataclass return for zone partitions
+  * A deprecation warning for dict returns has been added to FFLogsZone.partitions
+* Add dataclass returns for character ranking information
+  * Deprecation warnings for dict returns have been added to
+    FFLogsCharacter.encounter_rankings and FFLogsCharacter.zone_rankings
+* Add support for phase-related queries to fights
+
 ## v1.0.1
 
 * Fix missing client for characters retrieved through fight rankings

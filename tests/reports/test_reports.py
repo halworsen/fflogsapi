@@ -136,10 +136,10 @@ class ReportTest(unittest.TestCase):
         tag = self.report.tag()
         self.assertIsNone(tag)
 
-        report = self.client.get_report(code='V28qcCrfWFLRhgkK')
+        report = self.client.get_report(code='MzDWYXrxRZ6L3BN4')
         tag = report.tag()
         self.assertIsInstance(tag, FFLogsReportTag)
-        self.assertEqual(tag.name, 'TOP Prog')
+        self.assertEqual(tag.name, 'LB3 it bro')
 
     def test_owner(self) -> None:
         '''

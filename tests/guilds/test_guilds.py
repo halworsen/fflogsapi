@@ -102,12 +102,12 @@ class FightTest(unittest.TestCase):
         '''
         The client should be able to get a guild's report tags.
         '''
-        guild = self.client.get_guild(id=110574)
+        guild = self.client.get_guild(id=98575)
         tags = guild.tags()
         self.assertIsInstance(tags, list)
         self.assertEqual(len(tags), 1)
         self.assertIsInstance(tags[0], FFLogsReportTag)
-        self.assertEqual(tags[0].name, 'TOP Prog')
+        self.assertEqual(tags[0].name, 'LB3 it bro')
 
     def test_attendance(self) -> None:
         '''

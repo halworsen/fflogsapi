@@ -247,6 +247,28 @@ class FightTest(unittest.TestCase):
         self.assertEqual(maps[0].id, 808)
         self.assertEqual(maps[0].name, 'Stygian Insenescence Cells')
 
+    def test_phases(self) -> None:
+        '''
+        The client should be able to get phase information from fights containing multiple phases
+        '''
+        report = self.client.get_report(code='6HQYx9jA8mbC4VF1')
+        # exam time
+        # (fight id, last phase, last phase abs, last phase is intermission)
+        answer_key = [
+            (3, 2, 3, True), (5, 3, 4, False), (9, 2, 2, False),
+            (13, 1, 1, True), (24, 4, 5, False),
+        ]
+
+        for key in answer_key:
+            fight = report.fight(id=key[0])
+            answer = (
+                key[0],
+                fight.last_phase(),
+                fight.last_phase_absolute(),
+                fight.last_phase_intermission(),
+            )
+
+            self.assertTupleEqual(answer, key)
 
 if __name__ == '__main__':
     unittest.main()

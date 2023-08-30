@@ -209,7 +209,7 @@ class FFLogsFight:
         Turn a dictionary of filters into a GraphQL filter string
 
         Returns:
-            A filter string usable in GQL strings
+            A filter string usable in GQL queries
 
         Raises:
             ValueError if the filter attempts to get events out of the fight's time bounds

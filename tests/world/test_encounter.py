@@ -1,7 +1,7 @@
 import unittest
 
 from fflogsapi.client import FFLogsClient
-from fflogsapi.constants import PARTY_SIZE_FULL_PARTY
+from fflogsapi.constants import PartySize
 from fflogsapi.util.gql_enums import GQLEnum
 from fflogsapi.world.zone import FFLogsZone
 
@@ -59,7 +59,7 @@ class EncounterTest(unittest.TestCase):
 
         self.assertIsNotNone(fight_rankings)
         # i will bite my fingers off if a group with <8 players made it to top execution rankings
-        self.assertEqual(fight_rankings['rankings'][0]['size'], PARTY_SIZE_FULL_PARTY)
+        self.assertEqual(fight_rankings['rankings'][0]['size'], PartySize.FULL)
 
     def test_zone(self) -> None:
         '''

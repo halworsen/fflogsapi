@@ -1,7 +1,7 @@
 import unittest
 
 from fflogsapi.client import FFLogsClient
-from fflogsapi.constants import FIGHT_DIFFICULTY_SAVAGE, PARTY_SIZE_FULL_PARTY
+from fflogsapi.constants import FightDifficulty, PartySize
 from fflogsapi.reports.dataclasses import (FFLogsActor, FFLogsReportCharacterRanking,
                                            FFLogsReportComboRanking, FFLogsReportRanking,)
 from fflogsapi.util.gql_enums import GQLEnum
@@ -41,8 +41,8 @@ class FightTest(unittest.TestCase):
         self.assertEqual(self.fight.name(), 'Hephaistos II')
         self.assertIsInstance(self.fight.encounter(), FFLogsEncounter)
         self.assertEqual(self.fight.encounter().id(), 87)
-        self.assertEqual(self.fight.difficulty(), FIGHT_DIFFICULTY_SAVAGE)
-        self.assertEqual(self.fight.size(), PARTY_SIZE_FULL_PARTY)
+        self.assertEqual(self.fight.difficulty(), FightDifficulty.SAVAGE)
+        self.assertEqual(self.fight.size(), PartySize.FULL)
         self.assertEqual(self.fight.fight_percentage(), 55.93)
         self.assertEqual(self.fight.percentage(), 55.93)
         self.assertEqual(self.fight.start_time(), 8224400)
@@ -90,7 +90,7 @@ class FightTest(unittest.TestCase):
         })
         self.assertAlmostEqual(graph['series'][0]['pointInterval'], 1148.3583333333333, places=4)
         # +1 for total damage
-        self.assertEqual(len(graph['series']), PARTY_SIZE_FULL_PARTY + 1)
+        self.assertEqual(len(graph['series']), PartySize.FULL + 1)
 
         count_data = list(filter(lambda d: d['name'] == 'The Count', graph['series']))[0]
         self.assertEqual(count_data['name'], 'The Count')

@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 from warnings import warn
 
 from ..game.dataclasses import FFJob
@@ -33,7 +33,7 @@ class FFLogsCharacter:
         self._data = {}
         self._client = client
 
-    def _query_data(self, query: str, ignore_cache: bool = False) -> Dict[Any, Any]:
+    def _query_data(self, query: str, ignore_cache: bool = False) -> dict[Any, Any]:
         '''
         Query for a specific piece of information about a character
         '''

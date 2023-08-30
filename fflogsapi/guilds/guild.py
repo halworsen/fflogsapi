@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Any, Union
 
-from ..constants import FIGHT_DIFFICULTY_SAVAGE, PARTY_SIZE_FULL_PARTY
+from ..constants import FightDifficulty, PartySize
 from ..game.dataclasses import FFGrandCompany
 from ..util.decorators import fetch_data
 from ..util.filters import construct_filter_string
@@ -183,8 +183,8 @@ class FFLogsGuild:
     def zone_rankings(
             self,
             zone: Union[int, FFLogsZone],
-            size: int = PARTY_SIZE_FULL_PARTY,
-            difficulty: int = FIGHT_DIFFICULTY_SAVAGE,
+            size: int = PartySize.FULL,
+            difficulty: int = FightDifficulty.SAVAGE,
     ) -> FFLogsGuildZoneRankings:
         '''
         Retrieve the guild's ranking information for a given zone, party size and difficulty.

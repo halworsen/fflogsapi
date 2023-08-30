@@ -3,7 +3,7 @@ import unittest
 from fflogsapi.characters.dataclasses import (FFLogsAllStarsRanking, FFLogsEncounterRankings,
                                               FFLogsZoneEncounterRanking, FFLogsZoneRanking,)
 from fflogsapi.client import FFLogsClient
-from fflogsapi.constants import FIGHT_DIFFICULTY_SAVAGE
+from fflogsapi.constants import FightDifficulty
 from fflogsapi.guilds.guild import FFLogsGuild
 from fflogsapi.util.gql_enums import GQLEnum
 from fflogsapi.world.server import FFLogsServer
@@ -64,10 +64,10 @@ class CharacterTest(unittest.TestCase):
         rankings = self.character.encounter_rankings(filters={
             'encounterID': 87,
             'specName': 'Reaper',
-            'difficulty': FIGHT_DIFFICULTY_SAVAGE,
+            'difficulty': FightDifficulty.SAVAGE,
         }, use_dataclass=True)
         self.assertIsInstance(rankings, FFLogsEncounterRankings)
-        self.assertEqual(rankings.difficulty, FIGHT_DIFFICULTY_SAVAGE)
+        self.assertEqual(rankings.difficulty, FightDifficulty.SAVAGE)
 
     def test_zone_rankings(self) -> None:
         '''
@@ -79,7 +79,7 @@ class CharacterTest(unittest.TestCase):
             'metric': GQLEnum('rdps'),
         }, use_dataclass=True)
         self.assertIsInstance(rankings, FFLogsZoneRanking)
-        self.assertEqual(rankings.difficulty, FIGHT_DIFFICULTY_SAVAGE)
+        self.assertEqual(rankings.difficulty, FightDifficulty.SAVAGE)
         self.assertIsInstance(rankings.encounter_ranks[0], FFLogsZoneEncounterRanking)
         self.assertIsInstance(rankings.all_stars[0], FFLogsAllStarsRanking)
 

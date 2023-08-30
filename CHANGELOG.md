@@ -5,6 +5,8 @@ Backwards compatibility is not guaranteed in versions <1.0.0.
 ## v1.2.0
 
 * Improved docstrings, including docstrings for many subpackages
+* Replaced most global constants with enums for things like fight difficulty and event types
+  * All globals superseded by enums are being deprecated in 2.0.0
 
 ## v1.1.0
 

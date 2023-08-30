@@ -12,6 +12,9 @@ class UserMixin:
     def get_current_user(self) -> Optional[FFLogsUser]:
         '''
         Get the current user. This requires the client to be in user mode!
+
+        Raises:
+            PermissionError if the client is not in user mode
         '''
         if self.mode != 'user':
             error = 'The client must be in user mode to get the current user.'

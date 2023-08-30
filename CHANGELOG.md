@@ -2,6 +2,10 @@
 
 Backwards compatibility is not guaranteed in versions <1.0.0.
 
+## v1.2.0
+
+* Improved docstrings, including docstrings for many subpackages
+
 ## v1.1.0
 
 * Add dataclass return for zone partitions

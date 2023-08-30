@@ -1,6 +1,7 @@
-FIGHT_DIFFICULTY_UNKNOWN = None
-FIGHT_DIFFICULTY_RAID = 100
-FIGHT_DIFFICULTY_SAVAGE = 101
+'''
+Various constant values that are typically useful for filtering queries.
+'''
+
 
 PARTY_SIZE_LIGHT_PARTY = 4
 PARTY_SIZE_FULL_PARTY = 8

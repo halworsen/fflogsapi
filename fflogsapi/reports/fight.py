@@ -205,6 +205,15 @@ class FFLogsFight:
         return (bb['minX'], bb['minY'], bb['maxX'], bb['maxY'])
 
     def _prepare_data_filters(self, filters: dict[str, Any]) -> tuple[str, dict[str, Any]]:
+        '''
+        Turn a dictionary of filters into a GraphQL filter string
+
+        Returns:
+            A filter string usable in GQL strings
+
+        Raises:
+            ValueError if the filter attempts to get events out of the fight's time bounds
+        '''
         fight_start, fight_end = self.start_time(), self.end_time()
 
         # defaulting for start/end times.

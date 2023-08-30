@@ -19,7 +19,7 @@ class UserModeAuthMixin:
     Mixins that enable the client to authenticate against the API using the authorization code flow,
     granting user-level access to private parts of the API.
 
-    Note that for this to work, at least one of the client's redirect URL must be set to
+    Note that for this to work, at least one of the client's redirect URLs must be set to
     https://localhost:4443 in FF Logs' client management (or whatever port is used by the client).
     This is because the client will attempt to redirect the user to a web server hosted locally
     by the client in order to capture the authorization response.
@@ -29,7 +29,7 @@ class UserModeAuthMixin:
     OAUTH_CAPTURE_PORT = 4443
     OAUTH_REDIRECT_URI = f'https://localhost:{OAUTH_CAPTURE_PORT}/'
 
-    # How long the self-signed certificate generated for the OAuth redirect last
+    # How long the self-signed certificate generated for the OAuth redirect lasts
     CERT_EXPIRY_MINUTES = 5  # minutes
     CERT_PATH = './fflogsapi/fflogs_auth_redirect_cert.pem'
     KEY_PATH = './fflogsapi/fflogs_auth_redirect_key.pem'
@@ -97,7 +97,8 @@ class UserModeAuthMixin:
             .add_extension(
                 x509.SubjectAlternativeName([x509.DNSName(u'localhost')]),
                 critical=False,
-        ).sign(key, hashes.SHA256())
+            ) \
+            .sign(key, hashes.SHA256())
 
         if not os.path.exists(os.path.dirname(self.KEY_PATH)):
             os.makedirs(self.KEY_PATH)
@@ -138,6 +139,8 @@ class UserModeAuthMixin:
                 # i'm not a huge fan of this but it works
                 nonlocal auth_response
                 auth_response = UserModeAuthMixin.OAUTH_REDIRECT_URI + self.path
+
+                # let the user know auth was successful
                 self.send_response(200)
                 self.send_header('Content-Type', 'text/html')
                 self.end_headers()
@@ -151,6 +154,7 @@ class UserModeAuthMixin:
                 ))
                 self.wfile.flush()
 
+                # stop the http server to continue
                 self.server.shutdown()
 
         httpd = ThreadingHTTPServer(('localhost', self.OAUTH_CAPTURE_PORT), AuthResponseHandler)

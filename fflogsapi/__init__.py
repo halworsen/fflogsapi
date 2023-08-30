@@ -1,3 +1,15 @@
+'''
+FF Logs API client. Start using the client by importing it:
+
+    ```python
+    from fflogsapi import FFLogsClient
+    # alternatively
+    from fflogsapi.client import FFLogsClient
+
+    client = FFLogsClient(CLIENT_ID, CLIENT_SECRET)
+    ```
+'''
+
 from .client import FFLogsClient
 from .constants import (EVENT_ENCOUNTER_END, EVENT_TYPE_APPLY_BUFF, EVENT_TYPE_APPLY_DEBUFF,
                         EVENT_TYPE_BEGINCAST, EVENT_TYPE_CALCULATED_DAMAGE, EVENT_TYPE_CAST,

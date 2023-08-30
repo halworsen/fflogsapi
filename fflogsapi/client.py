@@ -36,7 +36,7 @@ def ensure_token(func):
         except Exception:
             if self.mode == 'user':
                 # for user mode, the user must login through their browser
-                # see auth.py
+                # see user_auth.py
                 self.user_auth()
             elif self.mode == 'client':
                 self.token = self.oauth_session.fetch_token(
@@ -60,9 +60,9 @@ class FFLogsClient(
     '''
     A client capable of communicating with the FF Logs V2 GraphQL API.
 
-    Capabilities of the client are defined on a per-module basis. Generally, each data structure in
-    the API's schema will have its own module. See client_extensions.py in each module for
-    details on the capabilities provided by that module.
+    Capabilities of the client are defined on a per-package basis. Generally, each data structure in
+    the API's schema will have its own package. See client_extensions.py in each package for
+    details on the capabilities provided by that package.
 
     Caching is enabled by default, but can be overriden with the enable_caching parameter when
     instantiating the client. A cache of executed queries will then be maintained by the client.
@@ -109,6 +109,9 @@ class FFLogsClient(
             cache_override: If set, force the client to load cached queries from the given file path
             ignore_cache_expiry: If set to True, the client will load the most up-to-date cache,
                                  even if it has expired
+
+        Raises:
+            ValueError if the provided client mode is invalid.
         '''
         self.auth = HTTPBasicAuth(client_id, client_secret)
         oauth_client = None
@@ -162,7 +165,7 @@ class FFLogsClient(
     @ensure_token
     def q(self, query: str, ignore_cache: bool = False) -> dict[str, Any]:
         '''
-        Executes a GraphQL query against the FFLogs API.
+        Executes a raw GraphQL query against the FFLogs API.
 
         Generally, you should not use this unless you need to execute a query that is not properly
         supported by the client. You can also use this function to query for more information in

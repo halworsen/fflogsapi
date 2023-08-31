@@ -14,13 +14,7 @@ names from the relevant subpackages.
 '''
 
 from .client import FFLogsClient
-# deprecated in 2.0.0
-from .constants import (EVENT_ENCOUNTER_END, EVENT_TYPE_APPLY_BUFF, EVENT_TYPE_APPLY_DEBUFF,
-                        EVENT_TYPE_BEGINCAST, EVENT_TYPE_CALCULATED_DAMAGE, EVENT_TYPE_CAST,
-                        EVENT_TYPE_COMBATANT_INFO, EVENT_TYPE_DAMAGE, EVENT_TYPE_HEAL,
-                        EVENT_TYPE_LB_UPDATE, EVENT_TYPE_REFRESH_BUFF, EVENT_TYPE_REMOVE_BUFF,
-                        FIGHT_DIFFICULTY_RAID, FIGHT_DIFFICULTY_SAVAGE, FIGHT_DIFFICULTY_UNKNOWN,
-                        EventType, FightDifficulty, PartySize,)
+from .constants import EventType, FightDifficulty, PartySize
 from .util.gql_enums import GQLEnum
 
 __all__ = [
@@ -31,24 +25,6 @@ __all__ = [
     'FightDifficulty',
     'PartySize',
     'EventType',
-
-    # deprecated in 2.0.0
-    'FIGHT_DIFFICULTY_UNKNOWN',
-    'FIGHT_DIFFICULTY_RAID',
-    'FIGHT_DIFFICULTY_SAVAGE',
-    'EVENT_TYPE_COMBATANT_INFO',
-    'EVENT_TYPE_BEGINCAST',
-    'EVENT_TYPE_CAST',
-    'EVENT_TYPE_DAMAGE',
-    'EVENT_TYPE_HEAL',
-    'EVENT_TYPE_CALCULATED_DAMAGE',
-    'EVENT_TYPE_APPLY_BUFF',
-    'EVENT_TYPE_REFRESH_BUFF',
-    'EVENT_TYPE_REMOVE_BUFF',
-    'EVENT_TYPE_LB_UPDATE',
-    'EVENT_TYPE_APPLY_DEBUFF',
-    'EVENT_ENCOUNTER_END',
-    # deprecation end
 
     # util/gql_enums.py
     'GQLEnum',

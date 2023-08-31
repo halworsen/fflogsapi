@@ -11,6 +11,7 @@ FF Logs API client. Start using the client by importing it:
 '''
 
 from .client import FFLogsClient
+from .util.gql_enums import GQLEnum
 # deprecated in 2.0.0
 from .constants import (EVENT_ENCOUNTER_END, EVENT_TYPE_APPLY_BUFF, EVENT_TYPE_APPLY_DEBUFF,
                         EVENT_TYPE_BEGINCAST, EVENT_TYPE_CALCULATED_DAMAGE, EVENT_TYPE_CAST,
@@ -22,8 +23,10 @@ from .constants import (EVENT_ENCOUNTER_END, EVENT_TYPE_APPLY_BUFF, EVENT_TYPE_A
 # deprecation end
 
 __all__ = [
+    # client.py
     'FFLogsClient',
 
+    # constants.py
     'FightDifficulty',
     'PartySize',
     'EventType',
@@ -45,4 +48,7 @@ __all__ = [
     'EVENT_TYPE_APPLY_DEBUFF',
     'EVENT_ENCOUNTER_END',
     # deprecation end
+
+    # util/gql_enums.py
+    'GQLEnum',
 ]

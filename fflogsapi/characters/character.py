@@ -1,5 +1,4 @@
 from typing import TYPE_CHECKING, Any, Optional, Union
-from warnings import warn
 
 from ..data import (FFJob, FFLogsAllStarsRanking, FFLogsEncounterRankings, FFLogsFightRank,
                     FFLogsZoneEncounterRanking, FFLogsZoneRanking,)
@@ -133,7 +132,6 @@ class FFLogsCharacter:
     def encounter_rankings(
             self,
             filters: dict[str, Any] = {},
-            use_dataclass: bool = False,
     ) -> Union[dict, FFLogsEncounterRankings]:
         '''
         Get this character's rankings for a specific encounter. `encounterID` is mandatory.
@@ -143,8 +141,6 @@ class FFLogsCharacter:
 
         Args:
             filters: Key-value filters to filter the rankings by. E.g. job name, encounter ID, etc.
-            use_dataclass: Return a dataclass instead of a dict. This will become the new standard
-                             behavior in the future.
         Returns:
             The character's filtered ranking data.
         '''
@@ -153,15 +149,6 @@ class FFLogsCharacter:
             filters = f'({filters})'
 
         result = self._query_data(f'encounterRankings{filters}')['encounterRankings']
-        if not use_dataclass:
-            warn(
-                'dict returns from FFLogsCharacter.encounter_rankings is being deprecated. '
-                'pass use_dataclass=True to get the new dataclass return instead.',
-                category=DeprecationWarning,
-                stacklevel=2,
-            )
-            return result
-
         from ..guilds.guild import FFLogsGuild
         from ..reports.report import FFLogsReport
         jobs = self._client.jobs()
@@ -222,7 +209,7 @@ class FFLogsCharacter:
         if not job and 'spec' in data:
             job = list(filter(lambda j: j.slug == data['spec'], jobs))[0]
 
-        partitions = zone.partitions(use_dataclass=True)
+        partitions = zone.partitions()
         return FFLogsAllStarsRanking(
             job=job,
             partition=next(filter(lambda p: p.id == data['partition'], partitions)),
@@ -238,7 +225,6 @@ class FFLogsCharacter:
     def zone_rankings(
             self,
             filters: dict[str, Any] = {},
-            use_dataclass: bool = False,
     ) -> Union[dict, FFLogsZoneRanking]:
         '''
         Get this character's rankings for a zone (boss).
@@ -248,8 +234,6 @@ class FFLogsCharacter:
 
         Args:
             filters: Key-value filters to filter the rankings by. E.g. job name, zone ID, etc.
-            use_dataclass: Return a dataclass instead of a dict. This will become the new standard
-                             behavior in the future.
         Returns:
             The character's filtered ranking data.
         '''
@@ -258,15 +242,6 @@ class FFLogsCharacter:
             filters = f'({filters})'
 
         result = self._query_data(f'zoneRankings{filters}')['zoneRankings']
-        if not use_dataclass:
-            warn(
-                'dict returns from FFLogsCharacter.zone_rankings is being deprecated. '
-                'pass use_dataclass=True to get the new dataclass return instead.',
-                category=DeprecationWarning,
-                stacklevel=2,
-            )
-            return result
-
         from ..world.zone import FFLogsZone
         zone = FFLogsZone(id=result['zone'], client=self._client)
         jobs = self._client.jobs()

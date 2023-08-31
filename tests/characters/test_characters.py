@@ -64,7 +64,7 @@ class CharacterTest(unittest.TestCase):
             'encounterID': 87,
             'specName': 'Reaper',
             'difficulty': FightDifficulty.SAVAGE.value,
-        }, use_dataclass=True)
+        })
         self.assertIsInstance(rankings, FFLogsEncounterRankings)
         self.assertEqual(rankings.difficulty, FightDifficulty.SAVAGE.value)
 
@@ -76,7 +76,7 @@ class CharacterTest(unittest.TestCase):
             'zoneID': 49,
             'specName': 'Reaper',
             'metric': GQLEnum('rdps'),
-        }, use_dataclass=True)
+        })
         self.assertIsInstance(rankings, FFLogsZoneRanking)
         self.assertEqual(rankings.difficulty, FightDifficulty.SAVAGE.value)
         self.assertIsInstance(rankings.encounter_ranks[0], FFLogsZoneEncounterRanking)

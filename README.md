@@ -94,7 +94,7 @@ character = fapi.get_character(id=19181640)
 abyssos = fapi.get_zone(id=49)
 partition_628 = next(filter(
     lambda p: '6.28' in p.name,
-    abyssos.partitions(use_dataclass=True)
+    abyssos.partitions()
 ))
 
 rankings = character.zone_rankings(filters={
@@ -103,7 +103,7 @@ rankings = character.zone_rankings(filters={
     'zoneID': abyssos.id,
     'difficulty': FightDifficulty.SAVAGE.value,
     'partition': partition_628.id,
-}, use_dataclasses=True)
+})
 
 print('6.28 All Star points: '
       f'{rankings.all_stars[0].points} (rank {rankings.all_stars[0].rank})')

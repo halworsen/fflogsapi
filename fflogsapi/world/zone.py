@@ -1,5 +1,4 @@
 from typing import TYPE_CHECKING, Any, Union
-from warnings import warn
 
 from ..data import FFLogsPartition
 from ..util.decorators import fetch_data
@@ -83,7 +82,7 @@ class FFLogsZone:
         bracket_info = self._query_data('brackets{ type, min, max, bucket }')
         return bracket_info['brackets']
 
-    def partitions(self, use_dataclass=False) -> Union[dict, list[FFLogsPartition]]:
+    def partitions(self) -> Union[dict, list[FFLogsPartition]]:
         '''
         Get partition information about the zone.
 
@@ -92,15 +91,6 @@ class FFLogsZone:
         '''
         partition_info = self._query_data('partitions{ id, name, compactName, default }')
         partition_info = partition_info['partitions']
-
-        if not use_dataclass:
-            warn(
-                'dict returns from FFLogsZone.partitions is being deprecated. '
-                'pass use_dataclass=True to get the new dataclass return instead.',
-                category=DeprecationWarning,
-                stacklevel=2,
-            )
-            return partition_info
 
         return [FFLogsPartition(
             id=partition['id'],

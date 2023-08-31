@@ -89,7 +89,7 @@ class ZoneTest(unittest.TestCase):
         '''
         The client should be able to get information about partitions supported by a zone.
         '''
-        partitions = self.zone.partitions(use_dataclass=True)
+        partitions = self.zone.partitions()
         self.assertIsNotNone(partitions)
         self.assertIsInstance(partitions[0], FFLogsPartition)
         self.assertIsInstance(partitions[0].id, int)

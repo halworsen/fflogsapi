@@ -11,37 +11,38 @@ FF Logs API client. Start using the client by importing it:
 '''
 
 from .client import FFLogsClient
-from .constants import FightDifficulty, PartySize, EventType
 # deprecated in 2.0.0
 from .constants import (EVENT_ENCOUNTER_END, EVENT_TYPE_APPLY_BUFF, EVENT_TYPE_APPLY_DEBUFF,
                         EVENT_TYPE_BEGINCAST, EVENT_TYPE_CALCULATED_DAMAGE, EVENT_TYPE_CAST,
                         EVENT_TYPE_COMBATANT_INFO, EVENT_TYPE_DAMAGE, EVENT_TYPE_HEAL,
                         EVENT_TYPE_LB_UPDATE, EVENT_TYPE_REFRESH_BUFF, EVENT_TYPE_REMOVE_BUFF,
-                        FIGHT_DIFFICULTY_RAID, FIGHT_DIFFICULTY_SAVAGE, FIGHT_DIFFICULTY_UNKNOWN,)
+                        FIGHT_DIFFICULTY_RAID, FIGHT_DIFFICULTY_SAVAGE, FIGHT_DIFFICULTY_UNKNOWN,
+                        EventType, FightDifficulty, PartySize,)
+
 # deprecation end
 
 __all__ = [
-    FFLogsClient,
+    'FFLogsClient',
 
-    FightDifficulty,
-    PartySize,
-    EventType,
+    'FightDifficulty',
+    'PartySize',
+    'EventType',
 
     # deprecated in 2.0.0
-    FIGHT_DIFFICULTY_UNKNOWN,
-    FIGHT_DIFFICULTY_RAID,
-    FIGHT_DIFFICULTY_SAVAGE,
-    EVENT_TYPE_COMBATANT_INFO,
-    EVENT_TYPE_BEGINCAST,
-    EVENT_TYPE_CAST,
-    EVENT_TYPE_DAMAGE,
-    EVENT_TYPE_HEAL,
-    EVENT_TYPE_CALCULATED_DAMAGE,
-    EVENT_TYPE_APPLY_BUFF,
-    EVENT_TYPE_REFRESH_BUFF,
-    EVENT_TYPE_REMOVE_BUFF,
-    EVENT_TYPE_LB_UPDATE,
-    EVENT_TYPE_APPLY_DEBUFF,
-    EVENT_ENCOUNTER_END,
+    'FIGHT_DIFFICULTY_UNKNOWN',
+    'FIGHT_DIFFICULTY_RAID',
+    'FIGHT_DIFFICULTY_SAVAGE',
+    'EVENT_TYPE_COMBATANT_INFO',
+    'EVENT_TYPE_BEGINCAST',
+    'EVENT_TYPE_CAST',
+    'EVENT_TYPE_DAMAGE',
+    'EVENT_TYPE_HEAL',
+    'EVENT_TYPE_CALCULATED_DAMAGE',
+    'EVENT_TYPE_APPLY_BUFF',
+    'EVENT_TYPE_REFRESH_BUFF',
+    'EVENT_TYPE_REMOVE_BUFF',
+    'EVENT_TYPE_LB_UPDATE',
+    'EVENT_TYPE_APPLY_DEBUFF',
+    'EVENT_ENCOUNTER_END',
     # deprecation end
 ]

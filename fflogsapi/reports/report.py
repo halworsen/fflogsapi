@@ -22,8 +22,11 @@ class FFLogsReport:
 
     DATA_INDICES = ['reportData', 'report']
 
+    code: str = ''
+    ''' The code for this report '''
+
     def __init__(self, code: str, client: 'FFLogsClient' = None) -> None:
-        self._code = code
+        self.code = code
         self._fights = {}
         self._data = {}
         self._client = client
@@ -41,13 +44,6 @@ class FFLogsReport:
         ), ignore_cache=ignore_cache)
 
         return itindex(result, self.DATA_INDICES)
-
-    def code(self) -> str:
-        '''
-        Returns:
-            The report code
-        '''
-        return self._code
 
     def actors(self) -> list[FFLogsActor]:
         '''

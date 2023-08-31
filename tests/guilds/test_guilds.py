@@ -131,7 +131,7 @@ class FightTest(unittest.TestCase):
         self.assertIsNotNone(matching_report)
 
         self.assertIsInstance(matching_report.report, FFLogsReport)
-        self.assertEqual(matching_report.report.code(), report_code)
+        self.assertEqual(matching_report.report.code, report_code)
 
         self.assertIsInstance(matching_report.zone, FFLogsZone)
         self.assertEqual(matching_report.zone.id(), zone_id)

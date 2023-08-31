@@ -45,7 +45,7 @@ Calculating damage done under pots:
 ```python
 from config import CLIENT_ID, CLIENT_SECRET
 
-from fflogsapi.client import FFLogsClient
+from fflogsapi import FFLogsClient
 
 client = FFLogsClient(CLIENT_ID, CLIENT_SECRET)
 report = client.get_report('rGARYmQwTKbahXz9')
@@ -69,7 +69,7 @@ Listing reports and durations for a specific guild:
 ```python
 from config import CLIENT_ID, CLIENT_SECRET
 
-from fflogsapi.client import FFLogsClient
+from fflogsapi import FFLogsClient
 
 client = FFLogsClient(CLIENT_ID, CLIENT_SECRET)
 for page in client.reports(filters={ 'guildID': 80551 }):
@@ -86,9 +86,7 @@ Listing a character's RDPS & All stars rank for Abyssos Savage in 6.28:
 ```python
 from config import CLIENT_ID, CLIENT_SECRET
 
-from fflogsapi.client import FFLogsClient
-from fflogsapi.constants import FIGHT_DIFFICULTY_SAVAGE
-from fflogsapi.util.gql_enums import GQLEnum
+from fflogsapi import FFLogsClient, GQLEnum, FightDifficulty
 
 client = FFLogsClient(CLIENT_ID, CLIENT_SECRET)
 character = fapi.get_character(id=19181640)
@@ -103,7 +101,7 @@ rankings = character.zone_rankings(filters={
     'specName': 'Reaper',
     'metric': GQLEnum('rdps'),
     'zoneID': abyssos.id,
-    'difficulty': FIGHT_DIFFICULTY_SAVAGE,
+    'difficulty': FightDifficulty.SAVAGE,
     'partition': partition_628.id,
 }, use_dataclasses=True)
 

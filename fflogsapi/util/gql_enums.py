@@ -1,7 +1,7 @@
 class GQLEnum:
     '''
-    Wrapper class/type for GraphQL enums whose value needs to be injected
-    directly into queries instead of being wrapped as a string
+    Wrapper class for a GraphQL enum, whose value needs to be injected
+    directly into queries instead of being wrapped as a string.
     '''
 
     def __init__(self, name) -> None:

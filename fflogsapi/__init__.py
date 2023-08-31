@@ -1,13 +1,16 @@
 '''
+fflogsapi
+===
+
 FF Logs API client. Start using the client by importing it:
 
-    ```python
-    from fflogsapi import FFLogsClient
-    # alternatively
-    from fflogsapi.client import FFLogsClient
+```python
+from fflogsapi import FFLogsClient
+client = FFLogsClient(CLIENT_ID, CLIENT_SECRET)
+```
 
-    client = FFLogsClient(CLIENT_ID, CLIENT_SECRET)
-    ```
+The entire API should be accessible through the client. If you want typing, feel free to import
+names from the relevant subpackages.
 '''
 
 from .client import FFLogsClient
@@ -19,8 +22,6 @@ from .constants import (EVENT_ENCOUNTER_END, EVENT_TYPE_APPLY_BUFF, EVENT_TYPE_A
                         EVENT_TYPE_LB_UPDATE, EVENT_TYPE_REFRESH_BUFF, EVENT_TYPE_REMOVE_BUFF,
                         FIGHT_DIFFICULTY_RAID, FIGHT_DIFFICULTY_SAVAGE, FIGHT_DIFFICULTY_UNKNOWN,
                         EventType, FightDifficulty, PartySize,)
-
-# deprecation end
 
 __all__ = [
     # client.py

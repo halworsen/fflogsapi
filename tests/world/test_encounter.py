@@ -59,7 +59,7 @@ class EncounterTest(unittest.TestCase):
 
         self.assertIsNotNone(fight_rankings)
         # i will bite my fingers off if a group with <8 players made it to top execution rankings
-        self.assertEqual(fight_rankings['rankings'][0]['size'], PartySize.FULL)
+        self.assertEqual(fight_rankings['rankings'][0]['size'], PartySize.FULL.value)
 
     def test_zone(self) -> None:
         '''

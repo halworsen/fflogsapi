@@ -61,7 +61,7 @@ class ZoneTest(unittest.TestCase):
 
         self.assertSetEqual(
             set(retrieved_difficulties),
-            set((FightDifficulty.NORMAL, FightDifficulty.SAVAGE))
+            set((FightDifficulty.NORMAL.value, FightDifficulty.SAVAGE.value))
         )
 
     def test_encounter(self) -> None:

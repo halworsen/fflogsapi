@@ -183,8 +183,8 @@ class FFLogsGuild:
     def zone_rankings(
             self,
             zone: Union[int, FFLogsZone],
-            size: int = PartySize.FULL,
-            difficulty: int = FightDifficulty.SAVAGE,
+            size: int = PartySize.FULL.value,
+            difficulty: int = FightDifficulty.SAVAGE.value,
     ) -> FFLogsGuildZoneRankings:
         '''
         Retrieve the guild's ranking information for a given zone, party size and difficulty.

@@ -60,15 +60,32 @@ class FFLogsClient(
     '''
     A client capable of communicating with the FF Logs V2 GraphQL API.
 
-    Capabilities of the client are defined on a per-package basis. Generally, each data structure in
-    the API's schema will have its own package. See client_extensions.py in each package for
-    details on the capabilities provided by that package.
-
     Caching is enabled by default, but can be overriden with the enable_caching parameter when
     instantiating the client. A cache of executed queries will then be maintained by the client.
-    To save the query cache for later reuse, you must manually call save_cache() on the client.
-    It's also possible to extend the lifetime of all cache queries with extend_cache(), or to
-    manually clean up old cache files with clean_cache().
+    To save the query cache for later reuse, you must manually call :func:`save_cache` on the client.
+    It's also possible to extend the lifetime of all cache queries with :func:`extend_cache`, or to
+    manually clean up old cache files with :func:`clean_cache`.
+
+    Two modes of use are supported by the client - ``client`` and ``user`` mode.
+    When in client mode, the API client can access the public API. To access private information
+    such as private logs or hidden characters' information, you *must* use user mode.
+
+    Args:
+        client_id: Client application ID
+        client_secret: Client application secret
+        mode: Whether to use the client or user endpoint. Client mode gives public API access,
+              while user mode allows access to private information. User mode requires login.
+        enable_caching: If enabled, the client will cache the result of queries
+                        for up to a time specified by the cache_expiry argument.
+        cache_directory: The directory to read and save query cache files in.
+        cache_expiry: How long to keep query results in cache, in seconds. Default is 1 day.
+        cache_override: If set, force the client to load cached queries from the given file path
+        ignore_cache_expiry: If set to True, the client will load the most up-to-date cache,
+                             even if it has expired
+        clean_cache: Automatically remove expired cache files from the cache directory
+
+    Raises:
+        ValueError if the provided client mode is invalid.
     '''
 
     API_URL = 'https://www.fflogs.com/api/v2'
@@ -89,30 +106,8 @@ class FFLogsClient(
         cache_expiry: int = 86400,
         cache_override: str = '',
         ignore_cache_expiry: bool = False,
+        clean_cache: bool = True,
     ) -> None:
-        '''
-        Initialize the FFLogs API client.
-
-        Two modes of use are supported by the client - `client` and `user` mode.
-        When in client mode, the API client can access the public API. To access private information
-        such as private logs or hidden characters' information, you must use user mode.
-
-        Args:
-            client_id: Client application ID
-            client_secret: Client application secret
-            mode: Whether to use the client or user endpoint. Client mode gives public API access,
-                  while user mode allows access to private information. User mode requires login.
-            enable_caching: If enabled, the client will cache the result of queries
-                            for up to a time specified by the cache_expiry argument.
-            cache_directory: The directory to read and save query cache files in.
-            cache_expiry: How long to keep query results in cache, in seconds. Default is 1 day.
-            cache_override: If set, force the client to load cached queries from the given file path
-            ignore_cache_expiry: If set to True, the client will load the most up-to-date cache,
-                                 even if it has expired
-
-        Raises:
-            ValueError if the provided client mode is invalid.
-        '''
         self.auth = HTTPBasicAuth(client_id, client_secret)
         oauth_client = None
         if mode == 'client':
@@ -153,6 +148,9 @@ class FFLogsClient(
             if cache_path:
                 with open(cache_path, 'rb') as f:
                     self._query_cache = pickle.load(f)
+
+        if clean_cache:
+            self.clean_cache()
 
         endpoint = self.CLIENT_ENDPOINT if mode == 'client' else self.USER_ENDPOINT
         self._transport = RequestsHTTPTransport(url=self.API_URL + endpoint)

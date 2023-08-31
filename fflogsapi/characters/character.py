@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Any, Optional, Union
 from warnings import warn
 
 from ..data import (FFJob, FFLogsAllStarsRanking, FFLogsEncounterRankings, FFLogsFightRank,
-                          FFLogsZoneEncounterRanking, FFLogsZoneRanking,)
+                    FFLogsZoneEncounterRanking, FFLogsZoneRanking,)
 from ..util.decorators import fetch_data
 from ..util.filters import construct_filter_string
 from ..util.indexing import itindex

@@ -5,6 +5,7 @@ The client implementation that allows communication with the FF Logs API.
 import os
 import pickle
 from copy import deepcopy
+from functools import wraps
 from time import time
 from typing import Any
 
@@ -29,6 +30,7 @@ def ensure_token(func):
     '''
     Ensures the given function has a valid OAuth token.
     '''
+    @wraps(func)
     def ensured(*args, **kwargs):
         self = args[0]
         try:
@@ -62,9 +64,9 @@ class FFLogsClient(
 
     Caching is enabled by default, but can be overriden with the enable_caching parameter when
     instantiating the client. A cache of executed queries will then be maintained by the client.
-    To save the query cache for later reuse, you must manually call :func:`save_cache` on the client.
-    It's also possible to extend the lifetime of all cache queries with :func:`extend_cache`, or to
-    manually clean up old cache files with :func:`clean_cache`.
+    To save the query cache for later reuse, you must manually call :func:`save_cache` on the
+    client. It's also possible to extend the lifetime of all cache queries with
+    :func:`extend_cache`, or to manually clean up old cache files with :func:`clean_cache`.
 
     Two modes of use are supported by the client - ``client`` and ``user`` mode.
     When in client mode, the API client can access the public API. To access private information
@@ -156,7 +158,10 @@ class FFLogsClient(
         self._transport = RequestsHTTPTransport(url=self.API_URL + endpoint)
         self._gql_client = GQLClient(transport=self._transport, fetch_schema_from_transport=True)
 
-    def close(self):
+    def close(self) -> None:
+        '''
+        Close the OAuth session with the FF Logs API
+        '''
         self.oauth_session.close()
         self._transport.close()
 
@@ -180,6 +185,9 @@ class FFLogsClient(
             query: The GraphQL query to execute.
             ignore_cache: Whether or not to ignore cached results, forcing a query to be executed
                           against the API.
+
+        Returns:
+            The result of the query as a dictionary.
         '''
         if self.cache_queries and not ignore_cache and query in self._query_cache:
             cached_result = self._query_cache[query]
@@ -254,10 +262,10 @@ class FFLogsClient(
 
     def rate_limit_allowance(self) -> int:
         '''
-        Fetches the amount of points the API key is allowed to spend each hour.
+        Fetches the amount of points the API client is allowed to spend each hour.
 
         Returns:
-            The total point allowance of the API key.
+            The total point allowance of the API client.
         '''
         return self.q(self.Q_RATE_LIMIT.format(
             innerQuery='limitPerHour'
@@ -265,8 +273,8 @@ class FFLogsClient(
 
     def rate_limit_reset_time(self) -> int:
         '''
-        Fetches the amount of seconds remaining until the hourly point allowance resets for
-        the current API key.
+        Fetches the amount of seconds remaining until the point allowance resets for
+        the current API client.
 
         Returns:
             Seconds left until points reset.
@@ -277,7 +285,7 @@ class FFLogsClient(
 
     def rate_limit_spent(self) -> float:
         '''
-        Fetches the amount of points that have been spent by the API key the past hour.
+        Fetches the amount of points that have been spent by the API client the past hour.
 
         Returns:
             The amount of points spent.

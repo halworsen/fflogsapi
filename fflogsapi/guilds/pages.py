@@ -1,9 +1,9 @@
 from typing import TYPE_CHECKING
 
 from ..characters.character import FFLogsCharacter
+from ..data import FFLogsAttendanceReport
 from ..data.page import FFLogsPage, FFLogsPaginationIterator
 from ..world.zone import FFLogsZone
-from ..data import FFLogsAttendanceReport
 from .queries import Q_GUILD_ATTENDANCE_PAGINATION, Q_GUILD_CHARACTER_PAGINATION, Q_GUILD_PAGINATION
 
 if TYPE_CHECKING:

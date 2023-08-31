@@ -101,7 +101,7 @@ rankings = character.zone_rankings(filters={
     'specName': 'Reaper',
     'metric': GQLEnum('rdps'),
     'zoneID': abyssos.id,
-    'difficulty': FightDifficulty.SAVAGE,
+    'difficulty': FightDifficulty.SAVAGE.value,
     'partition': partition_628.id,
 }, use_dataclasses=True)
 

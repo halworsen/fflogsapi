@@ -2,11 +2,24 @@
 
 Backwards compatibility is not guaranteed in versions <1.0.0.
 
-## v1.2.0
+## v2.0.0
 
 * Improved docstrings, including docstrings for many subpackages
-* Replaced most global constants with enums for things like fight difficulty and event types
-  * All globals superseded by enums are being deprecated in 2.0.0
+* Added generated documentation pages. They are available at [fflogsapi.readthedocs.io](https://fflogsapi.readthedocs.io)
+* Improved package API. It's now possible to import most objects of interest without digging into specific modules
+* Fixed some flaky character tests
+* Added the `clean_cache` param to the client, which deletes expired caches on client instantiation.
+  * Cache cleaning is enabled by default
+
+Breaking changes:
+
+* Replaced most `fflogsapi.constants` with enums for things like fight difficulty and event types
+  * To migrate to v2, replace all `fflogsapi.constants` imports with the new enums
+* Moved all dataclasses into the `data` package
+  * To migrate to v2, import dataclasses from `fflogsapi.data`
+* Certain client extension method names have been changed.
+* Internal `_id` fields and corresponding `id()` functions have been replaced with just `id` as a property.
+  * `FFLogsReport.code()` has been removed. If you need the report code, access the `FFLogsReport.code` property.
 
 ## v1.1.0
 

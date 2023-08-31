@@ -1,13 +1,12 @@
 from typing import TYPE_CHECKING, Any, Optional
 
 from ..characters.character import FFLogsCharacter
+from ..data import (FFGameZone, FFLogsNPCData, FFLogsPlayerDetails, FFLogsReportCharacterRanking,
+                    FFLogsReportComboRanking, FFLogsReportRanking, FFMap,)
 from ..util.decorators import fetch_data
 from ..util.filters import construct_filter_string
 from ..util.indexing import itindex
 from ..world.encounter import FFLogsEncounter
-from ..data import (FFGameZone, FFLogsNPCData, FFLogsPlayerDetails,
-                          FFLogsReportCharacterRanking, FFLogsReportComboRanking,
-                          FFLogsReportRanking, FFMap)
 from .queries import Q_FIGHT_DATA
 
 if TYPE_CHECKING:

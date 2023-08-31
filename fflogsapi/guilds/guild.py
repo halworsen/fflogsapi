@@ -1,12 +1,12 @@
 from typing import TYPE_CHECKING, Any, Union
 
 from ..constants import FightDifficulty, PartySize
+from ..data import FFGrandCompany, FFLogsGuildZoneRankings, FFLogsRank, FFLogsReportTag
 from ..util.decorators import fetch_data
 from ..util.filters import construct_filter_string
 from ..util.indexing import itindex
 from ..world.server import FFLogsServer
 from ..world.zone import FFLogsZone
-from ..data import FFLogsGuildZoneRankings, FFLogsRank, FFLogsReportTag, FFGrandCompany
 from .pages import FFLogsCharacterPaginationIterator, FFLogsGuildAttendancePaginationIterator
 from .queries import Q_GUILD, Q_GUILD_RANKING
 

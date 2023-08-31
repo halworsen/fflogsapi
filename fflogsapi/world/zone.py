@@ -1,9 +1,9 @@
 from typing import TYPE_CHECKING, Any, Union
 from warnings import warn
 
+from ..data import FFLogsPartition
 from ..util.decorators import fetch_data
 from ..util.indexing import itindex
-from ..data import FFLogsPartition
 from .queries import Q_ZONE
 
 if TYPE_CHECKING:

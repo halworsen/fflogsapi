@@ -1,10 +1,10 @@
 import unittest
 
-from fflogsapi.data import (FFLogsAllStarsRanking, FFLogsEncounterRankings,
-                                  FFLogsZoneEncounterRanking, FFLogsZoneRanking,)
-from fflogsapi.constants import FightDifficulty
-from fflogsapi.guilds import FFLogsGuild
 from fflogsapi import FFLogsClient, GQLEnum
+from fflogsapi.constants import FightDifficulty
+from fflogsapi.data import (FFLogsAllStarsRanking, FFLogsEncounterRankings,
+                            FFLogsZoneEncounterRanking, FFLogsZoneRanking,)
+from fflogsapi.guilds import FFLogsGuild
 from fflogsapi.world import FFLogsServer
 
 from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET

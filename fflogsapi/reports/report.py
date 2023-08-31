@@ -1,12 +1,12 @@
 from typing import TYPE_CHECKING, Iterator, Optional
 
 from ..characters.character import FFLogsCharacter
+from ..data import FFLogsActor, FFLogsArchivalData, FFLogsReportAbility, FFLogsReportTag
 from ..user.user import FFLogsUser
 from ..util.decorators import fetch_data
 from ..util.indexing import itindex
 from ..world.region import FFLogsRegion
 from ..world.zone import FFLogsZone
-from ..data import FFLogsActor, FFLogsArchivalData, FFLogsReportAbility, FFLogsReportTag
 from .fight import FFLogsFight
 from .queries import IQ_REPORT_ABILITIES, IQ_REPORT_ACTORS, IQ_REPORT_LOG_VERSION, Q_REPORT_DATA
 

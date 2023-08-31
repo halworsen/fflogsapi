@@ -14,7 +14,6 @@ names from the relevant subpackages.
 '''
 
 from .client import FFLogsClient
-from .util.gql_enums import GQLEnum
 # deprecated in 2.0.0
 from .constants import (EVENT_ENCOUNTER_END, EVENT_TYPE_APPLY_BUFF, EVENT_TYPE_APPLY_DEBUFF,
                         EVENT_TYPE_BEGINCAST, EVENT_TYPE_CALCULATED_DAMAGE, EVENT_TYPE_CAST,
@@ -22,6 +21,7 @@ from .constants import (EVENT_ENCOUNTER_END, EVENT_TYPE_APPLY_BUFF, EVENT_TYPE_A
                         EVENT_TYPE_LB_UPDATE, EVENT_TYPE_REFRESH_BUFF, EVENT_TYPE_REMOVE_BUFF,
                         FIGHT_DIFFICULTY_RAID, FIGHT_DIFFICULTY_SAVAGE, FIGHT_DIFFICULTY_UNKNOWN,
                         EventType, FightDifficulty, PartySize,)
+from .util.gql_enums import GQLEnum
 
 __all__ = [
     # client.py

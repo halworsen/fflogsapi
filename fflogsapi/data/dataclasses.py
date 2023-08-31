@@ -2,12 +2,13 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
+    from ..characters.character import FFLogsCharacter
     from ..guilds.guild import FFLogsGuild
     from ..reports.fight import FFLogsFight
+    from ..reports.report import FFLogsReport
     from ..world.encounter import FFLogsEncounter
     from ..world.zone import FFLogsZone
-    from ..reports.report import FFLogsReport
-    from ..characters.character import FFLogsCharacter
+
 
 @dataclass
 class FFLogsAllStarsRanking:
@@ -107,6 +108,7 @@ class FFLogsZoneRanking:
     median_performance_avg: float
     all_stars: list[FFLogsAllStarsRanking]
 
+
 @dataclass
 class FFLogsReportCharacterRanking:
     '''
@@ -160,6 +162,7 @@ class FFLogsReportRanking:
     damage_taken_not_tanks: int
     character_rankings: list[FFLogsReportCharacterRanking]
     combo_rankings: list[FFLogsReportComboRanking]
+
 
 @dataclass
 class FFAbility:
@@ -368,6 +371,7 @@ class FFGameZone:
     '''
     id: int
     name: str
+
 
 @dataclass
 class FFLogsPartition:

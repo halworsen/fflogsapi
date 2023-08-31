@@ -9,7 +9,7 @@ class GuildsMixin:
     Client extensions to support guild data exposed by the FF Logs API.
     '''
 
-    def guild_pages(self, filters: dict = {}) -> FFLogsGuildPaginationIterator:
+    def guilds(self, filters: dict = {}) -> FFLogsGuildPaginationIterator:
         '''
         Iterate over pages of guilds on FF Logs.
 

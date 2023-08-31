@@ -50,7 +50,7 @@ class FightTest(unittest.TestCase):
         '''
         The client should be able to get a pagination of all guilds on the site.
         '''
-        guild_pages = self.client.guild_pages(filters={
+        guild_pages = self.client.guilds(filters={
             'serverRegion': 'EU',
         })
         self.assertIsInstance(guild_pages, FFLogsGuildPaginationIterator)

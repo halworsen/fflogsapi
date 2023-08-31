@@ -30,7 +30,7 @@ class ZoneTest(unittest.TestCase):
         '''
         The client should be able to fetch simple fields from the zone
         '''
-        self.assertEqual(self.zone.id(), self.ZONE_ID)
+        self.assertEqual(self.zone.id, self.ZONE_ID)
         self.assertEqual(self.zone.name(), 'Abyssos')
         self.assertIsInstance(self.zone.frozen(), bool)
 
@@ -42,7 +42,7 @@ class ZoneTest(unittest.TestCase):
         first_zone = zones[0]
         self.assertIsInstance(first_zone, FFLogsZone)
         self.assertEqual(len(zones), 10)
-        self.assertEqual(first_zone.id(), 13)
+        self.assertEqual(first_zone.id, 13)
 
     def test_brackets(self) -> None:
         '''

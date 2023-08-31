@@ -40,7 +40,7 @@ class FightTest(unittest.TestCase):
         '''
         self.assertEqual(self.fight.name(), 'Hephaistos II')
         self.assertIsInstance(self.fight.encounter(), FFLogsEncounter)
-        self.assertEqual(self.fight.encounter().id(), 87)
+        self.assertEqual(self.fight.encounter().id, 87)
         self.assertEqual(self.fight.difficulty(), FightDifficulty.SAVAGE.value)
         self.assertEqual(self.fight.size(), PartySize.FULL.value)
         self.assertEqual(self.fight.fight_percentage(), 55.93)

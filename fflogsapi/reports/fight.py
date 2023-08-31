@@ -22,6 +22,12 @@ class FFLogsFight:
 
     DATA_INDICES = ['reportData', 'report', 'fights', 0]
 
+    id: int = -1
+    ''' The ID of the fight, within the report which this fight belongs to '''
+
+    report: 'FFLogsReport' = None
+    ''' The report which this fight belongs to '''
+
     def __init__(self, report: 'FFLogsReport', fight_id: int, client: 'FFLogsClient') -> None:
         self.report = report
         self.id = fight_id

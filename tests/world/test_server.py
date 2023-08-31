@@ -31,7 +31,7 @@ class ServerTest(unittest.TestCase):
         '''
         The client should be able to get a server by both ID and region+slug.
         '''
-        self.assertEqual(self.server.id(), self.server_by_filters.id())
+        self.assertEqual(self.server.id, self.server_by_filters.id)
 
     def test_simple_fields(self) -> None:
         '''

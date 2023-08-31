@@ -28,7 +28,7 @@ class ExpansionTest(unittest.TestCase):
         '''
         The client should be able to fetch the id and name of the expansion.
         '''
-        self.assertEqual(self.expansion.id(), self.EXPAC_ID)
+        self.assertEqual(self.expansion.id, self.EXPAC_ID)
         self.assertEqual(self.expansion.name(), 'Shadowbringers')
 
     def test_expansion_list(self) -> None:

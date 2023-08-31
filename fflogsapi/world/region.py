@@ -18,8 +18,11 @@ class FFLogsRegion:
 
     DATA_INDICES = ['worldData', 'region']
 
+    id: int = -1
+    ''' The ID of the region '''
+
     def __init__(self, id: int, client: 'FFLogsClient' = None) -> None:
-        self._id = id
+        self.id = id
         self._data = {'id': id}
         self._encounters = {}
         self._client = client
@@ -29,20 +32,11 @@ class FFLogsRegion:
         Query for a specific piece of information about a region
         '''
         result = self._client.q(Q_REGION.format(
-            regionID=self._id,
+            regionID=self.id,
             innerQuery=query,
         ), ignore_cache=ignore_cache)
 
         return itindex(result, self.DATA_INDICES)
-
-    def id(self) -> int:
-        '''
-        Get the region's ID.
-
-        Returns:
-            The region's ID.
-        '''
-        return self._id
 
     @fetch_data('name')
     def name(self) -> str:
@@ -84,7 +78,7 @@ class FFLogsRegion:
         from .pages import FFLogsRegionServerPaginationIterator
         return FFLogsRegionServerPaginationIterator(
             client=self._client,
-            additional_formatting={'regionID': self._id}
+            additional_formatting={'regionID': self.id}
         )
 
     def subregions(self) -> list['FFLogsSubregion']:
@@ -110,8 +104,11 @@ class FFLogsSubregion:
 
     DATA_INDICES = ['worldData', 'subregion']
 
+    id: int = -1
+    ''' The ID of the subregion '''
+
     def __init__(self, id: int, client: 'FFLogsClient' = None) -> None:
-        self._id = id
+        self.id = id
         self._data = {'id': id}
         self._encounters = {}
         self._client = client
@@ -121,20 +118,11 @@ class FFLogsSubregion:
         Query for a specific piece of information about a subregion
         '''
         result = self._client.q(Q_SUBREGION.format(
-            subregionID=self._id,
+            subregionID=self.id,
             innerQuery=query,
         ), ignore_cache=ignore_cache)
 
         return itindex(result, self.DATA_INDICES)
-
-    def id(self) -> int:
-        '''
-        Get the subregion's ID.
-
-        Returns:
-            The subregion's ID.
-        '''
-        return self._id
 
     @fetch_data('name')
     def name(self) -> str:
@@ -170,5 +158,5 @@ class FFLogsSubregion:
         from .pages import FFLogsSubregionServerPaginationIterator
         return FFLogsSubregionServerPaginationIterator(
             client=self._client,
-            additional_formatting={'subregionID': self._id}
+            additional_formatting={'subregionID': self.id}
         )

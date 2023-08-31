@@ -46,7 +46,7 @@ class CharacterTest(unittest.TestCase):
         '''
         The client should be able to fetch any user's username.
         '''
-        self.assertEqual(self.user.id(), self.USER_ID)
+        self.assertEqual(self.user.id, self.USER_ID)
         self.assertEqual(self.user.name(), 'Kazzio')
 
     def test_user_characters(self) -> None:

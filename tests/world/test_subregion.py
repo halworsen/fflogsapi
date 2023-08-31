@@ -29,7 +29,7 @@ class SubregionTest(unittest.TestCase):
         '''
         The client should be able to fetch the id and name of the subregion.
         '''
-        self.assertEqual(self.subregion.id(), self.SUBREGION_ID)
+        self.assertEqual(self.subregion.id, self.SUBREGION_ID)
         self.assertEqual(self.subregion.name(), 'Aether')
 
     def test_region(self) -> None:

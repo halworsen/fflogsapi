@@ -29,7 +29,7 @@ class EncounterTest(unittest.TestCase):
         '''
         The client should be able to fetch simple fields from the encounter
         '''
-        self.assertEqual(self.encounter.id(), self.ENCOUNTER_ID)
+        self.assertEqual(self.encounter.id, self.ENCOUNTER_ID)
         self.assertEqual(self.encounter.name(), 'Hephaistos II')
 
     def test_character_rankings(self) -> None:
@@ -67,7 +67,7 @@ class EncounterTest(unittest.TestCase):
         '''
         zone = self.encounter.zone()
         self.assertIsInstance(self.encounter.zone(), FFLogsZone)
-        self.assertEqual(zone.id(), 49)
+        self.assertEqual(zone.id, 49)
 
 
 if __name__ == '__main__':

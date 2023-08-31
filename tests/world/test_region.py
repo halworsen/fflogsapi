@@ -38,7 +38,7 @@ class RegionTest(unittest.TestCase):
         '''
         The client should be able to fetch simple fields about the region.
         '''
-        self.assertEqual(self.region.id(), self.REGION_ID)
+        self.assertEqual(self.region.id, self.REGION_ID)
         self.assertEqual(self.region.name(), 'North America')
         self.assertEqual(self.region.compact_name(), 'NA')
         self.assertEqual(self.region.slug(), 'NA')

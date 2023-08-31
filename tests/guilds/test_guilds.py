@@ -44,7 +44,7 @@ class FightTest(unittest.TestCase):
         '''
         The client should be able to find a guild both by ID and filter fields.
         '''
-        self.assertEqual(self.guild.id(), self.named_guild.id())
+        self.assertEqual(self.guild.id, self.named_guild.id)
 
     def test_guild_pages(self) -> None:
         '''
@@ -65,7 +65,7 @@ class FightTest(unittest.TestCase):
         The client should be able to fetch fields about the guild
         such as its name, server, faction, etc.
         '''
-        self.assertEqual(self.guild.id(), self.GUILD_ID)
+        self.assertEqual(self.guild.id, self.GUILD_ID)
         self.assertEqual(self.guild.name(), 'Kindred')
         self.assertEqual(self.guild.description(), 'It\'s lit')
         self.assertIsInstance(self.guild.server(), FFLogsServer)
@@ -125,7 +125,7 @@ class FightTest(unittest.TestCase):
         matching_report: FFLogsAttendanceReport = None
         for report in reports:
             self.assertIsInstance(report, FFLogsAttendanceReport)
-            if report.report.code() == report_code:
+            if report.report.code == report_code:
                 matching_report = report
                 break
         self.assertIsNotNone(matching_report)
@@ -134,7 +134,7 @@ class FightTest(unittest.TestCase):
         self.assertEqual(matching_report.report.code, report_code)
 
         self.assertIsInstance(matching_report.zone, FFLogsZone)
-        self.assertEqual(matching_report.zone.id(), zone_id)
+        self.assertEqual(matching_report.zone.id, zone_id)
 
         self.assertEqual(matching_report.start, 1677808649812)
 

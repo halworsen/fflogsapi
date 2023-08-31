@@ -17,8 +17,11 @@ class FFLogsEncounter:
 
     DATA_INDICES = ['worldData', 'encounter']
 
+    id: int = -1
+    ''' The ID of the encounter '''
+
     def __init__(self, id: int, client: 'FFLogsClient' = None) -> None:
-        self._id = id
+        self.id = id
         self._data = {'id': id}
         self._client = client
 
@@ -27,20 +30,11 @@ class FFLogsEncounter:
         Query for a specific piece of information about an encounter
         '''
         result = self._client.q(Q_ENCOUNTER.format(
-            encounterID=self._id,
+            encounterID=self.id,
             innerQuery=query,
         ), ignore_cache=ignore_cache)
 
         return itindex(result, self.DATA_INDICES)
-
-    def id(self) -> int:
-        '''
-        Get the encounter's ID.
-
-        Returns:
-            The encounter's ID.
-        '''
-        return self._id
 
     @fetch_data('name')
     def name(self) -> str:

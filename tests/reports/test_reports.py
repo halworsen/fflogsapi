@@ -80,7 +80,7 @@ class ReportTest(unittest.TestCase):
         '''
         zone = self.report.zone()
         self.assertIsInstance(zone, FFLogsZone)
-        self.assertEqual(zone.id(), 49)
+        self.assertEqual(zone.id, 49)
 
     def test_fields(self) -> None:
         '''
@@ -122,7 +122,7 @@ class ReportTest(unittest.TestCase):
         It should return None for a personal log report.
         '''
         guild = self.report.guild()
-        self.assertEqual(guild.id(), 81924)
+        self.assertEqual(guild.id, 81924)
         self.assertEqual(guild.name(), 'Kindred')
 
         personal_report = self.client.get_report(code='BWgAdkachXJ3Drj9')
@@ -146,7 +146,7 @@ class ReportTest(unittest.TestCase):
         The client should be able to fetch the user that owns the report.
         '''
         owner = self.report.owner()
-        self.assertEqual(owner.id(), 315987)
+        self.assertEqual(owner.id, 315987)
         self.assertEqual(owner.name(), 'Peridise')
 
     def test_region(self) -> None:
@@ -155,7 +155,7 @@ class ReportTest(unittest.TestCase):
         '''
         region = self.report.region()
         self.assertIsInstance(region, FFLogsRegion)
-        self.assertEqual(region.id(), 1)
+        self.assertEqual(region.id, 1)
 
     def test_ranked_characters(self) -> None:
         '''

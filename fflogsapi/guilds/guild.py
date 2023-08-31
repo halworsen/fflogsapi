@@ -21,14 +21,22 @@ class FFLogsGuild:
 
     DATA_INDICES = ['guildData', 'guild']
 
+    id: int = -1
+    ''' The ID of the guild '''
+
     def __init__(self, filters: dict = {}, id: int = -1, client: 'FFLogsClient' = None) -> None:
         self.filters = filters.copy()
+        self._client = client
+        self._data = {}
+
         if id != -1 and 'id' not in self.filters:
             self.filters['id'] = id
+        else:
+            result = self._query_data('id')
+            self._data['id'] = result['id']
+            self.filters = {'id': result['id']}
 
-        self._id = self.filters['id'] if 'id' in self.filters else -1
-        self._data = {}
-        self._client = client
+        self.id = self.filters['id']
 
     def _query_data(self, query: str, ignore_cache: bool = False) -> dict[Any, Any]:
         '''
@@ -41,19 +49,6 @@ class FFLogsGuild:
         ), ignore_cache=ignore_cache)
 
         return itindex(result, self.DATA_INDICES)
-
-    @fetch_data('id')
-    def id(self) -> int:
-        '''
-        Get the ID of the guild.
-
-        Returns:
-            The ID of the guild.
-        '''
-        if self._id == -1:
-            self._id = self._data['id']
-            self.filters = {'id': self._id}
-        return self._id
 
     @fetch_data('name')
     def name(self) -> str:
@@ -162,7 +157,7 @@ class FFLogsGuild:
             An iterator over all attendance report pages.
         '''
         return FFLogsGuildAttendancePaginationIterator(
-            additional_formatting={'guildID': self.id()},
+            additional_formatting={'guildID': self.id},
             filters=filters,
             client=self._client,
         )
@@ -176,7 +171,7 @@ class FFLogsGuild:
         '''
         return FFLogsCharacterPaginationIterator(
             client=self._client,
-            additional_formatting={'guildID': self.id()}
+            additional_formatting={'guildID': self.id}
         )
 
     def zone_rankings(
@@ -197,7 +192,7 @@ class FFLogsGuild:
         if isinstance(zone, int):
             zone_id = zone
         elif isinstance(zone, FFLogsZone):
-            zone_id = zone.id()
+            zone_id = zone.id
 
         data = self._query_data(Q_GUILD_RANKING.format(
             zoneID=zone_id,

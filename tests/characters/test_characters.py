@@ -41,14 +41,14 @@ class CharacterTest(unittest.TestCase):
         '''
         The client should be able to find a character both by ID and filter fields.
         '''
-        self.assertEqual(self.character.id(), self.named_character.id())
+        self.assertEqual(self.character.id, self.named_character.id)
 
     def test_fields(self) -> None:
         '''
         The client should be able to fetch fields about the character
         such as their name, server, etc.
         '''
-        self.assertEqual(self.character.id(), self.CHARACTER_ID)
+        self.assertEqual(self.character.id, self.CHARACTER_ID)
         self.assertEqual(self.character.name(), self.CHARACTER_NAME)
         self.assertIsInstance(self.character.server(), FFLogsServer)
         self.assertEqual(self.character.lodestone_id(), 5331858)
@@ -90,7 +90,7 @@ class CharacterTest(unittest.TestCase):
         mazz = self.client.get_character(id=19243348)
         guilds = mazz.guilds()
         self.assertIsInstance(guilds[0], FFLogsGuild)
-        self.assertEqual(guilds[0].id(), 54563)
+        self.assertEqual(guilds[0].id, 54563)
 
     def test_game_data(self) -> None:
         '''

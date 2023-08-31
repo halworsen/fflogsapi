@@ -39,7 +39,7 @@ class FFLogsReport:
         Query for a specific piece of information from a report.
         '''
         result = self._client.q(Q_REPORT_DATA.format(
-            reportCode=self._code,
+            reportCode=self.code,
             innerQuery=query
         ), ignore_cache=ignore_cache)
 

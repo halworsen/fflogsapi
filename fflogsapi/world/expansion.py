@@ -16,8 +16,11 @@ class FFLogsExpansion:
 
     DATA_INDICES = ['worldData', 'expansion']
 
+    id: int = -1
+    ''' The ID of the expansion '''
+
     def __init__(self, id: int, client: 'FFLogsClient' = None) -> None:
-        self._id = id
+        self.id = id
         self._data = {'id': id}
         self._encounters = {}
         self._client = client
@@ -27,20 +30,11 @@ class FFLogsExpansion:
         Query for a specific piece of information about a expansion
         '''
         result = self._client.q(Q_EXPANSION.format(
-            expansionID=self._id,
+            expansionID=self.id,
             innerQuery=query,
         ), ignore_cache=ignore_cache)
 
         return itindex(result, self.DATA_INDICES)
-
-    def id(self) -> int:
-        '''
-        Get the expansion's ID.
-
-        Returns:
-            The expansion's ID.
-        '''
-        return self._id
 
     @fetch_data('name')
     def name(self) -> str:

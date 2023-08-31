@@ -17,10 +17,13 @@ class FFLogsZone:
     Representation of a zone on FF Logs.
     '''
 
+    id: int = -1
+    ''' The ID of the zone '''
+
     DATA_INDICES = ['worldData', 'zone']
 
     def __init__(self, id: int, client: 'FFLogsClient' = None) -> None:
-        self._id = id
+        self.id = id
         self._data = {'id': id}
         self._encounters = {}
         self._client = client
@@ -30,20 +33,11 @@ class FFLogsZone:
         Query for a specific piece of information about a zone
         '''
         result = self._client.q(Q_ZONE.format(
-            zoneID=self._id,
+            zoneID=self.id,
             innerQuery=query,
         ), ignore_cache=ignore_cache)
 
         return itindex(result, self.DATA_INDICES)
-
-    def id(self) -> int:
-        '''
-        Get the zone's ID.
-
-        Returns:
-            The zone's ID.
-        '''
-        return self._id
 
     @fetch_data('name')
     def name(self) -> str:

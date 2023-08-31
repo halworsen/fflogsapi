@@ -20,8 +20,8 @@ class CharacterTest(unittest.TestCase):
     were changed or the character was deleted.
     '''
 
-    CHARACTER_ID = 19181640
-    CHARACTER_NAME = 'Dylan Kusarigama'
+    CHARACTER_ID = 27629
+    CHARACTER_NAME = 'Xenosys Vex'
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -29,8 +29,8 @@ class CharacterTest(unittest.TestCase):
         cls.character = cls.client.get_character(id=cls.CHARACTER_ID)
         cls.named_character = cls.client.get_character(filters={
             'name': cls.CHARACTER_NAME,
-            'serverRegion': 'EU',
-            'serverSlug': 'Lich',
+            'serverRegion': 'NA',
+            'serverSlug': 'Sargatanas',
         })
 
     @classmethod
@@ -52,7 +52,7 @@ class CharacterTest(unittest.TestCase):
         self.assertEqual(self.character.id(), self.CHARACTER_ID)
         self.assertEqual(self.character.name(), self.CHARACTER_NAME)
         self.assertIsInstance(self.character.server(), FFLogsServer)
-        self.assertEqual(self.character.lodestone_id(), 28321575)
+        self.assertEqual(self.character.lodestone_id(), 5331858)
         # considering these as volatile. there is no point in testing for specific values
         self.assertIsInstance(self.character.fc_rank(), int)
         self.assertIsInstance(self.character.hidden(), bool)
@@ -64,10 +64,10 @@ class CharacterTest(unittest.TestCase):
         rankings = self.character.encounter_rankings(filters={
             'encounterID': 87,
             'specName': 'Reaper',
-            'difficulty': FightDifficulty.SAVAGE,
+            'difficulty': FightDifficulty.SAVAGE.value,
         }, use_dataclass=True)
         self.assertIsInstance(rankings, FFLogsEncounterRankings)
-        self.assertEqual(rankings.difficulty, FightDifficulty.SAVAGE)
+        self.assertEqual(rankings.difficulty, FightDifficulty.SAVAGE.value)
 
     def test_zone_rankings(self) -> None:
         '''
@@ -79,7 +79,7 @@ class CharacterTest(unittest.TestCase):
             'metric': GQLEnum('rdps'),
         }, use_dataclass=True)
         self.assertIsInstance(rankings, FFLogsZoneRanking)
-        self.assertEqual(rankings.difficulty, FightDifficulty.SAVAGE)
+        self.assertEqual(rankings.difficulty, FightDifficulty.SAVAGE.value)
         self.assertIsInstance(rankings.encounter_ranks[0], FFLogsZoneEncounterRanking)
         self.assertIsInstance(rankings.all_stars[0], FFLogsAllStarsRanking)
 
@@ -88,10 +88,10 @@ class CharacterTest(unittest.TestCase):
         The client should be able to fetch a list of all guilds the character belongs to.
         '''
         # get a character that actually belongs to a guild
-        surana = self.client.get_character(id=18994677)
-        guilds = surana.guilds()
+        mazz = self.client.get_character(id=19243348)
+        guilds = mazz.guilds()
         self.assertIsInstance(guilds[0], FFLogsGuild)
-        self.assertEqual(guilds[0].id(), 110310)
+        self.assertEqual(guilds[0].id(), 54563)
 
     def test_game_data(self) -> None:
         '''

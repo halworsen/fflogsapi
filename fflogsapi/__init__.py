@@ -14,7 +14,7 @@ names from the relevant subpackages.
 '''
 
 from .client import FFLogsClient
-from .constants import EventType, FightDifficulty, PartySize
+from .constants import TIMESTAMP_PRECISION, EventType, FightDifficulty, PartySize
 from .util.gql_enums import GQLEnum
 
 __all__ = [
@@ -25,6 +25,7 @@ __all__ = [
     'FightDifficulty',
     'PartySize',
     'EventType',
+    'TIMESTAMP_PRECISION',
 
     # util/gql_enums.py
     'GQLEnum',

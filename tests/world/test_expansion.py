@@ -35,7 +35,7 @@ class ExpansionTest(unittest.TestCase):
         '''
         The client should be able to fetch a list of all expansions.
         '''
-        expacs = self.client.get_all_expansions()
+        expacs = self.client.all_expansions()
 
         self.assertIsInstance(expacs, list)
         self.assertGreater(len(expacs), 0)

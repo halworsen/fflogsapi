@@ -29,7 +29,7 @@ class RegionTest(unittest.TestCase):
         '''
         The client should be able to fetch a list of all supported regions.
         '''
-        regions = self.client.get_all_regions()
+        regions = self.client.all_regions()
         for region in regions:
             self.assertIsInstance(region, FFLogsRegion)
             self.assertIsNotNone(region.name())

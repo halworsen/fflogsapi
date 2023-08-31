@@ -38,7 +38,7 @@ class ZoneTest(unittest.TestCase):
         '''
         The client should be able to retrieve a list of all supported zones in an expansion.
         '''
-        zones = self.client.get_all_zones(expansion_id=1)
+        zones = self.client.all_zones(expansion_id=1)
         first_zone = zones[0]
         self.assertIsInstance(first_zone, FFLogsZone)
         self.assertEqual(len(zones), 10)

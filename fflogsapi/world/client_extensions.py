@@ -35,7 +35,7 @@ class WorldMixin:
         '''
         return FFLogsExpansion(id=id, client=self)
 
-    def get_all_expansions(self) -> list[FFLogsExpansion]:
+    def all_expansions(self) -> list[FFLogsExpansion]:
         '''
         Retrieves a list of all expansions supported by FF Logs.
 
@@ -59,7 +59,7 @@ class WorldMixin:
         '''
         return FFLogsRegion(id=id, client=self)
 
-    def get_all_regions(self) -> list[FFLogsRegion]:
+    def all_regions(self) -> list[FFLogsRegion]:
         '''
         Retrieves a list of all regions supported by FF Logs.
 
@@ -109,7 +109,7 @@ class WorldMixin:
         '''
         return FFLogsZone(id=id, client=self)
 
-    def get_all_zones(self, expansion_id: int) -> list[FFLogsZone]:
+    def all_zones(self, expansion_id: int) -> list[FFLogsZone]:
         '''
         Retrieves a list of all zones belonging to a given expansion that are supported by FF Logs.
 

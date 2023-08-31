@@ -5,6 +5,7 @@ fflogsapi is a lazy Python 3 client for [FF Logs](https://www.fflogs.com/)' v2 A
 [![Tests](https://github.com/halworsen/fflogsapi/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/halworsen/fflogsapi/actions/workflows/test.yml)
 [![Linting](https://github.com/halworsen/fflogsapi/actions/workflows/lint.yml/badge.svg?branch=master)](https://github.com/halworsen/fflogsapi/actions/workflows/lint.yml)
 [![codecov](https://codecov.io/gh/halworsen/fflogsapi/branch/master/graph/badge.svg?token=YTEGMDJOGL)](https://codecov.io/gh/halworsen/fflogsapi)
+[![Documentation Status](https://readthedocs.org/projects/fflogsapi/badge/?version=latest)](https://fflogsapi.readthedocs.io/en/latest/?badge=latest)
 [![pypi](https://shields.io/pypi/v/fflogsapi)](https://pypi.org/project/fflogsapi/)
 
 ---
@@ -18,9 +19,6 @@ fflogsapi is a lazy Python 3 client for [FF Logs](https://www.fflogs.com/)' v2 A
 * Query caching
   * Requesting the same data twice will instead fetch the result from cache
   * Customizable cache lifetime and options to ignore cached results
-* Sensible interface to the API
-  * Iterate over things that are intuitively iterable
-  * Dataclasses for many objects exposed by the API
 
 ## Installation
 

@@ -1,3 +1,58 @@
 '''
-More abstract and complex dataclasses. For internal use.
+Dataclasses and such.
 '''
+
+from .dataclasses import (
+    FFLogsAllStarsRanking,
+    FFLogsFightRank,
+    FFLogsEncounterRankings,
+    FFLogsZoneEncounterRanking,
+    FFLogsZoneRanking,
+    FFLogsReportCharacterRanking,
+    FFLogsReportComboRanking,
+    FFLogsReportRanking,
+    FFAbility,
+    FFItem,
+    FFJob,
+    FFGrandCompany,
+    FFMap,
+    FFLogsReportTag,
+    FFLogsAttendanceReport,
+    FFLogsRank,
+    FFLogsGuildZoneRankings,
+    FFLogsActor,
+    FFLogsReportAbility,
+    FFLogsArchivalData,
+    FFLogsPlayerDetails,
+    FFLogsNPCData,
+    FFGameZone,
+    FFLogsPartition,
+)
+
+__all__ = [
+    # dataclasses.py
+    'FFLogsAllStarsRanking',
+    'FFLogsFightRank',
+    'FFLogsEncounterRankings',
+    'FFLogsZoneEncounterRanking',
+    'FFLogsZoneRanking',
+    'FFLogsReportCharacterRanking',
+    'FFLogsReportComboRanking',
+    'FFLogsReportRanking',
+    'FFAbility',
+    'FFItem',
+    'FFJob',
+    'FFGrandCompany',
+    'FFMap',
+    'FFLogsReportTag',
+    'FFLogsAttendanceReport',
+    'FFLogsRank',
+    'FFLogsGuildZoneRankings',
+    'FFLogsActor',
+    'FFLogsReportAbility',
+    'FFLogsArchivalData',
+    'FFLogsPlayerDetails',
+    'FFLogsNPCData',
+    'FFGameZone',
+    'FFLogsPartition',
+]

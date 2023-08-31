@@ -2,7 +2,7 @@
 Client extensions providing access to `gameData` in the v2 FF Logs API.
 '''
 
-from .dataclasses import FFGrandCompany, FFJob
+from ..data import FFGrandCompany, FFJob
 from .pages import (FFAbility, FFItem, FFLogsAbilityPage, FFLogsAbilityPaginationIterator,
                     FFLogsItemPage, FFLogsItemPaginationIterator, FFLogsMapPage,
                     FFLogsMapPaginationIterator, FFMap,)

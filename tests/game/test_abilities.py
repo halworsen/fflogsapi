@@ -1,8 +1,8 @@
 import unittest
 
 from fflogsapi.client import FFLogsClient
-from fflogsapi.game.dataclasses import FFAbility
-from fflogsapi.game.pages import FFLogsAbilityPage
+from fflogsapi.data import FFAbility
+from fflogsapi.game import FFLogsAbilityPage
 
 from ..config import CLIENT_ID, CLIENT_SECRET
 

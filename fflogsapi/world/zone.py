@@ -3,7 +3,7 @@ from warnings import warn
 
 from ..util.decorators import fetch_data
 from ..util.indexing import itindex
-from .dataclasses import FFLogsPartition
+from ..data import FFLogsPartition
 from .queries import Q_ZONE
 
 if TYPE_CHECKING:

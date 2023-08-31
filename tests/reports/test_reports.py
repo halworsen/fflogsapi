@@ -2,7 +2,7 @@ import unittest
 
 from fflogsapi.characters.character import FFLogsCharacter
 from fflogsapi.client import FFLogsClient
-from fflogsapi.guilds.dataclasses import FFLogsReportTag
+from fflogsapi.data import FFLogsReportTag
 from fflogsapi.reports.fight import FFLogsFight
 from fflogsapi.reports.pages import FFLogsReportPage
 from fflogsapi.reports.report import FFLogsReport

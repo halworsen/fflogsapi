@@ -1,4 +1,4 @@
-from .dataclasses import FFAbility, FFGrandCompany, FFItem, FFJob, FFMap
+from ..data import FFAbility, FFGrandCompany, FFItem, FFJob, FFMap
 from .pages import (FFLogsAbilityPaginationIterator, FFLogsItemPaginationIterator,
                     FFLogsMapPaginationIterator,)
 from .queries import Q_ABILITY, Q_GRAND_COMPANIES, Q_ITEM, Q_JOBS, Q_MAP

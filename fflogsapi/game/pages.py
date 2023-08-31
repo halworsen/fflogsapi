@@ -1,5 +1,5 @@
 from ..data.page import FFLogsPage, FFLogsPaginationIterator
-from .dataclasses import FFAbility, FFItem, FFMap
+from ..data import FFAbility, FFItem, FFMap
 from .queries import Q_ABILITY_PAGINATION, Q_ITEM_PAGINATION, Q_MAP_PAGINATION
 
 

@@ -1,7 +1,7 @@
 import unittest
 
 from fflogsapi.client import FFLogsClient
-from fflogsapi.game.dataclasses import FFMap
+from fflogsapi.data import FFMap
 from fflogsapi.game.pages import FFLogsMapPage
 
 from ..config import CLIENT_ID, CLIENT_SECRET

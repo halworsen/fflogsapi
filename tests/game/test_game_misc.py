@@ -1,7 +1,7 @@
 import unittest
 
 from fflogsapi.client import FFLogsClient
-from fflogsapi.game.dataclasses import FFJob
+from fflogsapi.data import FFJob
 
 from ..config import CLIENT_ID, CLIENT_SECRET
 

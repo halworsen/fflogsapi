@@ -1,20 +1,18 @@
 from typing import TYPE_CHECKING, Any, Optional, Union
 from warnings import warn
 
-from ..game.dataclasses import FFJob
+from ..data import (FFJob, FFLogsAllStarsRanking, FFLogsEncounterRankings, FFLogsFightRank,
+                          FFLogsZoneEncounterRanking, FFLogsZoneRanking,)
 from ..util.decorators import fetch_data
 from ..util.filters import construct_filter_string
 from ..util.indexing import itindex
-from ..world.encounter import FFLogsEncounter
-from ..world.zone import FFLogsZone
-from .dataclasses import (FFLogsAllStarsRanking, FFLogsEncounterRankings, FFLogsFightRank,
-                          FFLogsZoneEncounterRanking, FFLogsZoneRanking,)
 from .queries import Q_CHARACTER_DATA
 
 if TYPE_CHECKING:
     from ..client import FFLogsClient
     from ..guilds.guild import FFLogsGuild
     from ..world.server import FFLogsServer
+    from ..world.zone import FFLogsZone
 
 
 class FFLogsCharacter:
@@ -205,6 +203,7 @@ class FFLogsCharacter:
                 pdps=rank['pDPS'],
             ))
 
+        from ..world.zone import FFLogsZone
         return FFLogsEncounterRankings(
             zone=FFLogsZone(id=result['zone'], client=self._client),
             difficulty=result['difficulty'],
@@ -220,7 +219,7 @@ class FFLogsCharacter:
     def _make_all_stars_ranking(
             self,
             data: dict,
-            zone: FFLogsZone = None,
+            zone: 'FFLogsZone' = None,
             job: Optional[FFJob] = None,
     ) -> FFLogsAllStarsRanking:
         '''
@@ -275,10 +274,12 @@ class FFLogsCharacter:
             )
             return result
 
+        from ..world.zone import FFLogsZone
         zone = FFLogsZone(id=result['zone'], client=self._client)
         jobs = self._client.jobs()
         encounters = []
         for rank in result['rankings']:
+            from ..world.encounter import FFLogsEncounter
             encounter = FFLogsEncounter(id=rank['encounter']['id'], client=self._client)
             job = list(filter(lambda j: j.slug == rank['spec'], jobs))[0]
             best_job = list(filter(lambda j: j.slug == rank['bestSpec'], jobs))[0]

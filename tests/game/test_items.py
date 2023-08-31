@@ -1,7 +1,7 @@
 import unittest
 
 from fflogsapi.client import FFLogsClient
-from fflogsapi.game.dataclasses import FFItem
+from fflogsapi.data import FFItem
 from fflogsapi.game.pages import FFLogsItemPage
 
 from ..config import CLIENT_ID, CLIENT_SECRET

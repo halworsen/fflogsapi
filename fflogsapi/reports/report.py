@@ -6,13 +6,12 @@ from ..util.decorators import fetch_data
 from ..util.indexing import itindex
 from ..world.region import FFLogsRegion
 from ..world.zone import FFLogsZone
-from .dataclasses import FFLogsActor, FFLogsArchivalData, FFLogsReportAbility
+from ..data import FFLogsActor, FFLogsArchivalData, FFLogsReportAbility, FFLogsReportTag
 from .fight import FFLogsFight
 from .queries import IQ_REPORT_ABILITIES, IQ_REPORT_ACTORS, IQ_REPORT_LOG_VERSION, Q_REPORT_DATA
 
 if TYPE_CHECKING:
     from ..client import FFLogsClient
-    from ..guilds.dataclasses import FFLogsReportTag
     from ..guilds.guild import FFLogsGuild
 
 
@@ -182,7 +181,6 @@ class FFLogsReport:
         Returns:
             The report tag, if any.
         '''
-        from ..guilds.dataclasses import FFLogsReportTag
         tag = self._query_data('guildTag{ id, name }')['guildTag']
         if tag is None:
             return None

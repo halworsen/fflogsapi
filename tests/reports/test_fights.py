@@ -2,7 +2,7 @@ import unittest
 
 from fflogsapi.client import FFLogsClient
 from fflogsapi.constants import FightDifficulty, PartySize
-from fflogsapi.reports.dataclasses import (FFLogsActor, FFLogsReportCharacterRanking,
+from fflogsapi.data import (FFLogsActor, FFLogsReportCharacterRanking,
                                            FFLogsReportComboRanking, FFLogsReportRanking,)
 from fflogsapi.util.gql_enums import GQLEnum
 from fflogsapi.world.encounter import FFLogsEncounter

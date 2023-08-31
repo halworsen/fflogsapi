@@ -2,7 +2,7 @@ import unittest
 
 from fflogsapi.characters.character import FFLogsCharacter
 from fflogsapi.client import FFLogsClient
-from fflogsapi.guilds.dataclasses import (FFLogsAttendanceReport, FFLogsGuildZoneRankings,
+from fflogsapi.data import (FFLogsAttendanceReport, FFLogsGuildZoneRankings,
                                           FFLogsRank, FFLogsReportTag,)
 from fflogsapi.guilds.guild import FFLogsGuild
 from fflogsapi.guilds.pages import (FFLogsGuildAttendancePaginationIterator, FFLogsGuildPage,

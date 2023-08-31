@@ -2,7 +2,6 @@
 Client extensions providing access to `worldData` in the v2 FF Logs API.
 '''
 
-from .dataclasses import FFLogsPartition
 from .encounter import FFLogsEncounter
 from .expansion import FFLogsExpansion
 from .pages import (FFLogsRegionServerPage, FFLogsRegionServerPaginationIterator,
@@ -28,9 +27,6 @@ __all__ = [
 
     # zone.py
     'FFLogsZone',
-
-    # dataclasses.py
-    'FFLogsPartition',
 
     # pages.py
     'FFLogsServerCharacterPage',

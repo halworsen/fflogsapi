@@ -16,6 +16,9 @@ def construct_filter_string(filters: dict[str, Any]) -> str:
     for key, f in filters.items():
         filter = ''
         if type(f) is str:
+            # escape quotes
+            f = f.replace('"', '\\"')
+            f = f.replace('\'', '\\"')
             filter = f'{key}: "{f}"'
         elif type(f) is bool:
             # bool type must be lowercase

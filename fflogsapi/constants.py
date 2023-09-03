@@ -35,6 +35,8 @@ class EventType(Enum):
     REMOVE_DEBUFF = 'removedebuff'
     LB_UPDATE = 'limitbreakupdate'
     ENCOUNTER_END = 'encounterend'
+    TARGETABILITY_UPDATE = 'targetabilityupdate'
+    HEAD_MARKER = 'headmarker'
 
 
 # FF Logs uses millisecond precision in its timestamps

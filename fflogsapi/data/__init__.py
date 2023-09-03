@@ -10,6 +10,8 @@ from .dataclasses import (FFAbility, FFGameZone, FFGrandCompany, FFItem, FFJob, 
                           FFLogsReportComboRanking, FFLogsReportRanking, FFLogsReportTag,
                           FFLogsZoneEncounterRanking, FFLogsZoneRanking, FFMap,)
 
+from .phases import PhaseType, PhaseInformation, OmegaPhaseData, AlexanderPhaseData, ALL_PHASE_DATA
+
 __all__ = [
     # dataclasses.py
     'FFLogsAllStarsRanking',
@@ -36,4 +38,11 @@ __all__ = [
     'FFLogsNPCData',
     'FFGameZone',
     'FFLogsPartition',
+
+    # .phases
+    'PhaseType',
+    'PhaseInformation',
+    'OmegaPhaseData',
+    'AlexanderPhaseData',
+    'ALL_PHASE_DATA',
 ]

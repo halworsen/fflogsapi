@@ -2,6 +2,11 @@
 
 Backwards compatibility is not guaranteed in versions <1.0.0.
 
+## v2.0.1
+* Stricter pinning of dependencies
+  * urllib3 has been pinned to ~=1.26.14 to prevent breaking interop between requests >=2.29.0 and urllib3 >=2.0.0
+* Fix docs dependencies
+
 ## v2.0.0
 
 * Improved docstrings, including docstrings for many subpackages

@@ -247,6 +247,9 @@ class FFLogsCharacter:
         jobs = self._client.jobs()
         encounters = []
         for rank in result['rankings']:
+            # TODO: real fixes instead of ignoring the issue
+            # IndexError is from the spec filters on null rankings
+            # StopIteration is from the allstars ranking construction
             try:
                 from ..world.encounter import FFLogsEncounter
                 encounter = FFLogsEncounter(id=rank['encounter']['id'], client=self._client)

@@ -247,23 +247,26 @@ class FFLogsCharacter:
         jobs = self._client.jobs()
         encounters = []
         for rank in result['rankings']:
-            from ..world.encounter import FFLogsEncounter
-            encounter = FFLogsEncounter(id=rank['encounter']['id'], client=self._client)
-            job = list(filter(lambda j: j.slug == rank['spec'], jobs))[0]
-            best_job = list(filter(lambda j: j.slug == rank['bestSpec'], jobs))[0]
+            try:
+                from ..world.encounter import FFLogsEncounter
+                encounter = FFLogsEncounter(id=rank['encounter']['id'], client=self._client)
+                job = list(filter(lambda j: j.slug == rank['spec'], jobs))[0]
+                best_job = list(filter(lambda j: j.slug == rank['bestSpec'], jobs))[0]
 
-            encounters.append(FFLogsZoneEncounterRanking(
-                locked_in=rank['lockedIn'],
-                encounter=encounter,
-                rank_percent=rank['rankPercent'],
-                median_percent=rank['medianPercent'],
-                best_amount=rank['bestAmount'],
-                fastest_kill=rank['fastestKill'],
-                kills=rank['totalKills'],
-                job=job,
-                best_job=best_job,
-                all_stars=self._make_all_stars_ranking(rank['allStars'], zone=zone, job=job),
-            ))
+                encounters.append(FFLogsZoneEncounterRanking(
+                    locked_in=rank['lockedIn'],
+                    encounter=encounter,
+                    rank_percent=rank['rankPercent'],
+                    median_percent=rank['medianPercent'],
+                    best_amount=rank['bestAmount'],
+                    fastest_kill=rank['fastestKill'],
+                    kills=rank['totalKills'],
+                    job=job,
+                    best_job=best_job,
+                    all_stars=self._make_all_stars_ranking(rank['allStars'], zone=zone, job=job),
+                ))
+            except (IndexError, StopIteration):
+                continue
 
         return FFLogsZoneRanking(
             zone=zone,

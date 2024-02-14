@@ -5,7 +5,8 @@ coverage:
   status:
     project:
       source:
-        paths: 'fflogsapi/'
+        paths:
+        - 'fflogsapi/'
         target: 95%
     patch:
       default:

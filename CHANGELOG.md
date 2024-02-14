@@ -2,6 +2,9 @@
 
 Backwards compatibility is not guaranteed in versions <1.0.0.
 
+## v2.0.2
+* [fix zone_rankings giving up on exception (#1)](https://github.com/halworsen/fflogsapi/commit/b428f992f623d2a313da078409a3f1d9960afe3a)
+
 ## v2.0.1
 * Stricter pinning of dependencies
   * urllib3 has been pinned to ~=1.26.14 to prevent breaking interop between requests >=2.29.0 and urllib3 >=2.0.0

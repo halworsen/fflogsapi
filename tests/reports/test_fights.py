@@ -74,6 +74,19 @@ class FightTest(unittest.TestCase):
         self.assertIsNotNone(events)
         self.assertEqual(len(events), 8)
 
+    def test_event_with_filter_expression(self) -> None:
+        '''
+        The client should be able to handle some user defined filter expressions.
+        '''
+        events = self.fight.events({
+            'filterExpression':{
+                'type':'limitbreakupdate'
+                }
+        })
+        self.assertIsNotNone(events)
+        self.assertIsInstance(events,list)
+        self.assertIsInstance(events[0],dict)
+
     def test_graph(self) -> None:
         '''
         The client should be able to fetch graphs from fights

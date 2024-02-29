@@ -1,5 +1,21 @@
 from typing import Any
 
+def construct_filter_expression_string(expressions: dict[str,Any]) -> str:
+    '''
+    Construct a filter expression from a dicttionary of expressions
+    that can be used in FFLog queries to filter values base on FFLogs Expressions.
+    
+    Args:
+        expressions: A dictions of keys which are fields to filter,
+                     and values are the values to filter by.
+    Returns:
+        An expression string usable in FFLogs expressions.
+    '''
+    prepped_expressions = []
+    for key, e in expressions.items():
+        expression = f'{key}=\'{e}\''
+        prepped_expressions.append(expression)
+    return','.join(prepped_expressions)
 
 def construct_filter_string(filters: dict[str, Any]) -> str:
     '''
@@ -20,6 +36,8 @@ def construct_filter_string(filters: dict[str, Any]) -> str:
         elif type(f) is bool:
             # bool type must be lowercase
             filter = f'{key}: {str(f).lower()}'
+        elif type(f) is dict:
+            filter = f'{key}: "{construct_filter_expression_string(f)}"'  
         else:
             filter = f'{key}: {f}'
         prepped_filters.append(filter)

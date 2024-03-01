@@ -4,7 +4,7 @@ from ..characters.character import FFLogsCharacter
 from ..data import (FFGameZone, FFLogsNPCData, FFLogsPlayerDetails, FFLogsReportCharacterRanking,
                     FFLogsReportComboRanking, FFLogsReportRanking, FFMap,)
 from ..util.decorators import fetch_data
-from ..util.filters import construct_filter_string
+from ..util.filters import construct_filter_string, construct_filter_expression_string
 from ..util.indexing import itindex
 from ..world.encounter import FFLogsEncounter
 from .queries import Q_FIGHT_DATA
@@ -208,7 +208,10 @@ class FFLogsFight:
 
         return (bb['minX'], bb['minY'], bb['maxX'], bb['maxY'])
 
-    def _prepare_data_filters(self, filters: dict[str, Any]) -> tuple[str, dict[str, Any]]:
+    def _prepare_data_filters(
+                                self,
+                                filters: dict[str, Any],
+                                ) -> tuple[str, dict[str, Any]]:
         '''
         Turn a dictionary of filters into a GraphQL filter string
 
@@ -230,6 +233,11 @@ class FFLogsFight:
             filters['endTime'] = fight_end
         elif filters['endTime'] > fight_end:
             raise ValueError('Cannot retrieve fight events after the fight has ended!')
+
+        # if filterExpressions have been set rehydrayte them into an expression string
+        for filter, key in filters.items():
+            if filter == 'filterExpression':
+                filters['filterExpression'] = construct_filter_expression_string(key)
 
         return construct_filter_string(filters), filters
 

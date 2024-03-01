@@ -78,11 +78,13 @@ class FightTest(unittest.TestCase):
         '''
         The client should be able to handle some user defined filter expressions.
         '''
-        events = self.fight.events({
-            'filterExpression':{
-                'type':'limitbreakupdate'
+        events = self.fight.events(
+            {
+                'filterExpression': {
+                    'type': 'limitbreakupdate'
                 }
-        })
+            }
+        )
         self.assertIsNotNone(events)
         self.assertIsInstance(events,list)
         self.assertIsInstance(events[0],dict)

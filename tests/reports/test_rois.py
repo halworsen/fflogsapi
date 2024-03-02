@@ -6,9 +6,9 @@ from fflogsapi.data import PhaseType, OmegaPhaseData, AlexanderPhaseData
 from ..config import CACHE_EXPIRY, CLIENT_ID, CLIENT_SECRET
 
 
-class FightTest(unittest.TestCase):
+class ROITest(unittest.TestCase):
     '''
-    Test cases for fight phases.
+    Test cases for the ROI toolkit
 
     This test case makes assumptions on the availability of specific reports.
     If the tests break, it may be because visibility settings
@@ -53,7 +53,7 @@ class FightTest(unittest.TestCase):
 
         # Test kill
         top_fight = top_report.fight(self.TOP_REPORT[1])
-        phases = top_fight.phases()
+        phases = top_fight.phase_rois()
         # 6 phases and 7 intermissions in total
         self.assertEqual(len(phases), OmegaPhaseData.total_phases())
         self.assertEqual(phases[0].start, top_fight.start_time())
@@ -65,7 +65,7 @@ class FightTest(unittest.TestCase):
 
         # Test wipe on P4 (somewhere in the middle)
         top_fight = top_report.fight(self.TOP_REPORT[2])
-        phases = top_fight.phases()
+        phases = top_fight.phase_rois()
         self.assertEqual(len(phases), 6)
         self.assertEqual(phases[0].start, top_fight.start_time())
         self.assertEqual(phases[-1].end, top_fight.end_time())
@@ -85,7 +85,7 @@ class FightTest(unittest.TestCase):
 
         # Test a phase 1 wipe
         top_fight = top_report.fight(self.TOP_REPORT[3])
-        phases = top_fight.phases()
+        phases = top_fight.phase_rois()
         self.assertEqual(len(phases), 1)
         self.assertEqual(phases[0].start, top_fight.start_time())
         self.assertEqual(phases[-1].end, top_fight.end_time())
@@ -95,7 +95,7 @@ class FightTest(unittest.TestCase):
 
         # Test a phase 6 wipe
         top_fight = top_report.fight(self.TOP_REPORT[4])
-        phases = top_fight.phases()
+        phases = top_fight.phase_rois()
         self.assertEqual(len(phases), OmegaPhaseData.total_phases())
         self.assertEqual(phases[0].start, top_fight.start_time())
         self.assertEqual(phases[-1].end, top_fight.end_time())
@@ -125,7 +125,7 @@ class FightTest(unittest.TestCase):
 
         # Test kill
         tea_fight = tea_report.fight(self.TEA_REPORT[1])
-        phases = tea_fight.phases()
+        phases = tea_fight.phase_rois()
         self.assertEqual(len(phases), AlexanderPhaseData.total_phases())
         self.assertEqual(phases[0].start, tea_fight.start_time())
         self.assertEqual(
@@ -139,7 +139,7 @@ class FightTest(unittest.TestCase):
 
         # Test wipe on temporal stasis
         tea_fight = tea_report.fight(self.TEA_REPORT[2])
-        phases = tea_fight.phases()
+        phases = tea_fight.phase_rois()
         self.assertEqual(len(phases), 4)
         self.assertEqual(phases[0].start, tea_fight.start_time())
         self.assertEqual(phases[-1].end, tea_fight.end_time())
@@ -157,7 +157,7 @@ class FightTest(unittest.TestCase):
 
         # Test a phase 1 wipe
         tea_fight = tea_report.fight(self.TEA_REPORT[3])
-        phases = tea_fight.phases()
+        phases = tea_fight.phase_rois()
         self.assertEqual(len(phases), 1)
         self.assertEqual(phases[0].start, tea_fight.start_time())
         self.assertEqual(
@@ -170,7 +170,7 @@ class FightTest(unittest.TestCase):
 
         # Test a phase 4 wipe just before fate alpha
         tea_fight = tea_report.fight(self.TEA_REPORT[4])
-        phases = tea_fight.phases()
+        phases = tea_fight.phase_rois()
         self.assertEqual(len(phases), 9)
         self.assertEqual(phases[0].start, tea_fight.start_time())
         self.assertEqual(

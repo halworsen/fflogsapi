@@ -183,7 +183,7 @@ class FFLogsFight:
         return self.end_time() - self.start_time()
 
     @fetch_data('encounterID')
-    def phases(self) -> Optional[list['PhaseInformation']]:
+    def phase_rois(self) -> Optional[list['PhaseInformation']]:
         '''
         WARNING: VERY SLOW!
 

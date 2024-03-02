@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Any, Optional
 
 from ..characters.character import FFLogsCharacter
 from ..data import (FFGameZone, FFLogsNPCData, FFLogsPlayerDetails, FFLogsReportCharacterRanking,
-                    FFLogsReportComboRanking, FFLogsReportRanking, FFMap, ALL_PHASE_DATA)
+                    FFLogsReportComboRanking, FFLogsReportRanking, FFMap, FFLogsPhase)
 from ..util.decorators import fetch_data
 from ..util.filters import construct_filter_string
 from ..util.indexing import itindex
@@ -10,7 +10,6 @@ from ..world.encounter import FFLogsEncounter
 from .queries import Q_FIGHT_DATA
 
 if TYPE_CHECKING:
-    from ..data import PhaseInformation
     from ..client import FFLogsClient
     from .report import FFLogsReport
 
@@ -187,36 +186,6 @@ class FFLogsFight:
             The total duration of the right
         '''
         return self.end_time() - self.start_time()
-
-    @fetch_data('encounterID')
-    def phases(self) -> Optional[list['PhaseInformation']]:
-        '''
-        WARNING: VERY SLOW!
-
-        This is an addon functionality that is not present in the FF Logs API. It's reliant
-        on a custom phase tracking implementation that crawls the event log.
-        The resulting phase information may not line up exactly with what you see
-        on the FF Logs website. If you get ``None`` even when you know the fight has
-        multiple phases, phase data might simply not have been implemented.
-
-        Some extra data may be provided, and names may not match up when compared to FF Logs.
-        Use some judgement when you use this data.
-
-        Returns:
-            A list of information on each phase of the fight, or ``None`` if no phase data
-            was associated with the encounter.
-        '''
-        phase_data = None
-        for data in ALL_PHASE_DATA:
-            if data.encounter_id == self._data['encounterID']:
-                phase_data = data
-                break
-
-        # this fight does not have phase data associated with it
-        if not phase_data:
-            return None
-
-        return phase_data.get_phases(self)
 
     @fetch_data('completeRaid')
     def complete_raid(self) -> bool:

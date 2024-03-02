@@ -263,12 +263,35 @@ class FightTest(unittest.TestCase):
             fight = report.fight(id=key[0])
             answer = (
                 key[0],
-                fight.last_phase(),
+                fight.last_phase(as_dataclass=True).id,
                 fight.last_phase_absolute(),
                 fight.last_phase_intermission(),
             )
 
             self.assertTupleEqual(answer, key)
+
+        # test phase information
+        report = self.client.get_report(code='cLxvtB7HAnQT9zVh')
+        top_wipe = report.fight(id=20)
+        dsu_wipe = report.fight(id=35)
+        ucob_kill = report.fight(id=48)
+
+        self.assertEqual(top_wipe.last_phase(as_dataclass=True).name, 'P3: Omega Reconfigured')
+        # this is a weird quirk of the API but it is how it behaves
+        self.assertEqual(
+            dsu_wipe.last_phase(as_dataclass=True).name,
+            'P1: Adelphel, Grinnaux and Charibert'
+        )
+        self.assertEqual(
+            dsu_wipe.last_phase(
+                ignore_intermissions=False,
+                as_dataclass=True
+            ).name,
+            'Intermission: Rewind!'
+        )
+        ucob_phases = ucob_kill.phases()
+        self.assertEqual(len(ucob_phases), 5)
+        self.assertEqual(ucob_phases[2].name, 'P3: Bahamut Prime')
 
 
 if __name__ == '__main__':

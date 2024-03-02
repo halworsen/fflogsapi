@@ -33,12 +33,14 @@ query {{
 }}
 '''
 
+# Report-internal query for the report's log version
 IQ_REPORT_LOG_VERSION = '''
 masterData {
     logVersion
 }
 '''
 
+# Report-internal query for the actor data contained in the report
 IQ_REPORT_ACTORS = '''
 masterData {
     actors {
@@ -53,12 +55,26 @@ masterData {
 }
 '''
 
+# Report-internal query for all abilities seen in the report
 IQ_REPORT_ABILITIES = '''
 masterData {
     abilities {
         gameID
         name
         type
+    }
+}
+'''
+
+# Report-internal query for phase information contained in the report
+IQ_REPORT_PHASES = '''
+phases {
+    encounterID
+    separatesWipes
+    phases {
+        id
+        isIntermission
+        name
     }
 }
 '''

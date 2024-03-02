@@ -1,14 +1,16 @@
 from typing import TYPE_CHECKING, Iterator, Optional
 
 from ..characters.character import FFLogsCharacter
-from ..data import FFLogsActor, FFLogsArchivalData, FFLogsReportAbility, FFLogsReportTag
+from ..data import (FFLogsActor, FFLogsArchivalData, FFLogsPhase, FFLogsReportAbility,
+                    FFLogsReportTag,)
 from ..user.user import FFLogsUser
 from ..util.decorators import fetch_data
 from ..util.indexing import itindex
 from ..world.region import FFLogsRegion
 from ..world.zone import FFLogsZone
 from .fight import FFLogsFight
-from .queries import IQ_REPORT_ABILITIES, IQ_REPORT_ACTORS, IQ_REPORT_LOG_VERSION, Q_REPORT_DATA
+from .queries import (IQ_REPORT_ABILITIES, IQ_REPORT_ACTORS, IQ_REPORT_LOG_VERSION,
+                      IQ_REPORT_PHASES, Q_REPORT_DATA,)
 
 if TYPE_CHECKING:
     from ..client import FFLogsClient
@@ -36,6 +38,7 @@ class FFLogsReport:
 
     def _query_data(self, query: str, ignore_cache: bool = False) -> None:
         '''
+        INTERNAL
         Query for a specific piece of information from a report.
         '''
         result = self._client.q(Q_REPORT_DATA.format(
@@ -44,6 +47,31 @@ class FFLogsReport:
         ), ignore_cache=ignore_cache)
 
         return itindex(result, self.DATA_INDICES)
+
+    def _query_phases(self) -> dict[int, list[FFLogsPhase]]:
+        '''
+        INTERNAL
+        Query for all phase data exposed by this report
+
+        Returns:
+            A dictionary mapping encounter IDs in the report to a list of phases for that encounter
+        '''
+        if 'phases' not in self._data:
+            all_phases: dict[int, list[FFLogsPhase]] = {}
+            encounter_phases = self._query_data(IQ_REPORT_PHASES)['phases']
+            for encounter in encounter_phases:
+                separates_wipes = encounter['separatesWipes']
+                all_phases[encounter['encounterID']] = []
+                for phase in encounter['phases']:
+                    phase = FFLogsPhase(
+                        id=phase['id'],
+                        name=phase['name'],
+                        intermission=phase['isIntermission'],
+                        separates_wipes=separates_wipes,
+                    )
+                    all_phases[encounter['encounterID']].append(phase)
+            self._data['phases'] = all_phases
+        return self._data['phases']
 
     def actors(self) -> list[FFLogsActor]:
         '''

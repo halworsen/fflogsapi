@@ -1,8 +1,10 @@
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, Optional, Union
+from warnings import warn
 
 from ..characters.character import FFLogsCharacter
-from ..data import (FFGameZone, FFLogsNPCData, FFLogsPlayerDetails, FFLogsReportCharacterRanking,
-                    FFLogsReportComboRanking, FFLogsReportRanking, FFMap, FFLogsPhase)
+from ..data import (FFGameZone, FFLogsNPCData, FFLogsPhase, FFLogsPlayerDetails,
+                    FFLogsReportCharacterRanking, FFLogsReportComboRanking, FFLogsReportRanking,
+                    FFMap,)
 from ..util.decorators import fetch_data
 from ..util.filters import construct_filter_string
 from ..util.indexing import itindex
@@ -112,14 +114,6 @@ class FFLogsFight:
             The minimum percentage of the entire fight that was reached
         '''
         return self._data['fightPercentage']
-
-    @fetch_data('lastPhase')
-    def last_phase(self) -> int:
-        '''
-        Returns:
-            The last phase the fight was in when it ended
-        '''
-        return self._data['lastPhase']
 
     @fetch_data('lastPhaseAsAbsoluteIndex')
     def last_phase_absolute(self) -> int:
@@ -527,3 +521,52 @@ class FFLogsFight:
         '''
         maps = self._query_data('maps{ id }')['maps']
         return [self._client.map(id=map['id']) for map in maps]
+
+    @fetch_data('encounterID')
+    def phases(self) -> list[FFLogsPhase]:
+        '''
+        Get a list of phases in this fight.
+
+        Returns:
+            A list of phases
+        '''
+        # Awkward implementation, the API exposes phase info on the report
+        # But we want to expose it at the fight level, so we have to communicate
+        # backwards with the parent report for this information
+        if 'phases' not in self._data:
+            assert (self.report is not None)
+            encounter_id = self._data['encounterID']
+            self._data['phases'] = self.report._query_phases()[encounter_id]
+        return self._data['phases']
+
+    @fetch_data('lastPhase', 'lastPhaseAsAbsoluteIndex')
+    def last_phase(
+        self,
+        ignore_intermissions: bool = True,
+        as_dataclass: bool = False
+    ) -> Union[int, FFLogsPhase]:
+        '''
+        Get the phase the fight was in when the fight ended.
+
+        Args:
+            ignore_intermissions: When True, the last non-intermission phase is returned
+            as_dataclass: Return the last phase as a FFLogsPhase dataclass.
+                          This will become standard in the future.
+        Returns:
+            The last phase the fight was in when it ended
+        '''
+        last_phase = self._data['lastPhase']
+        if as_dataclass:
+            if not ignore_intermissions:
+                last_phase = self._data['lastPhaseAsAbsoluteIndex'] + 1
+            for phase in self.phases():
+                if phase.id == last_phase:
+                    last_phase = phase
+                    break
+        else:
+            warn(
+                'integer returns from FFLogsFight.last_phase are deprecated. '
+                'Pass as_dataclass=True to get the new dataclass return instead.',
+                category=FutureWarning,
+            )
+        return last_phase

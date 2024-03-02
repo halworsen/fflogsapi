@@ -382,3 +382,18 @@ class FFLogsPartition:
     name: str
     compact_name: str
     default: bool
+
+
+@dataclass
+class FFLogsPhase:
+    '''
+    Phase information for an encounter
+
+    The encounter is not part of this dataclass because it can
+    be queried from the fight from which this information was gotten
+    '''
+    id: int
+    name: str
+    intermission: bool
+    separates_wipes: bool
+    ''' Does this visually distinguish wipes in the FF Logs report UI? '''

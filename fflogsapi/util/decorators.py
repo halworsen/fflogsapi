@@ -1,4 +1,4 @@
-def fetch_data(key):
+def fetch_data(*keys):
     '''
     Decorator that queries and stores the given `key` in a class's `_data` dictionary.
 
@@ -12,9 +12,10 @@ def fetch_data(key):
     def decorator(func):
         def ensured(*args, **kwargs):
             self = args[0]
-            if key not in self._data:
-                result = self._query_data(key)
-                self._data[key] = result[key]
+            for key in keys:
+                if key not in self._data:
+                    result = self._query_data(key)
+                    self._data[key] = result[key]
             return func(*args, **kwargs)
         return ensured
     return decorator

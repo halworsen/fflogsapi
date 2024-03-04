@@ -1,6 +1,26 @@
 from typing import Any
 
 
+def construct_filter_expression_string(expressions: dict[str, Any]) -> str:
+    '''
+    Construct a filter expression from a dictionary of expressions
+    that can be used in FFLog queries to filter values base on FFLogs Expressions.
+
+    Currently this only supports the equality operator.
+
+    Args:
+        expressions: A dictions of keys which are fields to filter,
+                     and values are the values to filter by.
+    Returns:
+        An expression string usable in FFLogs expressions.
+    '''
+    prepped_expressions = []
+    for key, e in expressions.items():
+        expression = f'{key}=\'{e}\''
+        prepped_expressions.append(expression)
+    return ','.join(prepped_expressions)
+
+
 def construct_filter_string(filters: dict[str, Any]) -> str:
     '''
     Construct a filtering string from a dictionary of filters

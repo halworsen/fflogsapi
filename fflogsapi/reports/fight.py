@@ -234,10 +234,11 @@ class FFLogsFight:
         elif filters['endTime'] > fight_end:
             raise ValueError('Cannot retrieve fight events after the fight has ended!')
 
-        # if filterExpressions have been set rehydrayte them into an expression string
-        for filter, key in filters.items():
-            if filter == 'filterExpression':
-                filters['filterExpression'] = construct_filter_expression_string(key)
+        # if filterExpressions have been set as a dict, convert them into an expression string
+        if 'filterExpression' in filters and type(filters['filterExpression']) is dict:
+            filters['filterExpression'] = construct_filter_expression_string(
+                                                expressions=filters['filterExpression']
+                                            )
 
         return construct_filter_string(filters), filters
 

@@ -260,6 +260,11 @@ Dataclasses
   :undoc-members:
   :private-members:
 
+.. autoclass:: FFLogsPhase
+  :members:
+  :undoc-members:
+  :private-members:
+
 Pagination
 ----------
 

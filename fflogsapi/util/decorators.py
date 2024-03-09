@@ -1,3 +1,6 @@
+from functools import wraps
+
+
 def fetch_data(*keys):
     '''
     Decorator that queries and stores the given `key` in a class's `_data` dictionary.
@@ -10,6 +13,7 @@ def fetch_data(*keys):
         `key`: The key to query and store.
     '''
     def decorator(func):
+        @wraps(func)
         def ensured(*args, **kwargs):
             self = args[0]
             for key in keys:

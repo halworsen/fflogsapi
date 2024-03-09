@@ -19,11 +19,11 @@ Getting API credentials
 -----------------------
 
 fflogsapi requires you to create an API client before use. For information on how to get a client ID and client secret,
-read `the official FF Logs API documentation <https://articles.fflogs.com/help/api-documentation>`_.
+read `the official FF Logs API documentation <https://www.archon.gg/ffxiv/articles/help/api-documentation>`_.
 
 .. note::
     If you're looking to access private information, you must use fflogsapi in user mode,
-    which may require special setup when creating the API client. For more information, see :doc:`user_flow`.
+    which requires special setup when creating the API client. For more information, see :doc:`user_flow`.
 
 Using the client
 ----------------

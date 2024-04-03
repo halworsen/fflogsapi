@@ -10,6 +10,7 @@ Backwards compatibility is not guaranteed in versions <1.0.0.
   * Phase information is exposed at the fight level in this client (`FFLogsFight.phases`),
     *not* at the report level
 * Fix quotes not being properly escaped in query filters
+* Bump cryptography dependency (vulnerability fix)
 
 ## v2.0.2
 

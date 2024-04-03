@@ -10,6 +10,8 @@ Backwards compatibility is not guaranteed in versions <1.0.0.
   * Phase information is exposed at the fight level in this client (`FFLogsFight.phases`),
     *not* at the report level
 * Fix quotes not being properly escaped in query filters
+* System temporary directories are now used for query caches
+  * As a result, the `cache_directory` param on the client is now deprecated
 * Bump cryptography dependency (vulnerability fix)
 
 ## v2.0.2

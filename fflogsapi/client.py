@@ -4,10 +4,12 @@ The client implementation that allows communication with the FF Logs API.
 
 import os
 import pickle
+import tempfile
 from copy import deepcopy
 from functools import wraps
 from time import time
 from typing import Any
+from warnings import warn
 
 from gql import Client as GQLClient
 from gql import gql
@@ -127,8 +129,16 @@ class FFLogsClient(
         self._query_cache = {}
         self.cache_expiry = cache_expiry
         self.cache_queries = enable_caching
-        self.cache_dir = cache_directory
         self.ignore_cache_expiry = ignore_cache_expiry
+
+        # deprecation warning for cache_directory use
+        if cache_directory != './fflogs-querycache':
+            warn('Custom cache directories are deprecated in favor of system temp dirs.'
+                 ' Consider removing usage of cache_directory when instantiating FFLogsClient.',
+                 category=FutureWarning)
+        else:
+            # future behavior
+            self.cache_dir = os.path.join(tempfile.gettempdir(), 'fflogsapi')
 
         if enable_caching:
             if not os.path.exists(self.cache_dir):

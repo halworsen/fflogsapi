@@ -49,7 +49,7 @@ client = FFLogsClient(CLIENT_ID, CLIENT_SECRET)
 report = client.get_report('rGARYmQwTKbahXz9')
 
 for fight in report:
-    print(f'Fight #{fight.fight_id}:', fight.name(), f'- Kill: {fight.is_kill()}')
+    print(f'Fight #{fight.id}:', fight.name(), f'- Kill: {fight.is_kill()}')
     pot_table = fight.table(filters={'sourceAurasPresent': 'Medicated'})
     potted_damage = 0
     for damage in pot_table['damageDone']:

@@ -87,9 +87,9 @@ from config import CLIENT_ID, CLIENT_SECRET
 from fflogsapi import FFLogsClient, GQLEnum, FightDifficulty
 
 client = FFLogsClient(CLIENT_ID, CLIENT_SECRET)
-character = fapi.get_character(id=19181640)
+character = client.get_character(id=19181640)
 
-abyssos = fapi.get_zone(id=49)
+abyssos = client.get_zone(id=49)
 partition_628 = next(filter(
     lambda p: '6.28' in p.name,
     abyssos.partitions()

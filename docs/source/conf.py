@@ -14,8 +14,8 @@ sys.path += [os.path.abspath('../..')]
 project = 'fflogsapi'
 copyright = '2023, Markus Wang Halvorsen'
 author = 'Markus Wang Halvorsen'
-release = '2.1.0'
-version = '2.1.0'
+release = '2.1.1'
+version = '2.1.1'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

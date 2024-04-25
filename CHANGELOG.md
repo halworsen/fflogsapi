@@ -2,6 +2,11 @@
 
 Backwards compatibility is not guaranteed in versions <1.0.0.
 
+## v2.1.1
+
+* Fix KeyError caused by missing DPS metrics when retrieving character rankings
+* Fix usage examples in README and docs (thanks @arieker)
+
 ## v2.1.0
 
 * Added support for the new phase data exposed by the API. See

@@ -177,10 +177,10 @@ class FFLogsCharacter:
                 historical_total_parses=rank['historicalTotalParses'],
                 today_percent=rank['todayPercent'],
                 today_total_parses=rank['todayTotalParses'],
-                adps=rank['aDPS'],
-                rdps=rank['rDPS'],
-                ndps=rank['nDPS'],
-                pdps=rank['pDPS'],
+                adps=rank.get('aDPS'),
+                rdps=rank.get('rDPS'),
+                ndps=rank.get('nDPS'),
+                pdps=rank.get('pDPS'),
             ))
 
         from ..world.zone import FFLogsZone

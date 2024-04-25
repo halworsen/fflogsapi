@@ -49,10 +49,10 @@ class FFLogsFightRank:
     job: 'FFJob'
     best_job: 'FFJob'
 
-    adps: float
-    rdps: float
-    ndps: float
-    pdps: float
+    adps: Optional[float]
+    rdps: Optional[float]
+    ndps: Optional[float]
+    pdps: Optional[float]
 
 
 @dataclass

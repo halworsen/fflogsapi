@@ -15,7 +15,7 @@ Calculating damage done under pots
     report = client.get_report('rGARYmQwTKbahXz9')
 
     for fight in report:
-        print(f'Fight #{fight.fight_id}:', fight.name(), f'- Kill: {fight.is_kill()}')
+        print(f'Fight #{fight.id}:', fight.name(), f'- Kill: {fight.is_kill()}')
         pot_table = fight.table(filters={'sourceAurasPresent': 'Medicated'})
         potted_damage = 0
         for damage in pot_table['damageDone']:
@@ -54,9 +54,9 @@ Listing a character's RPDS & All-stars rank for Abyssos Savage in 6.28
     from fflogsapi import FFLogsClient, GQLEnum, FightDifficulty
 
     client = FFLogsClient(CLIENT_ID, CLIENT_SECRET)
-    character = fapi.get_character(id=19181640)
+    character = client.get_character(id=19181640)
 
-    abyssos = fapi.get_zone(id=49)
+    abyssos = client.get_zone(id=49)
     partition_628 = next(filter(
         lambda p: '6.28' in p.name,
         abyssos.partitions()

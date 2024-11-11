@@ -57,7 +57,7 @@ class UserModeAuthMixin:
                 self.OAUTH_USER_AUTH_URI,
             )
             # notifying them that their browser will open for login is not really an option
-            input('Press any key to open your browser to authenticate with FF Logs.')
+            input('Press enter to open your browser to authenticate with FF Logs.')
 
             self._generate_ss_x509_cert()
             print(f'You now have {self.CERT_EXPIRY_MINUTES} minutes to complete sign-in.')
@@ -101,7 +101,7 @@ class UserModeAuthMixin:
             .sign(key, hashes.SHA256())
 
         if not os.path.exists(os.path.dirname(self.KEY_PATH)):
-            os.makedirs(self.KEY_PATH)
+            os.makedirs(os.path.dirname(self.KEY_PATH))
         with open(self.KEY_PATH, 'wb') as f:
             f.write(key.private_bytes(
                 encoding=serialization.Encoding.PEM,

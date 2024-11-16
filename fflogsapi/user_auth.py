@@ -110,7 +110,7 @@ class UserModeAuthMixin:
             ))
 
         if not os.path.exists(os.path.dirname(self.CERT_PATH)):
-            os.makedirs(self.CERT_PATH)
+            os.makedirs(os.path.dirname(self.CERT_PATH))
         with open(self.CERT_PATH, 'wb') as f:
             f.write(cert.public_bytes(serialization.Encoding.PEM))
 

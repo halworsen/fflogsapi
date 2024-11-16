@@ -2,6 +2,10 @@
 
 Backwards compatibility is not guaranteed in versions <1.0.0.
 
+## v2.1.2
+
+* Fix directory creation when generating the local OAuth redirect handler cert (thanks @vsafili)
+
 ## v2.1.1
 
 * Fix KeyError caused by missing DPS metrics when retrieving character rankings

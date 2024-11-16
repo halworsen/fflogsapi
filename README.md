@@ -1,6 +1,6 @@
 # fflogsapi
 
-fflogsapi is a lazy Python 3 client for [FF Logs](https://www.fflogs.com/)' v2 API with query caching functionality.
+fflogsapi is a lazy Python 3 client for [FF Logs](https://www.fflogs.com/)' v2 GraphQL API with query caching functionality.
 
 [![Tests](https://github.com/halworsen/fflogsapi/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/halworsen/fflogsapi/actions/workflows/test.yml)
 [![Linting](https://github.com/halworsen/fflogsapi/actions/workflows/lint.yml/badge.svg?branch=master)](https://github.com/halworsen/fflogsapi/actions/workflows/lint.yml)
@@ -9,16 +9,6 @@ fflogsapi is a lazy Python 3 client for [FF Logs](https://www.fflogs.com/)' v2 A
 [![pypi](https://shields.io/pypi/v/fflogsapi)](https://pypi.org/project/fflogsapi/)
 
 ---
-
-## Features
-
-* Retrieve information from FF Logs' v2 GraphQL API
-  * Including private information only accessible through the user API
-* Lazy evaluation
-  * Queries for data are not executed until the result is explicitly needed
-* Query caching
-  * Requesting the same data twice will instead fetch the result from cache
-  * Customizable cache lifetime and options to ignore cached results
 
 ## Installation
 
@@ -29,8 +19,8 @@ can be installed with pip:
 pip install fflogsapi
 ```
 
-If you want to contribute, you can install fflogsapi with the following to
-additionally install development and test tools:
+If you want to contribute, you can install fflogsapi with the following command
+to install development and test tools as well:
 
 ```shell
 pip install fflogsapi[dev,test]
@@ -115,21 +105,21 @@ client.save_cache()
 
 ## User mode
 
-The default mode of the client is 'client' mode, which uses the public API. This is by far the most
-convenient method to use the client, and usually provides enough functionality for the majority of
+The default access mode of the client is 'client' mode, which uses the public API. This is by far the most
+convenient method to use the client, and usually provides access to enough data for the majority of
 use cases.
 
-If you need access to private information, however, it is possible to use the client in user mode,
-granting access to extra information such as private reports provided by the user API.
+If you need to access private information, you can configure the client to use user mode,
+granting access to private information such as private reports.
 
 To use user mode, you must first specify `https://localhost:4433` as the redirect URL in your API
-client on FF Logs. Then, provide the `mode='user'` kwarg to the client when instantiating it:
+client on FF Logs. Then provide the `mode='user'` kwarg to the client when instantiating it:
 
 ```python
 client = FFLogsClient(CLIENT_ID, CLIENT_SECRET, mode='user')
 ```
 
-This will have the client popup a browser window for the user for login, after which the client has
+This will have the client popup a browser window for you to log in. When logged in, the client gets
 access to the user API. Note that the client will generate a self-signed certificate to serve
 the redirect. Your browser will likely produce a warning about this, although it is safe to ignore.
 

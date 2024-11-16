@@ -19,8 +19,8 @@ class FightTest(unittest.TestCase):
     were changed or the report was deleted.
     '''
 
-    SPECIFIC_REPORT_CODE = '2Kf9y6wzanWkBJ41'
-    SPECIFIC_FIGHT_ID = 15
+    SPECIFIC_REPORT_CODE = 'LwdbchzWYPZxHDRt'
+    SPECIFIC_FIGHT_ID = 14
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -38,15 +38,15 @@ class FightTest(unittest.TestCase):
         The client should be able to fetch fields about the fight
         such as the difficulty, boss name, etc.
         '''
-        self.assertEqual(self.fight.name(), 'Hephaistos II')
+        self.assertEqual(self.fight.name(), 'Wicked Thunder')
         self.assertIsInstance(self.fight.encounter(), FFLogsEncounter)
-        self.assertEqual(self.fight.encounter().id, 87)
+        self.assertEqual(self.fight.encounter().id, 96)
         self.assertEqual(self.fight.difficulty(), FightDifficulty.SAVAGE.value)
         self.assertEqual(self.fight.size(), PartySize.FULL.value)
-        self.assertEqual(self.fight.fight_percentage(), 55.93)
-        self.assertEqual(self.fight.percentage(), 55.93)
-        self.assertEqual(self.fight.start_time(), 8224400)
-        self.assertEqual(self.fight.end_time(), 8500006)
+        self.assertEqual(self.fight.fight_percentage(), 48.51)
+        self.assertEqual(self.fight.percentage(), 48.51)
+        self.assertEqual(self.fight.start_time(), 5582056)
+        self.assertEqual(self.fight.end_time(), 5957574)
         self.assertEqual(self.fight.in_progress(), False)
         self.assertEqual(self.fight.is_kill(), False)
         self.assertEqual(self.fight.has_echo(), False)
@@ -54,12 +54,12 @@ class FightTest(unittest.TestCase):
 
         self.assertTupleEqual(
             self.fight.bounding_box(),
-            (8000, 7700, 12000, 11934),
+            (8000, 7997, 12000, 11839),
         )
 
         self.assertListEqual(
             sorted(self.fight.friendly_players()),
-            sorted([126, 125, 124, 91, 123, 38, 130, 129, 160]),
+            sorted([111, 110, 109, 108, 106, 114, 113, 112, 32]),
         )
 
     def test_events(self) -> None:
@@ -72,7 +72,7 @@ class FightTest(unittest.TestCase):
         })
 
         self.assertIsNotNone(events)
-        self.assertEqual(len(events), 8)
+        self.assertEqual(len(events), 10)
 
     def test_graph(self) -> None:
         '''
@@ -84,17 +84,15 @@ class FightTest(unittest.TestCase):
         })
 
         self.assertIsNotNone(graph)
-        self.assertDictEqual(graph['downtime'][0], {
-            'startTime': 8343649,
-            'endTime': 8384962
-        })
-        self.assertAlmostEqual(graph['series'][0]['pointInterval'], 1148.3583333333333, places=4)
+        self.assertEqual(graph['startTime'], self.fight.start_time())
+        self.assertEqual(graph['endTime'], self.fight.end_time())
+        self.assertAlmostEqual(graph['series'][0]['pointInterval'], 1564.6583333333333, places=4)
         # +1 for total damage
         self.assertEqual(len(graph['series']), PartySize.FULL.value + 1)
 
-        count_data = list(filter(lambda d: d['name'] == 'The Count', graph['series']))[0]
-        self.assertEqual(count_data['name'], 'The Count')
-        self.assertEqual(count_data['total'], 1050501)
+        player_data = list(filter(lambda d: d['name'] == 'Reks Rotari', graph['series']))[0]
+        self.assertEqual(player_data['name'], 'Reks Rotari')
+        self.assertEqual(player_data['total'], 8854424)
 
     def test_table(self) -> None:
         '''
@@ -107,8 +105,7 @@ class FightTest(unittest.TestCase):
 
         self.assertIsNotNone(table)
         self.assertEqual(len(table['entries']), 2)
-        self.assertEqual(table['downtime'], 41313)
-        self.assertEqual(table['entries'][0]['hitCount'], 3)
+        self.assertEqual(table['entries'][0]['hitCount'], 2)
 
     def test_invalid_times(self) -> None:
         '''
@@ -137,28 +134,28 @@ class FightTest(unittest.TestCase):
         self.assertIsNone(self.fight.rankings())
 
         # get rankings from an actual kill
-        rankings = self.report.fight(id=17).rankings(metric='rdps')
+        rankings = self.report.fight(id=16).rankings(metric='rdps')
         self.assertIsInstance(rankings, FFLogsReportRanking)
 
-        self.assertEqual(rankings.patch, 6.2)
-        self.assertEqual(rankings.deaths, 1)
+        self.assertEqual(rankings.patch, 7.1)
+        self.assertEqual(rankings.deaths, 0)
 
         self.assertGreater(len(rankings.character_rankings), 0)
         self.assertGreater(len(rankings.combo_rankings), 0)
         self.assertIsInstance(rankings.character_rankings[0], FFLogsReportCharacterRanking)
         self.assertIsInstance(rankings.combo_rankings[0], FFLogsReportComboRanking)
 
-        gunbreaker = list(filter(
-            lambda r: r.job.name == 'Gunbreaker',
+        ranking = list(filter(
+            lambda r: r.job.name == 'Paladin',
             rankings.character_rankings
         ))[0]
-        self.assertAlmostEqual(gunbreaker.amount, 6491.9, places=1)
+        self.assertAlmostEqual(ranking.amount, 17590, places=1)
 
         healers = list(filter(
             lambda r: r.type == 'healers',
             rankings.combo_rankings
         ))[0]
-        self.assertAlmostEqual(healers.amount, 9793.7, places=1)
+        self.assertAlmostEqual(healers.amount, 29240, places=1)
 
     def test_multiple_event_pages(self) -> None:
         '''
@@ -181,14 +178,14 @@ class FightTest(unittest.TestCase):
         details = self.fight.player_details()
         self.assertGreater(len(details), 0)
 
-        surana = list(filter(
-            lambda d: d.id == 160,
+        player = list(filter(
+            lambda d: d.id == 111,
             details,
         ))[0]
-        self.assertEqual(surana.name, 'Surana Crescence')
-        self.assertIsInstance(surana.actor, FFLogsActor)
-        self.assertEqual(surana.job.name, 'Dancer')
-        self.assertEqual(surana.server, 'Gilgamesh')
+        self.assertEqual(player.name, 'Reks Rotari')
+        self.assertIsInstance(player.actor, FFLogsActor)
+        self.assertEqual(player.job.name, 'Reaper')
+        self.assertEqual(player.server, 'Shiva')
 
     def test_npcs(self) -> None:
         '''
@@ -196,11 +193,11 @@ class FightTest(unittest.TestCase):
         '''
         enemies = self.fight.enemy_npcs()
         specific_enemy = list(filter(
-            lambda e: e.id == 41,
+            lambda e: e.id == 144,
             enemies,
         ))[0]
 
-        self.assertEqual(specific_enemy.actor.name, 'Hephaistos')
+        self.assertEqual(specific_enemy.actor.name, 'Wicked Thunder')
         self.assertEqual(specific_enemy.hostile, True)
 
         friends = self.fight.friendly_npcs()
@@ -222,21 +219,21 @@ class FightTest(unittest.TestCase):
         The client should be able to get a list of friendly pets from a fight.
         '''
         pets = self.fight.pets()
-        bunshin = list(filter(
-            lambda p: p.id == 133,
+        pet = list(filter(
+            lambda p: p.id == 115,
             pets,
         ))[0]
 
-        self.assertEqual(bunshin.instance_count, 3)
-        self.assertEqual(bunshin.pet_owner.name, 'Riksa Ui')
+        self.assertEqual(pet.instance_count, 4)
+        self.assertEqual(pet.pet_owner.name, 'Thia Huntington')
 
     def test_game_zone(self) -> None:
         '''
         The client should be able to get the game zone a fight took place in.
         '''
         zone = self.fight.game_zone()
-        self.assertEqual(zone.id, 1088)
-        self.assertEqual(zone.name, 'Stygian Insenescence Cells')
+        self.assertEqual(zone.id, 1232)
+        self.assertEqual(zone.name, 'The Thundering')
 
     def test_maps(self) -> None:
         '''
@@ -244,8 +241,8 @@ class FightTest(unittest.TestCase):
         '''
         maps = self.fight.maps()
         self.assertEqual(len(maps), 1)
-        self.assertEqual(maps[0].id, 808)
-        self.assertEqual(maps[0].name, 'Stygian Insenescence Cells')
+        self.assertEqual(maps[0].id, 924)
+        self.assertEqual(maps[0].name, 'The Thundering')
 
     def test_phases(self) -> None:
         '''

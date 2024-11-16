@@ -57,7 +57,8 @@ class GameItemTest(unittest.TestCase):
             'Astrologian', 'Bard', 'Black Mage', 'Dark Knight', 'Dragoon',
             'Machinist', 'Monk', 'Ninja', 'Paladin', 'Scholar',
             'Summoner', 'Warrior', 'White Mage', 'Red Mage', 'Samurai',
-            'Dancer', 'Gunbreaker', 'Reaper', 'Sage',
+            'Dancer', 'Gunbreaker', 'Reaper', 'Sage', 'Pictomancer',
+            'Viper',
         ]
         job_names = [job.name for job in jobs]
         self.assertListEqual(sorted(job_names), sorted(all_jobs))

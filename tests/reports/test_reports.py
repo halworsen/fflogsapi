@@ -70,9 +70,9 @@ class ReportTest(unittest.TestCase):
         The client should be able to get archivation data from a report.
         '''
         archivation = self.report.archivation_data()
-        self.assertEqual(archivation.archived, False)
-        self.assertEqual(archivation.accessible, True)
-        self.assertIsNone(archivation.date)
+        self.assertEqual(archivation.archived, True)
+        self.assertEqual(archivation.accessible, False)
+        self.assertEqual(archivation.date, 1725939433)
 
     def test_zone(self) -> None:
         '''

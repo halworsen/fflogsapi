@@ -90,7 +90,7 @@ class CharacterTest(unittest.TestCase):
         mazz = self.client.get_character(id=19243348)
         guilds = mazz.guilds()
         self.assertIsInstance(guilds[0], FFLogsGuild)
-        self.assertEqual(guilds[0].id, 54563)
+        self.assertEqual(guilds[0].id, 26629)
 
     def test_game_data(self) -> None:
         '''

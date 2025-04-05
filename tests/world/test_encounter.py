@@ -39,7 +39,6 @@ class EncounterTest(unittest.TestCase):
         char_rankings = self.encounter.character_rankings({
             'page': 1,
             'serverRegion': 'EU',
-            'serverSlug': 'Twintania',
             'specName': 'Dancer',
             'metric': GQLEnum('rdps'),
         })

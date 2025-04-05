@@ -94,7 +94,7 @@ class FightTest(unittest.TestCase):
         characters = self.guild.characters()
         first_page = characters.__next__()
         first_char = first_page.__iter__().__next__()
-        self.assertEqual(len(first_page), 18)
+        self.assertEqual(len(first_page), 19)
 
         self.assertIsInstance(first_char, FFLogsCharacter)
 

@@ -161,8 +161,8 @@ class FightTest(unittest.TestCase):
         '''
         A fight should seamlessly combine multiple pages of fight events
         '''
-        report = self.client.get_report('fZ7XKA6gyzDY43Nd')
-        kill_fight = report.fight(id=8)
+        report = self.client.get_report('tgFNX14HGLBfWaCk')
+        kill_fight = report.fight(id=2)
         events = kill_fight.events(filters={
             'dataType': GQLEnum('Casts'),
             'useAbilityIDs': True,

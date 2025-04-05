@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Optional
 
+from fflogsapi.util.decorators import default_instantiation
+
 if TYPE_CHECKING:
     from ..characters.character import FFLogsCharacter
     from ..guilds.guild import FFLogsGuild
@@ -197,6 +199,17 @@ class FFJob:
     id: int
     name: str
     slug: str
+
+    def __eq__(self, other):
+        return (self.id == other.id or self.slug == other.slug)
+
+
+@default_instantiation
+class FFJobInvalid(FFJob):
+    '''
+    A job that isn't supported by FFLogs.
+    '''
+    __default_args__ = [-1, 'Invalid Job', 'Invalid']
 
 
 @dataclass

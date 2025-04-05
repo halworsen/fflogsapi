@@ -23,3 +23,18 @@ def fetch_data(*keys):
             return func(*args, **kwargs)
         return ensured
     return decorator
+
+
+def default_instantiation(_class):
+    '''
+    Class decorator which instantiates the class with dunder defaults when no args are given on
+    instantiation.
+    '''
+    def instantiator(*args, **kwargs):
+        if not args and not kwargs:
+            if hasattr(_class, '__default_args__'):
+                args = _class.__default_args__
+            if hasattr(_class, '__default_kwargs__'):
+                kwargs = _class.__default_kwargs__
+        return _class(*args, **kwargs)
+    return instantiator

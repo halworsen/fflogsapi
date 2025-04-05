@@ -1,10 +1,11 @@
 from typing import TYPE_CHECKING, Any, Optional, Union
 from warnings import warn
 
+from fflogsapi.data import (FFGameZone, FFJobInvalid, FFLogsNPCData, FFLogsPhase,
+                            FFLogsPlayerDetails, FFLogsReportCharacterRanking,
+                            FFLogsReportComboRanking, FFLogsReportRanking, FFMap,)
+
 from ..characters.character import FFLogsCharacter
-from ..data import (FFGameZone, FFLogsNPCData, FFLogsPhase, FFLogsPlayerDetails,
-                    FFLogsReportCharacterRanking, FFLogsReportComboRanking, FFLogsReportRanking,
-                    FFMap,)
 from ..util.decorators import fetch_data
 from ..util.filters import construct_filter_string
 from ..util.indexing import itindex
@@ -400,7 +401,7 @@ class FFLogsFight:
 
     def player_details(self) -> list[FFLogsPlayerDetails]:
         '''
-        Geta list of player details such as each player's job, name and server for this fight.
+        Get a list of player details such as each player's job, name and server for this fight.
 
         This data isn't considered frozen by FF Logs and may therefore change without notice.
 
@@ -416,7 +417,14 @@ class FFLogsFight:
             self._data['playerDetails'] = []
             for role, players in details.items():
                 for data in players:
-                    job = list(filter(lambda j: j.slug == data['type'], jobs))[0]
+                    job_slug = data['type']
+                    try:
+                        job = [j for j in jobs if j.slug == job_slug][0]
+                    except IndexError:
+                        invalid_job = FFJobInvalid()
+                        invalid_job.slug = job_slug
+                        job = invalid_job
+
                     details = FFLogsPlayerDetails(
                         id=data['id'],
                         actor=self.report.actor(id=data['id']),

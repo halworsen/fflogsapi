@@ -2,6 +2,11 @@
 
 Backwards compatibility is not guaranteed in versions <1.0.0.
 
+## v2.1.3
+
+* Fixed an error in FFLogsFight.player_details when the fight contains players with invalid jobs.
+  * A special invalid job type will be returned instead, with the slug set to the player type as reported by FF Logs.
+
 ## v2.1.2
 
 * Fix directory creation when generating the local OAuth redirect handler cert (thanks @vsafili)

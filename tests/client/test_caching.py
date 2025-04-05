@@ -1,6 +1,6 @@
 import os
-import unittest
 import tempfile
+import unittest
 from time import sleep, time
 
 from fflogsapi.client import FFLogsClient

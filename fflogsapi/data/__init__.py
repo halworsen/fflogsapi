@@ -2,13 +2,16 @@
 Dataclasses and such.
 '''
 
-from .dataclasses import (FFAbility, FFGameZone, FFGrandCompany, FFItem, FFJob, FFLogsActor,
-                          FFLogsAllStarsRanking, FFLogsArchivalData, FFLogsAttendanceReport,
-                          FFLogsEncounterRankings, FFLogsFightRank, FFLogsGuildZoneRankings,
-                          FFLogsNPCData, FFLogsPartition, FFLogsPhase, FFLogsPlayerDetails,
-                          FFLogsRank, FFLogsReportAbility, FFLogsReportCharacterRanking,
-                          FFLogsReportComboRanking, FFLogsReportRanking, FFLogsReportTag,
-                          FFLogsZoneEncounterRanking, FFLogsZoneRanking, FFMap,)
+from fflogsapi.data.dataclasses import (FFAbility, FFGameZone, FFGrandCompany, FFItem, FFJob,
+                                        FFJobInvalid, FFLogsActor, FFLogsAllStarsRanking,
+                                        FFLogsArchivalData, FFLogsAttendanceReport,
+                                        FFLogsEncounterRankings, FFLogsFightRank,
+                                        FFLogsGuildZoneRankings, FFLogsNPCData, FFLogsPartition,
+                                        FFLogsPhase, FFLogsPlayerDetails, FFLogsRank,
+                                        FFLogsReportAbility, FFLogsReportCharacterRanking,
+                                        FFLogsReportComboRanking, FFLogsReportRanking,
+                                        FFLogsReportTag, FFLogsZoneEncounterRanking,
+                                        FFLogsZoneRanking, FFMap,)
 
 __all__ = [
     # dataclasses.py
@@ -23,6 +26,7 @@ __all__ = [
     'FFAbility',
     'FFItem',
     'FFJob',
+    'FFJobInvalid',
     'FFGrandCompany',
     'FFMap',
     'FFLogsReportTag',

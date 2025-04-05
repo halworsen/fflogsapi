@@ -40,7 +40,7 @@ test = [
 Repository = 'https://github.com/halworsen/fflogsapi'
 
 [build-system]
-requires = ['setuptools']
+requires = ['setuptools~=75.5.0']
 build-backend = 'setuptools.build_meta'
 
 [tool.setuptools.packages.find]
